@@ -28,7 +28,7 @@ public class ColorManager implements ColorService{
 		this.colorDao.save(color);
 	}
 	
-	void checkIfColorExist(Color color) throws Exception {
+	private void checkIfColorExist(Color color) throws Exception {
 		if(this.colorDao.existsByName(color.getName())) {
 			throw new Exception("This brand is already exists");
 		}

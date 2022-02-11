@@ -31,7 +31,7 @@ public class BrandManager implements BrandService{
 		this.brandDao.save(brand);
 	}
 	
-	void checkIfBrandExist(Brand brand) throws Exception {
+	private void checkIfBrandExist(Brand brand) throws Exception {
 		if(this.brandDao.existsByName(brand.getName())) {
 			throw new Exception("This brand is already exists");
 		}
