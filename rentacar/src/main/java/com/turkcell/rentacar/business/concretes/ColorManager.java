@@ -19,6 +19,7 @@ public class ColorManager implements ColorService{
 
 	@Override
 	public List<Color> getAll() {
+		
 		return this.colorDao.findAll();
 	}
 
@@ -30,8 +31,11 @@ public class ColorManager implements ColorService{
 	
 	private void checkIfColorExist(Color color) throws Exception {
 		if(this.colorDao.existsByName(color.getName())) {
-			throw new Exception("This brand is already exists");
+			throw new Exception("This color is already exists");
 		}
 	}
+	
+	
+	
 
 }
