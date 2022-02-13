@@ -46,7 +46,8 @@ public class BrandManager implements BrandService{
 	}
 
 	@Override
-	public BrandListDto getById(int id) {
+	public BrandListDto getById(int id) throws Exception {
+		checkIfBrandExistById(id);
 		Brand result = this.brandDao.getById(id);
 		BrandListDto response = this.modelMapperService.forDto().map(result, BrandListDto.class);
 		
@@ -57,8 +58,13 @@ public class BrandManager implements BrandService{
 	private void checkIfBrandExist(Brand brand) throws Exception {
 		if(this.brandDao.existsByName(brand.getName())) {
 			throw new Exception("This brand is already exists");
-		}
+		}		
 		
+	}
+	private void checkIfBrandExistById(int id) throws Exception {
+		if(!this.brandDao.existsById(id)) {
+			throw new Exception("This brand is doesn't exists.");
+		}
 	}
 
 

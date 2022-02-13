@@ -35,7 +35,7 @@ public class BrandController {
 		this.brandService.save(createBrandRequest);
 	}
 	@GetMapping("/get")
-	public BrandListDto get(@RequestParam int id) {
+	public BrandListDto get(@RequestParam int id) throws Exception {
 		
 		return this.brandService.getById(id);
 	}

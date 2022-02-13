@@ -32,7 +32,7 @@ public class ColorController {
 		this.colorService.save(createColorRequest);
 	}
 	@GetMapping("/get")
-	public ColorListDto get(@RequestParam int id) {
+	public ColorListDto get(@RequestParam int id) throws Exception {
 		return this.colorService.getById(id);
 	}
 	

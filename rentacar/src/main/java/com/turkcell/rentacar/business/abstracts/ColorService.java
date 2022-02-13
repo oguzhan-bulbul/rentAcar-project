@@ -9,6 +9,6 @@ public interface ColorService {
 	
 	List<ColorListDto> getAll();
 	void save(CreateColorRequest createColorRequest) throws Exception;
-	ColorListDto getById(int id);
+	ColorListDto getById(int id) throws Exception;
 
 }

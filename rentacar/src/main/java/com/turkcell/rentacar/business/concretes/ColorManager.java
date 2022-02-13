@@ -43,9 +43,9 @@ public class ColorManager implements ColorService{
 		this.colorDao.save(color);
 	}
 	@Override
-	public ColorListDto getById(int id) {
+	public ColorListDto getById(int id) throws Exception {
+		checkIfColorExistById(id);
 		Color result = this.colorDao.getById(id);
-		System.out.println(result.getName());
 		ColorListDto response = this.modelMapperService.forDto().map(result, ColorListDto.class);
 		return response;
 	}
@@ -55,6 +55,11 @@ public class ColorManager implements ColorService{
 	private void checkIfColorExist(Color color) throws Exception {
 		if(this.colorDao.existsByName(color.getName())) {
 			throw new Exception("This color is already exists");
+		}
+	}
+	private void checkIfColorExistById(int id) throws Exception {
+		if(!this.colorDao.existsById(id)) {
+			throw new Exception("This color is doesn't exists.");
 		}
 	}
 

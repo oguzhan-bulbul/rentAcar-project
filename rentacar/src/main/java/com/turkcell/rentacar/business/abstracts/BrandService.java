@@ -8,6 +8,6 @@ import com.turkcell.rentacar.business.requests.CreateBrandRequest;
 public interface BrandService {
 	List<BrandListDto> getAll();
 	void save(CreateBrandRequest createBrandRequest) throws Exception;
-	BrandListDto getById(int id);
+	BrandListDto getById(int id) throws Exception;
 
 }
