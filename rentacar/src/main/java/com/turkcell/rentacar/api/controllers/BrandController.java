@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.turkcell.rentacar.business.abstracts.BrandService;
+import com.turkcell.rentacar.business.dtos.BrandDto;
 import com.turkcell.rentacar.business.dtos.BrandListDto;
 import com.turkcell.rentacar.business.requests.CreateBrandRequest;
 
@@ -35,7 +36,7 @@ public class BrandController {
 		this.brandService.save(createBrandRequest);
 	}
 	@GetMapping("/get")
-	public BrandListDto get(@RequestParam int id) throws Exception {
+	public BrandDto get(@RequestParam int id) throws Exception {
 		
 		return this.brandService.getById(id);
 	}

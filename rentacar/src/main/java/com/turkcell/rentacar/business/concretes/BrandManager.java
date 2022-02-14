@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import com.turkcell.rentacar.business.abstracts.BrandService;
+import com.turkcell.rentacar.business.dtos.BrandDto;
 import com.turkcell.rentacar.business.dtos.BrandListDto;
 import com.turkcell.rentacar.business.requests.CreateBrandRequest;
 import com.turkcell.rentacar.core.utilities.mapping.ModelMapperService;
@@ -46,10 +47,10 @@ public class BrandManager implements BrandService{
 	}
 
 	@Override
-	public BrandListDto getById(int id) throws Exception {
+	public BrandDto getById(int id) throws Exception {
 		checkIfBrandExistById(id);
 		Brand result = this.brandDao.getById(id);
-		BrandListDto response = this.modelMapperService.forDto().map(result, BrandListDto.class);
+		BrandDto response = this.modelMapperService.forDto().map(result, BrandDto.class);
 		
 		return response;
 	}

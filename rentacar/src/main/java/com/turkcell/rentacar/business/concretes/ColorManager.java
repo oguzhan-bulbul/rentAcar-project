@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import com.turkcell.rentacar.business.abstracts.ColorService;
+import com.turkcell.rentacar.business.dtos.ColorDto;
 import com.turkcell.rentacar.business.dtos.ColorListDto;
 import com.turkcell.rentacar.business.requests.CreateColorRequest;
 import com.turkcell.rentacar.core.utilities.mapping.ModelMapperService;
@@ -43,10 +44,10 @@ public class ColorManager implements ColorService{
 		this.colorDao.save(color);
 	}
 	@Override
-	public ColorListDto getById(int id) throws Exception {
+	public ColorDto getById(int id) throws Exception {
 		checkIfColorExistById(id);
 		Color result = this.colorDao.getById(id);
-		ColorListDto response = this.modelMapperService.forDto().map(result, ColorListDto.class);
+		ColorDto response = this.modelMapperService.forDto().map(result, ColorDto.class);
 		return response;
 	}
 	

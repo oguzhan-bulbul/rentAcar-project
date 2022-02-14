@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.turkcell.rentacar.business.abstracts.ColorService;
+import com.turkcell.rentacar.business.dtos.ColorDto;
 import com.turkcell.rentacar.business.dtos.ColorListDto;
 import com.turkcell.rentacar.business.requests.CreateColorRequest;
 
@@ -32,7 +33,7 @@ public class ColorController {
 		this.colorService.save(createColorRequest);
 	}
 	@GetMapping("/get")
-	public ColorListDto get(@RequestParam int id) throws Exception {
+	public ColorDto get(@RequestParam int id) throws Exception {
 		return this.colorService.getById(id);
 	}
 	
