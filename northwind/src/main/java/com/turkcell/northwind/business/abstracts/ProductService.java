@@ -2,12 +2,13 @@ package com.turkcell.northwind.business.abstracts;
 
 import java.util.List;
 
-import com.turkcell.northwind.entities.concretes.Product;
+import com.turkcell.northwind.business.dtos.ProductListDto;
+import com.turkcell.northwind.business.requests.CreateProductRequest;
 
 public interface ProductService {
-	List<Product> getAll();
+	List<ProductListDto> getAll();
 	
-	void add(Product product);
+	void add(CreateProductRequest createProductRequest);
 	
 
 }
