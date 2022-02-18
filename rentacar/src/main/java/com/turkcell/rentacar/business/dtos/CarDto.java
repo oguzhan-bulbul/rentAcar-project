@@ -5,10 +5,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class ColorDto {
+@AllArgsConstructor
+public class CarDto {
 	
+	private String brandName;
 	private String colorName;
+	private int carModelYear;
+	private double carDailyPrice;
+	private String description;
+	
+	
 
 }
