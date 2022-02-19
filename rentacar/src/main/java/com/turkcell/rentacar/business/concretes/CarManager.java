@@ -35,8 +35,10 @@ public class CarManager implements CarService{
 	
 	@Autowired
 	public CarManager(CarDao carDao, ModelMapperService modelMapperService) {
+		
 		this.carDao = carDao;
 		this.modelMapperService = modelMapperService;
+		
 	}
 
 	@Override
@@ -64,40 +66,50 @@ public class CarManager implements CarService{
 	public DataResult<CarDto> getById(int id){
 		
 		if(checkIfCarDoesNotExistById(id)) {
+			
 			return new ErrorDataResult<CarDto>("Car does not exists");
+			
 		}else {
+			
 			Car car = this.carDao.getById(id);
 			CarDto carDto = this.modelMapperService.forDto().map(car, CarDto.class);
 			return new SuccessDataResult<CarDto>(carDto,"The brand is listed.");
-		}
-		
-		
+			
+		}	
 	}
 
 	@Override
 	public Result update(UpdateCarRequest updateCarRequest){
 		
 		if(checkIfCarDoesNotExistById(updateCarRequest.getCarId())) {
+			
 			return new ErrorResult("Car does not exists");
+			
 		}else {
+			
 			Car car = this.carDao.getById(updateCarRequest.getCarId());
 			car = this.modelMapperService.forRequest().map(updateCarRequest, Car.class);
 			this.carDao.save(car);
+			
 			return new SuccessDataResult<UpdateCarRequest>(updateCarRequest,"The brand is updated");
-		}
-		
-		
+			
+		}		
 	}
 
 	@Override
 	public Result delete(DeleteCarRequest deleteCarRequest){
 		
 		if(checkIfCarDoesNotExistById(deleteCarRequest.getCarId())) {
+			
 			return new ErrorResult("Car does not exists");
+			
 		}else {
+			
 			Car car = this.modelMapperService.forRequest().map(deleteCarRequest, Car.class);
 			this.carDao.delete(car);
+			
 			return new SuccessDataResult<DeleteCarRequest>(deleteCarRequest,"The brand is deleted");
+			
 		}
 	}
 	
@@ -108,8 +120,10 @@ public class CarManager implements CarService{
 		List<Car> result = this.carDao.findAll(pageable).getContent();
 		List<CarListDto> response = result.stream()
 				.map(car -> this.modelMapperService.forDto().map(car, CarListDto.class))
-				.collect(Collectors.toList());		
+				.collect(Collectors.toList());
+		
 		return new SuccessDataResult<List<CarListDto>>(response,"Pages listed");
+		
 	}
 
 	@Override
@@ -122,6 +136,7 @@ public class CarManager implements CarService{
 				.collect(Collectors.toList());
 		
 		return new SuccessDataResult<List<CarListDto>>(response,"Cars listed.");
+		
 	}
 
 	@Override
@@ -140,13 +155,12 @@ public class CarManager implements CarService{
 	private boolean checkIfCarDoesNotExistById(int id){
 		
 		if(!this.carDao.existsById(id)) {
+			
 			return true;
+			
 		}
+		
 		return false;
 		
 	}
-
-
-
-
 }
