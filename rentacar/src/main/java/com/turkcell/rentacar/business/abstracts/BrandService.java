@@ -7,17 +7,19 @@ import com.turkcell.rentacar.business.dtos.BrandListDto;
 import com.turkcell.rentacar.business.requests.CreateBrandRequest;
 import com.turkcell.rentacar.business.requests.DeleteBrandRequest;
 import com.turkcell.rentacar.business.requests.UpdateBrandRequest;
+import com.turkcell.rentacar.core.utilities.results.DataResult;
+import com.turkcell.rentacar.core.utilities.results.Result;
 
 public interface BrandService {
 	
-	List<BrandListDto> getAll();
+	DataResult<List<BrandListDto>> getAll();
 	
-	void save(CreateBrandRequest createBrandRequest) throws Exception;
+	Result save(CreateBrandRequest createBrandRequest);
 	
-	BrandDto getById(int id) throws Exception;
+	DataResult<BrandDto> getById(int id);
 	
-	void update(UpdateBrandRequest updateBrandRequest) throws Exception;
+	Result update(UpdateBrandRequest updateBrandRequest);
 	
-	void delete(DeleteBrandRequest deleteBrandRequest) throws Exception;
+	Result delete(DeleteBrandRequest deleteBrandRequest);
 
 }

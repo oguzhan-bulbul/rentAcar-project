@@ -13,6 +13,12 @@ import com.turkcell.rentacar.business.requests.CreateBrandRequest;
 import com.turkcell.rentacar.business.requests.DeleteBrandRequest;
 import com.turkcell.rentacar.business.requests.UpdateBrandRequest;
 import com.turkcell.rentacar.core.utilities.mapping.ModelMapperService;
+import com.turkcell.rentacar.core.utilities.results.DataResult;
+import com.turkcell.rentacar.core.utilities.results.ErrorDataResult;
+import com.turkcell.rentacar.core.utilities.results.ErrorResult;
+import com.turkcell.rentacar.core.utilities.results.Result;
+import com.turkcell.rentacar.core.utilities.results.SuccessDataResult;
+import com.turkcell.rentacar.core.utilities.results.SuccessResult;
 import com.turkcell.rentacar.dataAccess.abstracts.BrandDao;
 import com.turkcell.rentacar.entities.concretes.Brand;
 @Service
@@ -30,67 +36,82 @@ public class BrandManager implements BrandService{
 	
 	
 	@Override
-	public List<BrandListDto> getAll() {
+	public DataResult<List<BrandListDto>> getAll() {
 		
 		List<Brand> result = this.brandDao.findAll();
 		List<BrandListDto> response = result.stream().map(brand -> this.modelMapperService.forDto().map(brand,BrandListDto.class))
-				.collect(Collectors.toList());
-			
-		return response;
+				.collect(Collectors.toList());		
+		return new SuccessDataResult<List<BrandListDto>>(response, "Brands listed.");
 	}
 
 	@Override
-	public void save(CreateBrandRequest createBrandRequest) throws Exception {
+	public Result save(CreateBrandRequest createBrandRequest){
 		
-		checkIfBrandExistsByName(createBrandRequest.getBrandName());
-		Brand brand = this.modelMapperService.forRequest().map(createBrandRequest, Brand.class);					
-		this.brandDao.save(brand);
+		if(!checkIfBrandExistsByName(createBrandRequest.getBrandName())) {
+			Brand brand = this.modelMapperService.forRequest().map(createBrandRequest, Brand.class);					
+			this.brandDao.save(brand);
+			return new SuccessResult("Brand is added");
+		}else {
+			return new ErrorResult("Brand is already exists");
+		}
+		
 		
 	}
 
 	@Override
-	public BrandDto getById(int id) throws Exception {
+	public DataResult<BrandDto> getById(int id){
 		
-		checkIfBrandDoesNotExistsById(id);
-		Brand result = this.brandDao.getById(id);
-		BrandDto response = this.modelMapperService.forDto().map(result, BrandDto.class);
+		if(checkIfBrandDoesNotExistsById(id)) {
+			return new ErrorDataResult<BrandDto>("This brand does not exists.");
+		}else {
+			Brand result = this.brandDao.getById(id);
+			BrandDto response = this.modelMapperService.forDto().map(result, BrandDto.class);	
+			return new SuccessDataResult<BrandDto>(response,"The brand is listed.");
+		}
 		
-		return response;
 	}
 	
 	@Override
-	public void update(UpdateBrandRequest updateBrandRequest) throws Exception {
-		checkIfBrandDoesNotExistsById(updateBrandRequest.getBrandId());
-		Brand brand = this.brandDao.getById(updateBrandRequest.getBrandId());
-		brand=this.modelMapperService.forRequest().map(updateBrandRequest, Brand.class);
-		this.brandDao.save(brand);
+	public Result update(UpdateBrandRequest updateBrandRequest){
 		
+		if(checkIfBrandDoesNotExistsById(updateBrandRequest.getBrandId())) {		
+			return new ErrorResult("This brand does not exists.");			
+		}else {		
+			Brand brand = this.brandDao.getById(updateBrandRequest.getBrandId());
+			brand=this.modelMapperService.forRequest().map(updateBrandRequest, Brand.class);		
+			this.brandDao.save(brand);
+			return new SuccessResult("The brand is updated");		
+		}				
 	}
 
 
 	@Override
-	public void delete(DeleteBrandRequest deleteBrandRequest) throws Exception {
+	public Result delete(DeleteBrandRequest deleteBrandRequest){
 		
-		checkIfBrandDoesNotExistsById(deleteBrandRequest.getBrandId());
-		Brand brand = this.modelMapperService.forRequest().map(deleteBrandRequest, Brand.class);
-		this.brandDao.delete(brand);
+		if(checkIfBrandDoesNotExistsById(deleteBrandRequest.getBrandId())) {
+			return new ErrorResult("This brand does not exists.");
+		}else {
+			Brand brand = this.modelMapperService.forRequest().map(deleteBrandRequest, Brand.class);
+			this.brandDao.delete(brand);
+			return new SuccessResult("The brand is deleted");
+		}
 		
 	}
 
 	
 	
-	private void checkIfBrandExistsByName(String name) throws Exception {
-		
+	private boolean checkIfBrandExistsByName(String name){	
 		if(this.brandDao.existsByBrandName(name)) {
-			throw new Exception("This brand is already exists");
-		}		
-		
+			return true;
+		}
+		return false;				
 	}
-	private void checkIfBrandDoesNotExistsById(int id) throws Exception {
+	private boolean checkIfBrandDoesNotExistsById(int id){
 		
 		if(!this.brandDao.existsById(id)) {
-			throw new Exception("This brand is doesn't exists.");
+			return true;
 		}
+		return false;
 	}
 
 

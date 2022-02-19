@@ -7,17 +7,19 @@ import com.turkcell.rentacar.business.dtos.ColorListDto;
 import com.turkcell.rentacar.business.requests.CreateColorRequest;
 import com.turkcell.rentacar.business.requests.DeleteColorRequest;
 import com.turkcell.rentacar.business.requests.UpdateColorRequest;
+import com.turkcell.rentacar.core.utilities.results.DataResult;
+import com.turkcell.rentacar.core.utilities.results.Result;
 
 public interface ColorService {
 	
-	List<ColorListDto> getAll();
+	DataResult<List<ColorListDto>> getAll();
 	
-	void save(CreateColorRequest createColorRequest) throws Exception;
+	Result save(CreateColorRequest createColorRequest) throws Exception;
 	
-	ColorDto getById(int id) throws Exception;
+	DataResult<ColorDto> getById(int id) throws Exception;
 	
-	void update(UpdateColorRequest updateColorRequest);
+	Result update(UpdateColorRequest updateColorRequest);
 	
-	void delete(DeleteColorRequest deleteColorRequest);
+	Result delete(DeleteColorRequest deleteColorRequest);
 
 }

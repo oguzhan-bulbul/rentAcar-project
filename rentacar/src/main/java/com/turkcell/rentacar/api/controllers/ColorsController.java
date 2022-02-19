@@ -16,6 +16,8 @@ import com.turkcell.rentacar.business.dtos.ColorListDto;
 import com.turkcell.rentacar.business.requests.CreateColorRequest;
 import com.turkcell.rentacar.business.requests.DeleteColorRequest;
 import com.turkcell.rentacar.business.requests.UpdateColorRequest;
+import com.turkcell.rentacar.core.utilities.results.DataResult;
+import com.turkcell.rentacar.core.utilities.results.Result;
 
 @RestController
 @RequestMapping("/api/color")
@@ -31,37 +33,37 @@ public class ColorsController {
 	}
 	
 	@GetMapping("/getall")
-	public List<ColorListDto> getAll(){
+	public DataResult<List<ColorListDto>> getAll(){
 		
 		return this.colorService.getAll();
 		
 	}
 	
 	@PostMapping("/save")
-	public void save(@RequestBody CreateColorRequest createColorRequest) throws Exception {
+	public Result save(@RequestBody CreateColorRequest createColorRequest) throws Exception {
 		
-		this.colorService.save(createColorRequest);
+		return this.colorService.save(createColorRequest);
 		
 	}
 	
 	@GetMapping("/get")
-	public ColorDto get(@RequestParam int id) throws Exception {
+	public DataResult<ColorDto> get(@RequestParam int id) throws Exception {
 		
 		return this.colorService.getById(id);
 		
 	}
 	
-	@GetMapping("/update")
-	public void update(@RequestBody UpdateColorRequest updateColorRequest) throws Exception {
+	@PostMapping("/update")
+	public Result update(@RequestBody UpdateColorRequest updateColorRequest) throws Exception {
 		
-		this.colorService.update(updateColorRequest);
+		return this.colorService.update(updateColorRequest);
 		
 	}
 	
-	@GetMapping("/delete")
-	public void delete(@RequestBody DeleteColorRequest deleteColorRequest) throws Exception {
+	@PostMapping("/delete")
+	public Result delete(@RequestBody DeleteColorRequest deleteColorRequest) throws Exception {
 		
-		this.colorService.delete(deleteColorRequest);
+		return this.colorService.delete(deleteColorRequest);
 		
 	}
 	

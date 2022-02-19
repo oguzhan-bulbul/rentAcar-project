@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 public class UpdateColorRequest {
 	
 	private int colorId;
-	private int colorName;
+	private String colorName;
 	
 }
