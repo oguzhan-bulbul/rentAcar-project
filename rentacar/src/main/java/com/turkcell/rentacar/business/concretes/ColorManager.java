@@ -77,7 +77,7 @@ public class ColorManager implements ColorService{
 	
 	private void checkIfColorExistsByName(String name) throws Exception {
 		
-		if(this.colorDao.existsByName(name)) {
+		if(this.colorDao.existsByColorName(name)) {
 			throw new Exception("This color is already exists");
 		}
 		
