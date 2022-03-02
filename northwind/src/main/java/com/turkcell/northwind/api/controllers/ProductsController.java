@@ -2,9 +2,12 @@ package com.turkcell.northwind.api.controllers;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -33,7 +36,7 @@ public class ProductsController {
 	}
 	
 	@PostMapping("/add")
-	public Result add(CreateProductRequest createProductRequest) {
+	public Result add(@RequestBody @Valid CreateProductRequest createProductRequest) {
 		return this.productService.add(createProductRequest);
 	}
 	

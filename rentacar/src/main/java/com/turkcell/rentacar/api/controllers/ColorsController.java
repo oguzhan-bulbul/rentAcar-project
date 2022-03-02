@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.turkcell.rentacar.business.abstracts.ColorService;
 import com.turkcell.rentacar.business.dtos.ColorDto;
 import com.turkcell.rentacar.business.dtos.ColorListDto;
-import com.turkcell.rentacar.business.requests.CreateColorRequest;
-import com.turkcell.rentacar.business.requests.DeleteColorRequest;
-import com.turkcell.rentacar.business.requests.UpdateColorRequest;
+import com.turkcell.rentacar.business.requests.createRequests.CreateColorRequest;
+import com.turkcell.rentacar.business.requests.deleteRequests.DeleteColorRequest;
+import com.turkcell.rentacar.business.requests.updateRequests.UpdateColorRequest;
 import com.turkcell.rentacar.core.utilities.results.DataResult;
 import com.turkcell.rentacar.core.utilities.results.Result;
 
