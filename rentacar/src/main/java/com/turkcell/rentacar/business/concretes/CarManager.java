@@ -16,10 +16,9 @@ import com.turkcell.rentacar.business.dtos.CarListDto;
 import com.turkcell.rentacar.business.requests.createRequests.CreateCarRequest;
 import com.turkcell.rentacar.business.requests.deleteRequests.DeleteCarRequest;
 import com.turkcell.rentacar.business.requests.updateRequests.UpdateCarRequest;
+import com.turkcell.rentacar.core.utilities.exceptions.BusinessException;
 import com.turkcell.rentacar.core.utilities.mapping.ModelMapperService;
 import com.turkcell.rentacar.core.utilities.results.DataResult;
-import com.turkcell.rentacar.core.utilities.results.ErrorDataResult;
-import com.turkcell.rentacar.core.utilities.results.ErrorResult;
 import com.turkcell.rentacar.core.utilities.results.Result;
 import com.turkcell.rentacar.core.utilities.results.SuccessDataResult;
 import com.turkcell.rentacar.core.utilities.results.SuccessResult;
@@ -54,63 +53,48 @@ public class CarManager implements CarService{
 	}
 
 	@Override
-	public Result save(CreateCarRequest createCarRequest) {
+	public Result add(CreateCarRequest createCarRequest) {
 		
 		Car car = this.modelMapperService.forRequest().map(createCarRequest, Car.class);
 		this.carDao.save(car);
+		
 		return new SuccessResult("Car is added");
 		
 	}
 
 	@Override
-	public DataResult<CarDto> getById(int id){
+	public DataResult<CarDto> getById(int id) throws BusinessException{
 		
-		if(checkIfCarDoesNotExistById(id)) {
-			
-			return new ErrorDataResult<CarDto>("Car does not exists");
-			
-		}else {
-			
-			Car car = this.carDao.getById(id);
-			CarDto carDto = this.modelMapperService.forDto().map(car, CarDto.class);
-			return new SuccessDataResult<CarDto>(carDto,"The brand is listed.");
-			
-		}	
+		checkIfCarDoesNotExistById(id);
+		Car car = this.carDao.getById(id);
+		CarDto carDto = this.modelMapperService.forDto().map(car, CarDto.class);
+		
+		return new SuccessDataResult<CarDto>(carDto,"The brand is listed.");
+		
 	}
 
 	@Override
-	public Result update(UpdateCarRequest updateCarRequest){
+	public Result update(UpdateCarRequest updateCarRequest) throws BusinessException{
 		
-		if(checkIfCarDoesNotExistById(updateCarRequest.getCarId())) {
+		checkIfCarDoesNotExistById(updateCarRequest.getCarId());
+		Car car = this.carDao.getById(updateCarRequest.getCarId());
+		car = this.modelMapperService.forRequest().map(updateCarRequest, Car.class);
+		this.carDao.save(car);
 			
-			return new ErrorResult("Car does not exists");
-			
-		}else {
-			
-			Car car = this.carDao.getById(updateCarRequest.getCarId());
-			car = this.modelMapperService.forRequest().map(updateCarRequest, Car.class);
-			this.carDao.save(car);
-			
-			return new SuccessDataResult<UpdateCarRequest>(updateCarRequest,"The brand is updated");
-			
-		}		
+		return new SuccessDataResult<UpdateCarRequest>(updateCarRequest,"The brand is updated");
+				
 	}
 
 	@Override
-	public Result delete(DeleteCarRequest deleteCarRequest){
+	public Result delete(DeleteCarRequest deleteCarRequest) throws BusinessException{
 		
-		if(checkIfCarDoesNotExistById(deleteCarRequest.getCarId())) {
+		checkIfCarDoesNotExistById(deleteCarRequest.getCarId());		
+		Car car = this.modelMapperService.forRequest().map(deleteCarRequest, Car.class);
+		this.carDao.delete(car);
 			
-			return new ErrorResult("Car does not exists");
+		return new SuccessDataResult<DeleteCarRequest>(deleteCarRequest,"The brand is deleted");
 			
-		}else {
-			
-			Car car = this.modelMapperService.forRequest().map(deleteCarRequest, Car.class);
-			this.carDao.delete(car);
-			
-			return new SuccessDataResult<DeleteCarRequest>(deleteCarRequest,"The brand is deleted");
-			
-		}
+		
 	}
 	
 	@Override
@@ -152,15 +136,12 @@ public class CarManager implements CarService{
 		
 	}
 
-	private boolean checkIfCarDoesNotExistById(int id){
+	private void checkIfCarDoesNotExistById(int id) throws BusinessException{
 		
 		if(!this.carDao.existsById(id)) {
 			
-			return true;
+			throw new BusinessException("Car does not exists.");
 			
-		}
-		
-		return false;
-		
+		}				
 	}
 }

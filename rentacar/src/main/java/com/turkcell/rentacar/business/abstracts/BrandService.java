@@ -7,6 +7,7 @@ import com.turkcell.rentacar.business.dtos.BrandListDto;
 import com.turkcell.rentacar.business.requests.createRequests.CreateBrandRequest;
 import com.turkcell.rentacar.business.requests.deleteRequests.DeleteBrandRequest;
 import com.turkcell.rentacar.business.requests.updateRequests.UpdateBrandRequest;
+import com.turkcell.rentacar.core.utilities.exceptions.BusinessException;
 import com.turkcell.rentacar.core.utilities.results.DataResult;
 import com.turkcell.rentacar.core.utilities.results.Result;
 
@@ -14,12 +15,12 @@ public interface BrandService {
 	
 	DataResult<List<BrandListDto>> getAll();
 	
-	Result save(CreateBrandRequest createBrandRequest);
+	Result add(CreateBrandRequest createBrandRequest) throws BusinessException;
 	
-	DataResult<BrandDto> getById(int id);
+	DataResult<BrandDto> getById(int id) throws BusinessException;
 	
-	Result update(UpdateBrandRequest updateBrandRequest);
+	Result update(UpdateBrandRequest updateBrandRequest) throws BusinessException;
 	
-	Result delete(DeleteBrandRequest deleteBrandRequest);
+	Result delete(DeleteBrandRequest deleteBrandRequest) throws BusinessException;
 
 }

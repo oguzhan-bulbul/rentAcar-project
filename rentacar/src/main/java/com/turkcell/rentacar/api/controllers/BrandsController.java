@@ -16,12 +16,13 @@ import com.turkcell.rentacar.business.dtos.BrandListDto;
 import com.turkcell.rentacar.business.requests.createRequests.CreateBrandRequest;
 import com.turkcell.rentacar.business.requests.deleteRequests.DeleteBrandRequest;
 import com.turkcell.rentacar.business.requests.updateRequests.UpdateBrandRequest;
+import com.turkcell.rentacar.core.utilities.exceptions.BusinessException;
 import com.turkcell.rentacar.core.utilities.results.DataResult;
 import com.turkcell.rentacar.core.utilities.results.Result;
 
 
 @RestController
-@RequestMapping("/api/brand")
+@RequestMapping("/api/brands")
 public class BrandsController {
 	
 	private final BrandService brandService;
@@ -41,28 +42,28 @@ public class BrandsController {
 	}
 	
 	@PostMapping("/save")
-	public Result add(@RequestBody CreateBrandRequest createBrandRequest){
+	public Result add(@RequestBody CreateBrandRequest createBrandRequest) throws BusinessException{
 				
-		return this.brandService.save(createBrandRequest);
+		return this.brandService.add(createBrandRequest);
 		
 	}
 	
 	@GetMapping("/get")
-	public DataResult<BrandDto> get(@RequestParam int id){
+	public DataResult<BrandDto> get(@RequestParam int id) throws BusinessException{
 		
 		return this.brandService.getById(id);
 		
 	}
 	
 	@PostMapping("/update")
-	public Result update(@RequestBody UpdateBrandRequest updateBrandRequest){
+	public Result update(@RequestBody UpdateBrandRequest updateBrandRequest) throws BusinessException{
 		
 		return this.brandService.update(updateBrandRequest);
 		
 	}
 	
 	@PostMapping("/delete")
-	public Result delete(@RequestBody DeleteBrandRequest deleteBrandRequest){
+	public Result delete(@RequestBody DeleteBrandRequest deleteBrandRequest) throws BusinessException{
 		
 		return this.brandService.delete(deleteBrandRequest);
 		

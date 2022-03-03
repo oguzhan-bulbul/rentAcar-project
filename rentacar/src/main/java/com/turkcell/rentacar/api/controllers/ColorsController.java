@@ -16,11 +16,12 @@ import com.turkcell.rentacar.business.dtos.ColorListDto;
 import com.turkcell.rentacar.business.requests.createRequests.CreateColorRequest;
 import com.turkcell.rentacar.business.requests.deleteRequests.DeleteColorRequest;
 import com.turkcell.rentacar.business.requests.updateRequests.UpdateColorRequest;
+import com.turkcell.rentacar.core.utilities.exceptions.BusinessException;
 import com.turkcell.rentacar.core.utilities.results.DataResult;
 import com.turkcell.rentacar.core.utilities.results.Result;
 
 @RestController
-@RequestMapping("/api/color")
+@RequestMapping("/api/colors")
 public class ColorsController {
 	
 	private final ColorService colorService;
@@ -40,28 +41,28 @@ public class ColorsController {
 	}
 	
 	@PostMapping("/save")
-	public Result save(@RequestBody CreateColorRequest createColorRequest) throws Exception {
+	public Result save(@RequestBody CreateColorRequest createColorRequest) throws BusinessException {
 		
-		return this.colorService.save(createColorRequest);
+		return this.colorService.add(createColorRequest);
 		
 	}
 	
 	@GetMapping("/get")
-	public DataResult<ColorDto> get(@RequestParam int id) throws Exception {
+	public DataResult<ColorDto> get(@RequestParam int id) throws BusinessException {
 		
 		return this.colorService.getById(id);
 		
 	}
 	
 	@PostMapping("/update")
-	public Result update(@RequestBody UpdateColorRequest updateColorRequest) throws Exception {
+	public Result update(@RequestBody UpdateColorRequest updateColorRequest) throws BusinessException {
 		
 		return this.colorService.update(updateColorRequest);
 		
 	}
 	
 	@PostMapping("/delete")
-	public Result delete(@RequestBody DeleteColorRequest deleteColorRequest) throws Exception {
+	public Result delete(@RequestBody DeleteColorRequest deleteColorRequest) throws BusinessException {
 		
 		return this.colorService.delete(deleteColorRequest);
 		
