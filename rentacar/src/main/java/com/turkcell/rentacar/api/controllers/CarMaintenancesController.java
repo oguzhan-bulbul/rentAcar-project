@@ -2,6 +2,8 @@ package com.turkcell.rentacar.api.controllers;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,7 +39,7 @@ public class CarMaintenancesController {
 	}
 	
 	@PostMapping("/save")
-	public Result add(@RequestBody CreateCarMaintenanceRequest createCarMaintenanceRequest){
+	public Result add(@RequestBody @Valid CreateCarMaintenanceRequest createCarMaintenanceRequest){
 				
 		return this.carMaintenanceService.add(createCarMaintenanceRequest);
 		
@@ -45,14 +47,14 @@ public class CarMaintenancesController {
 	
 	
 	@PostMapping("/update")
-	public Result update(@RequestBody UpdateCarMaintenanceRequest updateCarMaintenanceRequest) throws BusinessException{
+	public Result update(@RequestBody @Valid UpdateCarMaintenanceRequest updateCarMaintenanceRequest) throws BusinessException{
 		
 		return this.carMaintenanceService.update(updateCarMaintenanceRequest);
 		
 	}
 	
 	@PostMapping("/delete")
-	public Result delete(@RequestBody DeleteCarMaintenanceRequest deleteCarMaintenanceRequest) throws BusinessException{
+	public Result delete(@RequestBody @Valid DeleteCarMaintenanceRequest deleteCarMaintenanceRequest) throws BusinessException{
 		
 		return this.carMaintenanceService.delete(deleteCarMaintenanceRequest);
 		

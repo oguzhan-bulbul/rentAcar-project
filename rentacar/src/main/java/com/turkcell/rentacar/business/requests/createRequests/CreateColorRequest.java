@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateColorRequest {
+	
 	@NotBlank
 	@NotNull
 	@Size(min=2,max=15)

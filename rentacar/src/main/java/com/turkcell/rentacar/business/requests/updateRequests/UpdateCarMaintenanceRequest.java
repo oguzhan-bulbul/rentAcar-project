@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 
 public class UpdateCarMaintenanceRequest {
-	@NotBlank
+
 	@NotNull
 	@Positive
 	private int maintenanceId;
@@ -26,7 +26,7 @@ public class UpdateCarMaintenanceRequest {
 	@Size(min=2,max=200)
 	private String description;
 	
-	@NotBlank
+
 	@NotNull
 	@Positive
 	private int carId;

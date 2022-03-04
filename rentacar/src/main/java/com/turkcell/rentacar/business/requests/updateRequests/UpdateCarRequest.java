@@ -16,18 +16,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UpdateCarRequest {
 	
-	@NotBlank
 	@NotNull
 	@Positive
 	private int carId;
 	
-	@NotBlank
 	@NotNull
 	@Max(3000)
 	@Min(50)
 	private double carDailyPrice;
 	
-	@NotBlank
 	@NotNull
 	@Max(2022)
 	@Min(2000)
@@ -38,12 +35,10 @@ public class UpdateCarRequest {
 	@Size(min=2,max = 200)
 	private String description;
 	
-	@NotBlank
 	@NotNull
 	@Positive
 	private int brandId;
 	
-	@NotBlank
 	@NotNull
 	@Positive
 	private int colorId;

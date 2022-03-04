@@ -16,23 +16,19 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CreateCarRequest {
 	
-	@NotBlank
 	@NotNull
 	@Positive
 	private int brandId;
 	
-	@NotBlank
 	@NotNull
 	@Positive
 	private int colorId;
 	
-	@NotBlank
 	@NotNull
 	@Max(2022)
 	@Min(2000)
 	private int carModelYear;
 	
-	@NotBlank
 	@NotNull
 	@Max(3000)
 	@Min(50)

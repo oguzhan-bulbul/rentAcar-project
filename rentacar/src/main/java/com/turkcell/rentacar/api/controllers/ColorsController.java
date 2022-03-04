@@ -2,6 +2,8 @@ package com.turkcell.rentacar.api.controllers;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -41,7 +43,7 @@ public class ColorsController {
 	}
 	
 	@PostMapping("/save")
-	public Result save(@RequestBody CreateColorRequest createColorRequest) throws BusinessException {
+	public Result save(@RequestBody @Valid CreateColorRequest createColorRequest) throws BusinessException {
 		
 		return this.colorService.add(createColorRequest);
 		
@@ -55,14 +57,14 @@ public class ColorsController {
 	}
 	
 	@PostMapping("/update")
-	public Result update(@RequestBody UpdateColorRequest updateColorRequest) throws BusinessException {
+	public Result update(@RequestBody @Valid UpdateColorRequest updateColorRequest) throws BusinessException {
 		
 		return this.colorService.update(updateColorRequest);
 		
 	}
 	
 	@PostMapping("/delete")
-	public Result delete(@RequestBody DeleteColorRequest deleteColorRequest) throws BusinessException {
+	public Result delete(@RequestBody @Valid DeleteColorRequest deleteColorRequest) throws BusinessException {
 		
 		return this.colorService.delete(deleteColorRequest);
 		

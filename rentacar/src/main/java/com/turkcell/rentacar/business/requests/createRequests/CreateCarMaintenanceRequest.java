@@ -24,7 +24,6 @@ public class CreateCarMaintenanceRequest {
 	private LocalDate returnDate;
 	
 	@NotNull
-	@NotBlank
 	@Positive
 	private int carId;
 
