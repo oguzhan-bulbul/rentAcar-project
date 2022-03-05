@@ -39,7 +39,7 @@ public class CarMaintenancesController {
 	}
 	
 	@PostMapping("/save")
-	public Result add(@RequestBody @Valid CreateCarMaintenanceRequest createCarMaintenanceRequest){
+	public Result add(@RequestBody @Valid CreateCarMaintenanceRequest createCarMaintenanceRequest) throws BusinessException{
 				
 		return this.carMaintenanceService.add(createCarMaintenanceRequest);
 		

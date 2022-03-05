@@ -1,6 +1,7 @@
 package com.turkcell.northwind.business.requests;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -29,4 +30,9 @@ public class CreateProductRequest {
 	@NotNull
 	@Min(1)
 	private int unitsInStock;
+	
+	@NotNull
+	@NotBlank
+	@Size(min=2,max=35)
+	private String categoryName;
 }

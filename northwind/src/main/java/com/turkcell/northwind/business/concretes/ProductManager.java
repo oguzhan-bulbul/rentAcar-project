@@ -51,6 +51,8 @@ public class ProductManager implements ProductService{
 		Product product = modelMapperService.forRequest()
 				.map(createProductRequest, Product.class);
 		
+		product.setProductId(0);
+		
 		this.productDao.save(product);
 		return new SuccessResult("Product saved");
 		

@@ -1,0 +1,59 @@
+package com.turkcell.rentacar.api.controllers;
+
+import java.util.List;
+
+import javax.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.turkcell.rentacar.business.abstracts.RentService;
+import com.turkcell.rentacar.business.dtos.RentDto;
+import com.turkcell.rentacar.business.dtos.RentListDto;
+import com.turkcell.rentacar.business.requests.createRequests.CreateRentRequest;
+import com.turkcell.rentacar.business.requests.deleteRequests.DeleteRentRequest;
+import com.turkcell.rentacar.business.requests.updateRequests.UpdateRentRequest;
+import com.turkcell.rentacar.core.utilities.exceptions.BusinessException;
+import com.turkcell.rentacar.core.utilities.results.DataResult;
+import com.turkcell.rentacar.core.utilities.results.Result;
+@RestController
+@RequestMapping("/api/rents")
+public class RentsController {
+	private RentService rentService;
+
+	@Autowired
+    public RentsController(RentService rentService) {
+        this.rentService = rentService;
+    }
+
+    @GetMapping("/getall")
+    public DataResult<List<RentListDto>> getAll(){
+       return this.rentService.getAll();
+    }
+
+    @PostMapping("/create")
+    public Result add(@RequestBody @Valid CreateRentRequest createRentRequest) throws BusinessException{
+        return this.rentService.add(createRentRequest);
+    }
+
+    @GetMapping("/getById")
+    public DataResult<RentDto> getById(@RequestParam int id) throws BusinessException{
+        return this.rentService.getById(id);
+    }
+
+    @PostMapping("/update")
+    public Result update(@RequestBody @Valid UpdateRentRequest updateRentRequest) throws BusinessException{
+        return this.rentService.update(updateRentRequest);
+    }
+
+    @DeleteMapping("/delete")
+    public Result deleteByRentId(@RequestBody @Valid DeleteRentRequest deleteRentRequest) throws BusinessException{
+        return this.rentService.delete(deleteRentRequest);
+    }
+}
