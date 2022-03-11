@@ -8,7 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+
 import com.turkcell.rentacar.business.abstracts.CarMaintenanceService;
+import com.turkcell.rentacar.business.abstracts.OrderedAdditionalServiceService;
 import com.turkcell.rentacar.business.abstracts.RentService;
 import com.turkcell.rentacar.business.dtos.CarMaintenanceListDto;
 import com.turkcell.rentacar.business.dtos.RentDto;
@@ -23,7 +25,9 @@ import com.turkcell.rentacar.core.utilities.results.Result;
 import com.turkcell.rentacar.core.utilities.results.SuccessDataResult;
 import com.turkcell.rentacar.core.utilities.results.SuccessResult;
 import com.turkcell.rentacar.dataAccess.abstracts.RentDao;
+import com.turkcell.rentacar.entities.concretes.AdditionalService;
 import com.turkcell.rentacar.entities.concretes.CarMaintenance;
+import com.turkcell.rentacar.entities.concretes.OrderedAdditionalService;
 import com.turkcell.rentacar.entities.concretes.Rent;
 
 @Service
@@ -32,13 +36,18 @@ public class RentManager implements RentService{
 	private final RentDao rentDao;
 	private final ModelMapperService modelMapperService;
 	private final CarMaintenanceService carMaintenanceService;
+	private final OrderedAdditionalServiceService orderedAdditionalServiceService;
+
 		
 	@Autowired
 	public RentManager(RentDao rentDao, ModelMapperService modelMapperService,
-			@Lazy CarMaintenanceService carMaintenanceService) {
+			@Lazy CarMaintenanceService carMaintenanceService,
+			@Lazy OrderedAdditionalServiceService orderedAdditionalServiceService) {
 		this.rentDao = rentDao;
 		this.modelMapperService = modelMapperService;
 		this.carMaintenanceService = carMaintenanceService;
+		this.orderedAdditionalServiceService = orderedAdditionalServiceService;
+
 	}
 
 	@Override
@@ -60,7 +69,10 @@ public class RentManager implements RentService{
 	@Override
 	public Result add(CreateRentRequest createRentRequest) throws BusinessException {
 		checkIfCarIsInMaintenance(createRentRequest);
+		
 		Rent rent = this.modelMapperService.forDto().map(createRentRequest, Rent.class);
+		rent.setRentId(0);
+		rent.setBill(calculatedCityBill(createRentRequest)+calculatedServiceBill(createRentRequest.getOrderedAdditionalServiceId()));
 		this.rentDao.save(rent);
 		return new SuccessResult("Rent is created");
 	}
@@ -113,6 +125,28 @@ public class RentManager implements RentService{
 			throw new BusinessException("Rent does not exists");
 			
 		}		
+	}
+	
+	private double calculatedServiceBill(Integer orderedAdditionalServiceId) throws BusinessException {
+		
+		double lastBill = 0;
+		System.out.println(orderedAdditionalServiceId);
+		
+		
+		OrderedAdditionalService orderedAdditionalService = this.orderedAdditionalServiceService.getByIdAsEntity(orderedAdditionalServiceId);
+		
+		for (AdditionalService additionalService : orderedAdditionalService.getAdditionalServices()) {
+			lastBill += additionalService.getAdditionalServiceDailyPrice();
+		}			
+		return lastBill;
+	}
+	
+	private double calculatedCityBill(CreateRentRequest createRentRequest) {
+		double cityPayment = 0;
+		if(!createRentRequest.getRentedCity().equals(createRentRequest.getDeliveredCity())) {
+			cityPayment = 750;
+		}
+		return cityPayment;
 	}
 
 	

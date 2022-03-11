@@ -1,0 +1,22 @@
+package com.turkcell.rentacar.business.dtos;
+
+import java.util.List;
+import java.util.Set;
+
+import com.turkcell.rentacar.entities.concretes.AdditionalService;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class OrderedAdditionalServiceListDto {
+	
+	private int orderedAdditionalServiceId;
+	
+
+	
+
+}

@@ -13,9 +13,17 @@ public class RentListDto {
 	
 	private int rentId;
 	
+	private String rentedCity;
+	
+	private String deliveredCity;
+	
 	private LocalDate startDate;
 	
 	private LocalDate finishDate;
 	
+	private double bill;
+	
 	private int carId;
+	
+	private int orderedAdditionalServiceId;
 }
