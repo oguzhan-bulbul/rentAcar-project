@@ -1,6 +1,8 @@
 package com.turkcell.rentacar.business.concretes;
 
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -10,12 +12,16 @@ import org.springframework.stereotype.Service;
 
 
 import com.turkcell.rentacar.business.abstracts.CarMaintenanceService;
+import com.turkcell.rentacar.business.abstracts.CarService;
+import com.turkcell.rentacar.business.abstracts.CorporateCustomerService;
+import com.turkcell.rentacar.business.abstracts.CustomerService;
+import com.turkcell.rentacar.business.abstracts.InvoiceService;
 import com.turkcell.rentacar.business.abstracts.OrderedAdditionalServiceService;
 import com.turkcell.rentacar.business.abstracts.RentService;
-import com.turkcell.rentacar.business.dtos.CarMaintenanceListDto;
 import com.turkcell.rentacar.business.dtos.RentDto;
 import com.turkcell.rentacar.business.dtos.RentListDto;
-import com.turkcell.rentacar.business.requests.createRequests.CreateRentRequest;
+import com.turkcell.rentacar.business.requests.createRequests.CreateCarMaintenanceRequest;
+import com.turkcell.rentacar.business.requests.createRequests.CreateRentForIndividualRequest;
 import com.turkcell.rentacar.business.requests.deleteRequests.DeleteRentRequest;
 import com.turkcell.rentacar.business.requests.updateRequests.UpdateRentRequest;
 import com.turkcell.rentacar.core.utilities.exceptions.BusinessException;
@@ -26,7 +32,8 @@ import com.turkcell.rentacar.core.utilities.results.SuccessDataResult;
 import com.turkcell.rentacar.core.utilities.results.SuccessResult;
 import com.turkcell.rentacar.dataAccess.abstracts.RentDao;
 import com.turkcell.rentacar.entities.concretes.AdditionalService;
-import com.turkcell.rentacar.entities.concretes.CarMaintenance;
+import com.turkcell.rentacar.entities.concretes.CorporateCustomer;
+import com.turkcell.rentacar.entities.concretes.Invoice;
 import com.turkcell.rentacar.entities.concretes.OrderedAdditionalService;
 import com.turkcell.rentacar.entities.concretes.Rent;
 
@@ -37,45 +44,71 @@ public class RentManager implements RentService{
 	private final ModelMapperService modelMapperService;
 	private final CarMaintenanceService carMaintenanceService;
 	private final OrderedAdditionalServiceService orderedAdditionalServiceService;
+	private final InvoiceService invoiceService;
+	private final CustomerService customerService;
+	private final CarService carService;
+	private final CorporateCustomerService corporateCustomerService;
 
 		
 	@Autowired
 	public RentManager(RentDao rentDao, ModelMapperService modelMapperService,
 			@Lazy CarMaintenanceService carMaintenanceService,
-			@Lazy OrderedAdditionalServiceService orderedAdditionalServiceService) {
+			@Lazy OrderedAdditionalServiceService orderedAdditionalServiceService,
+			@Lazy InvoiceService invoiceService,
+			@Lazy CustomerService customerService, 
+			@Lazy CarService carService, 
+			@Lazy CorporateCustomerService corporateCustomerService) {
 		this.rentDao = rentDao;
 		this.modelMapperService = modelMapperService;
 		this.carMaintenanceService = carMaintenanceService;
 		this.orderedAdditionalServiceService = orderedAdditionalServiceService;
+		this.invoiceService=invoiceService;
+		this.customerService=customerService;
+		this.carService = carService;
+		this.corporateCustomerService = corporateCustomerService;
 
 	}
 
 	@Override
 	public DataResult<List<RentListDto>> getAll() {
+		
 		List<Rent> result = this.rentDao.findAll();
 		List<RentListDto> response = result.stream().map(rent -> this.modelMapperService.forDto().map(rent, RentListDto.class))
 				.collect(Collectors.toList());
+		
 		return new SuccessDataResult<List<RentListDto>>(response,"Rents listed");
 	}
 	
 	@Override
 	public DataResult<List<RentListDto>> getAllByCarId(int id) {
+		
 		List<Rent> result = this.rentDao.getAllByCar_CarId(id);
 		List<RentListDto> response = result.stream().map(rent -> this.modelMapperService.forDto().map(rent, RentListDto.class))
 				.collect(Collectors.toList());
+		
 		return new SuccessDataResult<List<RentListDto>>(response,"Car's rent info listed");
 	}
 
 	@Override
-	public Result add(CreateRentRequest createRentRequest) throws BusinessException {
-		checkIfCarIsInMaintenance(createRentRequest);
+	public Result add(CreateRentForIndividualRequest createRentRequest) throws BusinessException {
+		
+		this.carMaintenanceService.checkIfCarIsInMaintenanceForRentRequestIsSucces(createRentRequest);
+		checkIfOrderedAdditionalServiceIsUsed(createRentRequest.getOrderedAdditionalServiceId());
+		checkIfCarIsRented(createRentRequest.getCarId());
 		
 		Rent rent = this.modelMapperService.forDto().map(createRentRequest, Rent.class);
 		rent.setRentId(0);
 		rent.setBill(calculatedCityBill(createRentRequest)+calculatedServiceBill(createRentRequest.getOrderedAdditionalServiceId()));
+		rent.setCustomer(this.customerService.getById(createRentRequest.getIndividualCustomerId()));
+		
 		this.rentDao.save(rent);
+		createInvoice(rent);
+					
 		return new SuccessResult("Rent is created");
 	}
+	
+	
+	
 
 	@Override
 	public DataResult<RentDto> getById(int id) throws BusinessException {
@@ -90,6 +123,7 @@ public class RentManager implements RentService{
 		checkIfRentDoesNotExistsById(updateRentRequest.getRentId());
 		Rent rent = this.modelMapperService.forRequest().map(updateRentRequest, Rent.class);
 	    this.rentDao.save(rent);
+	    updateInvoice(rent);
 
 	    return new SuccessResult("Rent info is updated.");
 	}
@@ -103,20 +137,28 @@ public class RentManager implements RentService{
         
 	}
 	
-	private void checkIfCarIsInMaintenance(CreateRentRequest createRentRequest) throws BusinessException {
-		DataResult<List<CarMaintenanceListDto>> result = this.carMaintenanceService.getByCarId(createRentRequest.getCarId());
-        List<CarMaintenance> response = result.getData().stream()
-                .map(carmaintenance -> this.modelMapperService.forDto().map(carmaintenance, CarMaintenance.class))
-                .collect(Collectors.toList());
-        
-        for (CarMaintenance carMaintenance : response) {
-			if(carMaintenance.getReturnDate() == null || createRentRequest.getStartDate().isBefore(carMaintenance.getReturnDate())) {
-				
-				throw new BusinessException("Car is in maintenance");
-				
-			}
-		}
+	@Override
+	public Rent getRentEntityById(int id) {
+		
+		return this.rentDao.getById(id);
 	}
+	
+	@Override
+	public Result updateRent(Rent rent) throws BusinessException {
+		this.rentDao.save(rent);
+		updateInvoice(rent);
+		
+		return new SuccessResult("Rent updated");
+	}
+	
+	public Result checkIfCarIsRentedForCarMaintenanceIsSucces(CreateCarMaintenanceRequest createCarMaintenanceRequest) throws BusinessException {
+		
+		checkIfCarIsRentedForCarMaintenance(createCarMaintenanceRequest);		
+		return new SuccessResult("Car is available for maintenance");
+		
+	}
+	
+
 	
 	private void checkIfRentDoesNotExistsById(int id) throws BusinessException{
 		
@@ -130,24 +172,107 @@ public class RentManager implements RentService{
 	private double calculatedServiceBill(Integer orderedAdditionalServiceId) throws BusinessException {
 		
 		double lastBill = 0;
-		System.out.println(orderedAdditionalServiceId);
-		
-		
+			
 		OrderedAdditionalService orderedAdditionalService = this.orderedAdditionalServiceService.getByIdAsEntity(orderedAdditionalServiceId);
 		
 		for (AdditionalService additionalService : orderedAdditionalService.getAdditionalServices()) {
 			lastBill += additionalService.getAdditionalServiceDailyPrice();
-		}			
+		}
+		
 		return lastBill;
 	}
 	
-	private double calculatedCityBill(CreateRentRequest createRentRequest) {
+	private double calculatedCityBill(CreateRentForIndividualRequest createRentRequest) {
+		
 		double cityPayment = 0;
-		if(!createRentRequest.getRentedCity().equals(createRentRequest.getDeliveredCity())) {
+		
+		if(createRentRequest.getRentedCityId() != createRentRequest.getDeliveredCityId()) {
 			cityPayment = 750;
 		}
+		
 		return cityPayment;
 	}
+	
+	private void createInvoice(Rent rent) throws BusinessException {
+		
+		if(rent.getFinishDate()!=null) {
+			
+			Invoice invoice = new Invoice();
+			int totalRentDay = (int)ChronoUnit.DAYS.between(rent.getStartDate(), rent.getFinishDate());
+			double totalBill = this.carService.getCar(rent.getCar().getCarId()).getCarDailyPrice() + rent.getBill();
+			
+			invoice.setCreationDate(rent.getStartDate());
+			invoice.setStartDate(rent.getStartDate());
+			invoice.setFinishDate(rent.getFinishDate());
+			invoice.setRent(rent);
+			invoice.setTotalRentDay(totalRentDay);
+			System.out.println(rent.getRentId());
+			System.out.println(rent.getCustomer().getCustomerId());
+			invoice.setCustomer(rent.getCustomer());
+			invoice.setTotalBill(totalBill);
+			
+			this.invoiceService.addInvoice(invoice);
+		}
+	}
+	
+	private void updateInvoice(Rent rent) throws BusinessException {
+		
+		if(rent.getFinishDate()!=null) {
+			
+			int totalRentDay = (int)ChronoUnit.DAYS.between(rent.getStartDate(), rent.getFinishDate());
+			double totalBill = this.carService.getCar(rent.getCar().getCarId()).getCarDailyPrice() + rent.getBill();
+		
+			Invoice invoice = new Invoice();
+			invoice.setInvoiceNo(rent.getInvoice().getInvoiceNo());
+			invoice.setCreationDate(rent.getStartDate());
+			invoice.setStartDate(rent.getStartDate());
+			invoice.setFinishDate(rent.getFinishDate());
+			invoice.setRent(rent);
+			invoice.setTotalRentDay(totalRentDay);
+			invoice.setCustomer(this.corporateCustomerService.getByIdCorporateCustomer(rent.getCustomer().getCustomerId()));
+			invoice.setTotalBill(totalBill);
+			
+			this.invoiceService.addInvoice(invoice);
+		}
+	}
+	
+	private void checkIfCarIsRented(int carId) throws BusinessException {
+		
+		List<Rent> rents = this.rentDao.getAllByCar_CarId(carId);
+		
+		for (Rent rent : rents) {
+			
+			if(rent.getFinishDate() == null || rent.getFinishDate().isAfter(LocalDate.now())) {
+				
+				throw new BusinessException("Car is in rent now.");
+				
+			}
+		}	
+	}
+	
+	private void checkIfCarIsRentedForCarMaintenance(CreateCarMaintenanceRequest createCarMaintenanceRequest) throws BusinessException {
+		
+		List<Rent> result = this.rentDao.getAllByCar_CarId(createCarMaintenanceRequest.getCarId());		
+		
+		for (Rent rent : result) {
+			
+			if(rent.getFinishDate() == null || rent.getFinishDate().isAfter(LocalDate.now())) {
+				
+				throw new BusinessException("Car is in rent now.");
+				
+			}
+		}	
+	}
+	
+	private void checkIfOrderedAdditionalServiceIsUsed(int id) throws BusinessException {
+		if(this.rentDao.existsByOrderedAdditionalServices_OrderedAdditionalServiceId(id)) {
+			throw new BusinessException("Ordered Service already used.rent");
+		}
+	}
+
+
+
+
 
 	
 }

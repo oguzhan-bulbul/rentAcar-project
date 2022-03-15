@@ -1,5 +1,6 @@
 package com.turkcell.rentacar.business.requests.createRequests;
 
+import java.util.List;
 import java.util.Set;
 
 import lombok.AllArgsConstructor;
@@ -11,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CreateOrderedAdditionalServiceRequest {
 	
-	private Set<Integer> additionalServices;
+	private List<Integer> additionalServices;
 	
 
 }

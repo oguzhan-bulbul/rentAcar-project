@@ -1,7 +1,6 @@
 package com.turkcell.rentacar.business.concretes;
 
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,14 +47,22 @@ public class AdditionalServiceManager implements AdditionalServiceService{
 
 	@Override
 	public Result add(CreateAdditionalServiceRequest createAdditionalServiceRequest) throws BusinessException {
+		
+		checkIfAdditionalServiceExistsByName(createAdditionalServiceRequest);
+		
 		AdditionalService additionalService = this.modelMapperService.forRequest()
 				.map(createAdditionalServiceRequest, AdditionalService.class);
+		
 		this.additionalServiceDao.save(additionalService);
+		
 		return new SuccessResult("Service is saved");
 	}
 
 	@Override
 	public DataResult<AdditionalServiceDto> getById(int id) throws BusinessException {
+		
+		checkIfAdditionalServiceDoesNotExistsById(id);
+		
 		AdditionalService additionalService = this.additionalServiceDao.getById(id);
 		AdditionalServiceDto response = this.modelMapperService.forDto()
 				.map(additionalService, AdditionalServiceDto.class);
@@ -65,8 +72,12 @@ public class AdditionalServiceManager implements AdditionalServiceService{
 
 	@Override
 	public Result update(UpdateAdditionalServiceRequest updateAdditionalServiceRequest) throws BusinessException {
+		
+		checkIfAdditionalServiceDoesNotExistsById(updateAdditionalServiceRequest.getAdditionalServiceId());
+		
 		AdditionalService additionalService = this.modelMapperService.forRequest()
 				.map(updateAdditionalServiceRequest, AdditionalService.class);
+		
 		this.additionalServiceDao.save(additionalService);
 		
 		return new SuccessResult("Service uptaded.");
@@ -74,8 +85,28 @@ public class AdditionalServiceManager implements AdditionalServiceService{
 
 	@Override
 	public Result delete(DeleteAdditionalServiceRequest deleteAdditionalServiceRequest) throws BusinessException {
+		
+		checkIfAdditionalServiceDoesNotExistsById(deleteAdditionalServiceRequest.getAdditionalServiceId());
+		
 		this.additionalServiceDao.deleteById(deleteAdditionalServiceRequest.getAdditionalServiceId());
+		
 		return new SuccessResult("Service deleted.");
+	}
+	
+	private void checkIfAdditionalServiceDoesNotExistsById(int id) throws BusinessException {
+		
+		if(!this.additionalServiceDao.existsById(id)) {
+			
+			throw new BusinessException("Additional Service does not exists.");
+		}
+	}
+	
+	private void checkIfAdditionalServiceExistsByName(CreateAdditionalServiceRequest createAdditionalServiceRequest) throws BusinessException {
+		
+		if(this.additionalServiceDao.existsByAdditionalServiceName(createAdditionalServiceRequest.getAdditionalServiceName())) {
+			
+			throw new BusinessException("Additional Service already exists.");
+		}
 	}
 
 

@@ -1,6 +1,7 @@
 package com.turkcell.rentacar.entities.concretes;
 
 
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -42,7 +43,7 @@ public class OrderedAdditionalService {
     inverseJoinColumns = {
             @JoinColumn(name = "additional_service_id"
                     )})
-	private Set<AdditionalService> additionalServices;
+	private List<AdditionalService> additionalServices;
 	
 	
 	@OneToOne(mappedBy = "orderedAdditionalServices")

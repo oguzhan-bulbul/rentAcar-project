@@ -10,4 +10,6 @@ import com.turkcell.rentacar.entities.concretes.AdditionalService;
 @Repository
 public interface AdditionalServiceDao extends JpaRepository<AdditionalService, Integer>{
 	
+	boolean existsByAdditionalServiceName(String name);
+	
 }

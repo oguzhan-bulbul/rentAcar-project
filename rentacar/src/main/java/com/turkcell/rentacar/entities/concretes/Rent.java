@@ -2,8 +2,10 @@ package com.turkcell.rentacar.entities.concretes;
 
 import java.time.LocalDate;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -11,6 +13,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import com.turkcell.rentacar.core.entities.Customer;
+import com.turkcell.rentacar.core.entities.User;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,11 +33,13 @@ public class Rent {
 	@Column(name = "rent_id")
 	private int rentId;
 	
-	@Column(name = "rented_city")
-	private String rentedCity;
+	@OneToOne
+	@JoinColumn(name = "rented_city")
+	private City rentedCity;
 	
-	@Column(name = "delivered_city")
-	private String deliveredCity;
+	@OneToOne
+	@JoinColumn(name = "delivered_city")
+	private City deliveredCity;
 	
 	@Column(name = "start_date")
 	private LocalDate startDate;
@@ -51,7 +58,13 @@ public class Rent {
 	@JoinColumn(name = "ordered_additional_service_id")
 	private OrderedAdditionalService orderedAdditionalServices;
 	
-
+	@OneToOne(mappedBy = "rent" ,cascade = CascadeType.ALL , fetch = FetchType.LAZY,orphanRemoval = true)
+	private Invoice invoice;
+	
+	@ManyToOne
+	@JoinColumn(name = "customer_id")
+	private Customer customer;
+	
 }
 
 

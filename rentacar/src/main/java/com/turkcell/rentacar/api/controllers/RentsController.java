@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.turkcell.rentacar.business.abstracts.RentService;
 import com.turkcell.rentacar.business.dtos.RentDto;
 import com.turkcell.rentacar.business.dtos.RentListDto;
-import com.turkcell.rentacar.business.requests.createRequests.CreateRentRequest;
+import com.turkcell.rentacar.business.requests.createRequests.CreateRentForIndividualRequest;
 import com.turkcell.rentacar.business.requests.deleteRequests.DeleteRentRequest;
 import com.turkcell.rentacar.business.requests.updateRequests.UpdateRentRequest;
 import com.turkcell.rentacar.core.utilities.exceptions.BusinessException;
@@ -38,7 +38,8 @@ public class RentsController {
     }
 
     @PostMapping("/create")
-    public Result add(@RequestBody @Valid CreateRentRequest createRentRequest) throws BusinessException{
+    public Result add(@RequestBody @Valid CreateRentForIndividualRequest createRentRequest) throws BusinessException{
+    	
         return this.rentService.add(createRentRequest);
     }
 

@@ -12,6 +12,7 @@ import com.turkcell.rentacar.business.requests.updateRequests.UpdateCarRequest;
 import com.turkcell.rentacar.core.utilities.exceptions.BusinessException;
 import com.turkcell.rentacar.core.utilities.results.DataResult;
 import com.turkcell.rentacar.core.utilities.results.Result;
+import com.turkcell.rentacar.entities.concretes.Car;
 
 public interface CarService {
 	
@@ -30,6 +31,8 @@ public interface CarService {
 	DataResult<List<CarListDto>> getAllSorted(Sort.Direction direction);
 	
 	DataResult<List<CarListDto>> getAllByLowerThanDailyPrice(double carDailyPrice);
+	
+	Car getCar(int id);
 	
 
 }

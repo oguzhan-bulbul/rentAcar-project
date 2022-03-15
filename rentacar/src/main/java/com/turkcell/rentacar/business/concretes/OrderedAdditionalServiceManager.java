@@ -1,14 +1,15 @@
 package com.turkcell.rentacar.business.concretes;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import com.turkcell.rentacar.business.abstracts.AdditionalServiceService;
 import com.turkcell.rentacar.business.abstracts.OrderedAdditionalServiceService;
+import com.turkcell.rentacar.business.abstracts.RentService;
 import com.turkcell.rentacar.business.dtos.AdditionalServiceDto;
 import com.turkcell.rentacar.business.dtos.OrderedAdditionalServiceDto;
 import com.turkcell.rentacar.business.dtos.OrderedAdditionalServiceListDto;
@@ -24,6 +25,7 @@ import com.turkcell.rentacar.core.utilities.results.SuccessResult;
 import com.turkcell.rentacar.dataAccess.abstracts.OrderedAdditionalServiceDao;
 import com.turkcell.rentacar.entities.concretes.AdditionalService;
 import com.turkcell.rentacar.entities.concretes.OrderedAdditionalService;
+import com.turkcell.rentacar.entities.concretes.Rent;
 
 @Service
 public class OrderedAdditionalServiceManager implements OrderedAdditionalServiceService{
@@ -31,19 +33,21 @@ public class OrderedAdditionalServiceManager implements OrderedAdditionalService
 	private final OrderedAdditionalServiceDao orderedAdditionalServiceDao;
 	private final ModelMapperService modelMapperService;
 	private final AdditionalServiceService additionalServiceService;
-	
-	
-	
-	
+	private final RentService rentService;
+		
 	public OrderedAdditionalServiceManager(OrderedAdditionalServiceDao orderedAdditionalServiceDao,
-			ModelMapperService modelMapperService,AdditionalServiceService additionalServiceService) {
+			ModelMapperService modelMapperService,AdditionalServiceService additionalServiceService, 
+			@Lazy RentService rentService) {
+		
 		this.orderedAdditionalServiceDao = orderedAdditionalServiceDao;
 		this.modelMapperService = modelMapperService;
 		this.additionalServiceService = additionalServiceService;
+		this.rentService = rentService;
 	}
 
 	@Override
 	public DataResult<List<OrderedAdditionalServiceListDto>> getAll() {
+		
 		List<OrderedAdditionalService> result = this.orderedAdditionalServiceDao.findAll();
 		
 		List<OrderedAdditionalServiceListDto> response = result.stream()
@@ -58,14 +62,12 @@ public class OrderedAdditionalServiceManager implements OrderedAdditionalService
 	public Result add(CreateOrderedAdditionalServiceRequest createOrderedAdditionalServiceRequest)
 			throws BusinessException {
 		
-		Set<AdditionalService> services = new HashSet<AdditionalService>();
+		List<AdditionalService> services = new ArrayList<>();
 		for (Integer id : createOrderedAdditionalServiceRequest.getAdditionalServices()) {		
 			AdditionalServiceDto data = this.additionalServiceService.getById(id).getData();
 			AdditionalService map = this.modelMapperService.forDto().map(data, AdditionalService.class);
 			services.add(map);		
 		}
-			
-		System.out.println(createOrderedAdditionalServiceRequest.getAdditionalServices());
 		
 		OrderedAdditionalService orderedAdditionalService = this.modelMapperService.forRequest()
 				.map(createOrderedAdditionalServiceRequest, OrderedAdditionalService.class);
@@ -78,18 +80,27 @@ public class OrderedAdditionalServiceManager implements OrderedAdditionalService
 
 	@Override
 	public DataResult<OrderedAdditionalServiceDto> getById(int id) throws BusinessException {
+		
+		checkIfOrderedAdditionalServiceDoesNotExistsById(id);
+		
 		OrderedAdditionalService orderedAdditionalService = this.orderedAdditionalServiceDao.getById(id);
 		OrderedAdditionalServiceDto response = this.modelMapperService.forDto()
 				.map(orderedAdditionalService, OrderedAdditionalServiceDto.class);
+		
 		return new SuccessDataResult<>(response,"Order Service listed.");
 	}
 
 	@Override
 	public Result update(UpdateOrderedAdditionalServiceRequest updateOrderedAdditionalServiceRequest)
 			throws BusinessException {
+		
+		checkIfOrderedAdditionalServiceDoesNotExistsById(updateOrderedAdditionalServiceRequest.getOrderedAdditionalServiceId());
+		
 		OrderedAdditionalService orderedAdditionalService = this.modelMapperService.forRequest()
 				.map(updateOrderedAdditionalServiceRequest, OrderedAdditionalService.class);
+		
 		this.orderedAdditionalServiceDao.save(orderedAdditionalService);
+		updateRent(orderedAdditionalService);
 		
 		return new SuccessResult("Ordered Service Updated");
 	}
@@ -97,14 +108,55 @@ public class OrderedAdditionalServiceManager implements OrderedAdditionalService
 	@Override
 	public Result delete(DeleteOrderedAdditionalServiceRequest deleteOrderedAdditionalServiceRequest)
 			throws BusinessException {
+		
+		checkIfOrderedAdditionalServiceDoesNotExistsById(deleteOrderedAdditionalServiceRequest.getOrderedAdditionalServiceId());
+		
 		this.orderedAdditionalServiceDao.deleteById(deleteOrderedAdditionalServiceRequest.getOrderedAdditionalServiceId());
+		
 		return new SuccessResult("OrderedService deleted.");
 	}
 
 	@Override
-	public OrderedAdditionalService getByIdAsEntity(int id) {
+	public OrderedAdditionalService getByIdAsEntity(int id) throws BusinessException {
+		
+		checkIfOrderedAdditionalServiceDoesNotExistsById(id);
 		
 		return this.orderedAdditionalServiceDao.getById(id);
+	}
+	
+	public Result checkIfOrderedAdditionalServiceExistsByIdisSuccess(int id) throws BusinessException {
+		
+		checkIfOrderedAdditionalServiceExistsById(id);
+		
+		return new SuccessResult("Ordered Additional Service is valid.");
+		
+	}
+	
+	private void checkIfOrderedAdditionalServiceDoesNotExistsById(int id) throws BusinessException {
+		
+		if(!this.orderedAdditionalServiceDao.existsById(id)) {
+			
+			throw new BusinessException(" Ordered Additional Service does not exists.");
+		}
+	}
+	
+	private void checkIfOrderedAdditionalServiceExistsById(int id) throws BusinessException {
+		
+		if(this.orderedAdditionalServiceDao.existsById(id)) {
+			
+			throw new BusinessException(" Ordered Additional Service already used. ");
+		}
+	}
+	
+	
+	private void updateRent(OrderedAdditionalService orderedAdditionalService) throws BusinessException {
+		
+		Rent rent = this.rentService.getRentEntityById(orderedAdditionalService.getRent().getRentId());
+		
+		rent.setOrderedAdditionalServices(orderedAdditionalService);
+		
+		this.rentService.updateRent(rent);
+		
 	}
 
 }

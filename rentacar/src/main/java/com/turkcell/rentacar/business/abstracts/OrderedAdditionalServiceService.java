@@ -26,6 +26,8 @@ public interface OrderedAdditionalServiceService {
 	
 	Result delete(DeleteOrderedAdditionalServiceRequest deleteOrderedAdditionalServiceRequest) throws BusinessException;
 	
-	OrderedAdditionalService  getByIdAsEntity (int id);
+	OrderedAdditionalService  getByIdAsEntity (int id) throws BusinessException;
+	
+	Result checkIfOrderedAdditionalServiceExistsByIdisSuccess(int id) throws BusinessException;
 
 }

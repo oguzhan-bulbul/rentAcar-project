@@ -144,4 +144,9 @@ public class CarManager implements CarService{
 			
 		}				
 	}
+
+	@Override
+	public Car getCar (int id) {
+		return this.carDao.getById(id);
+	}
 }
