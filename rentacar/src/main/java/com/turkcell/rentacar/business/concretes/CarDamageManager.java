@@ -3,9 +3,11 @@ package com.turkcell.rentacar.business.concretes;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import com.turkcell.rentacar.business.abstracts.CarDamageService;
+import com.turkcell.rentacar.business.abstracts.CarService;
 import com.turkcell.rentacar.business.dtos.CarDamageDto;
 import com.turkcell.rentacar.business.dtos.CarDamageListDto;
 import com.turkcell.rentacar.business.requests.createRequests.CreateCarDamageRequest;
@@ -25,12 +27,15 @@ public class CarDamageManager implements CarDamageService{
 	
 	private final CarDamageDao carDamageDao;
 	private final ModelMapperService modelMapperService;
+	private final CarService carService;
 	
 	
 
-	public CarDamageManager(CarDamageDao carDamageDao, ModelMapperService modelMapperService) {
+	public CarDamageManager(CarDamageDao carDamageDao, ModelMapperService modelMapperService, 
+			@Lazy CarService carService) {
 		this.carDamageDao = carDamageDao;
 		this.modelMapperService = modelMapperService;
+		this.carService = carService;
 	}
 
 	@Override
@@ -47,6 +52,8 @@ public class CarDamageManager implements CarDamageService{
 	@Override
 	public Result add(CreateCarDamageRequest createCarDamageRequest) throws BusinessException {
 		
+		this.carService.checkIfCarDoesNotExists(createCarDamageRequest.getCarId());
+		
 		CarDamage result = this.modelMapperService.forRequest().map(createCarDamageRequest, CarDamage.class);
 		
 		this.carDamageDao.save(result);
@@ -57,6 +64,8 @@ public class CarDamageManager implements CarDamageService{
 	@Override
 	public DataResult<CarDamageDto> getById(int id) throws BusinessException {
 		
+		checkIfCarDamageDoesNotExistById(id);
+		
 		CarDamage result = this.carDamageDao.getById(id);
 		CarDamageDto response = this.modelMapperService.forDto().map(result, CarDamageDto.class);
 		
@@ -65,6 +74,8 @@ public class CarDamageManager implements CarDamageService{
 
 	@Override
 	public Result update(UpdateCarDamageRequest updateCarDamageRequest) throws BusinessException {
+		
+		checkIfCarDamageDoesNotExistById(updateCarDamageRequest.getCarDamageId());
 		
 		CarDamage result = this.modelMapperService.forRequest().map(updateCarDamageRequest, CarDamage.class);
 		
@@ -76,9 +87,20 @@ public class CarDamageManager implements CarDamageService{
 	@Override
 	public Result delete(DeleteCarDamageRequest deleteCarDamageRequest) throws BusinessException {
 		
+		checkIfCarDamageDoesNotExistById(deleteCarDamageRequest.getCarDamageId());
+		
 		this.carDamageDao.deleteById(deleteCarDamageRequest.getCarDamageId());
 		
 		return new SuccessResult("Car Damage deleted.");
+	}
+	
+	private void checkIfCarDamageDoesNotExistById(int id) throws BusinessException{
+		
+		if(!this.carDamageDao.existsById(id)) {
+			
+			throw new BusinessException("Car does not exists.");
+			
+		}				
 	}
 
 }

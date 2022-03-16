@@ -36,5 +36,7 @@ public interface CarService {
 	
 	Result updateCarKm(int carId,int currentKm);
 	
+	Result checkIfCarDoesNotExists(int id) throws BusinessException;
+	
 
 }

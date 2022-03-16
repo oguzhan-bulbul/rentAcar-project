@@ -151,6 +151,13 @@ public class CarManager implements CarService{
 		this.carDao.save(car);
 		return new SuccessResult("Car km updated.");
 	}
+	
+	public Result checkIfCarDoesNotExists(int id) throws BusinessException {
+		
+		checkIfCarDoesNotExistById(id);
+		
+		return new SuccessResult("Car checked");
+	}
 
 	private void checkIfCarDoesNotExistById(int id) throws BusinessException{
 		

@@ -2,7 +2,6 @@ package com.turkcell.rentacar.business.concretes;
 
 
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import com.turkcell.rentacar.business.abstracts.CarMaintenanceService;
 import com.turkcell.rentacar.business.abstracts.CarService;
-import com.turkcell.rentacar.business.abstracts.CorporateCustomerService;
 import com.turkcell.rentacar.business.abstracts.CustomerService;
 import com.turkcell.rentacar.business.abstracts.InvoiceService;
 import com.turkcell.rentacar.business.abstracts.OrderedAdditionalServiceService;
@@ -34,7 +32,6 @@ import com.turkcell.rentacar.core.utilities.results.SuccessDataResult;
 import com.turkcell.rentacar.core.utilities.results.SuccessResult;
 import com.turkcell.rentacar.dataAccess.abstracts.RentDao;
 import com.turkcell.rentacar.entities.concretes.AdditionalService;
-import com.turkcell.rentacar.entities.concretes.Invoice;
 import com.turkcell.rentacar.entities.concretes.OrderedAdditionalService;
 import com.turkcell.rentacar.entities.concretes.Rent;
 
@@ -45,10 +42,9 @@ public class RentManager implements RentService{
 	private final ModelMapperService modelMapperService;
 	private final CarMaintenanceService carMaintenanceService;
 	private final OrderedAdditionalServiceService orderedAdditionalServiceService;
-	private final InvoiceService invoiceService;
 	private final CustomerService customerService;
 	private final CarService carService;
-	private final CorporateCustomerService corporateCustomerService;
+
 
 		
 	@Autowired
@@ -57,16 +53,14 @@ public class RentManager implements RentService{
 			@Lazy OrderedAdditionalServiceService orderedAdditionalServiceService,
 			@Lazy InvoiceService invoiceService,
 			@Lazy CustomerService customerService, 
-			@Lazy CarService carService, 
-			@Lazy CorporateCustomerService corporateCustomerService) {
+			@Lazy CarService carService) {
+		
 		this.rentDao = rentDao;
 		this.modelMapperService = modelMapperService;
 		this.carMaintenanceService = carMaintenanceService;
 		this.orderedAdditionalServiceService = orderedAdditionalServiceService;
-		this.invoiceService=invoiceService;
 		this.customerService=customerService;
 		this.carService = carService;
-		this.corporateCustomerService = corporateCustomerService;
 
 	}
 
@@ -121,8 +115,7 @@ public class RentManager implements RentService{
 		rent.setCustomer(this.customerService.getById(createRentRequest.getCorporateCustomerId()));
 		rent.setStartedKm(this.carService.getById(rent.getCar().getCarId()).getData().getCurrentKm());
 		
-		this.rentDao.save(rent);	
-		createInvoice(rent);
+		this.rentDao.save(rent);
 					
 		return new SuccessResult("Rent is created");
 	}
@@ -159,7 +152,6 @@ public class RentManager implements RentService{
 		
 		Rent rent = this.modelMapperService.forRequest().map(updateRentRequest, Rent.class);
 	    this.rentDao.save(rent);
-	    updateInvoice(rent);
 
 	    return new SuccessResult("Rent info is updated.");
 	}
@@ -183,7 +175,6 @@ public class RentManager implements RentService{
 	public Result updateRent(Rent rent) throws BusinessException {
 		
 		this.rentDao.save(rent);
-		updateInvoice(rent);
 		
 		return new SuccessResult("Rent updated");
 	}
@@ -229,45 +220,6 @@ public class RentManager implements RentService{
 		return cityPayment;
 	}
 	
-	private void createInvoice(Rent rent) throws BusinessException {
-		
-		if(rent.getFinishDate()!=null) {
-			
-			Invoice invoice = new Invoice();		
-			int totalRentDay = (int)ChronoUnit.DAYS.between(rent.getStartDate(), rent.getFinishDate());
-			double totalBill = this.carService.getCar(rent.getCar().getCarId()).getCarDailyPrice() + rent.getBill();
-			System.out.println(rent.getStartDate());
-			invoice.setCreationDate(rent.getStartDate());
-			invoice.setStartDate(rent.getStartDate());
-			invoice.setFinishDate(rent.getFinishDate());
-			invoice.setRent(this.rentDao.getById(rent.getRentId()));
-			invoice.setTotalRentDay(totalRentDay);
-			invoice.setCustomer(rent.getCustomer());
-			invoice.setTotalBill(totalBill);
-			
-			this.invoiceService.addInvoice(invoice);
-		}
-	}
-	
-	private void updateInvoice(Rent rent) throws BusinessException {
-		
-		if(rent.getFinishDate()!=null) {
-			
-			int totalRentDay = (int)ChronoUnit.DAYS.between(rent.getStartDate(), rent.getFinishDate());
-			double totalBill = this.carService.getCar(rent.getCar().getCarId()).getCarDailyPrice() + rent.getBill();
-		
-			Invoice invoice = this.invoiceService.getByRentId(rent.getRentId());		
-			invoice.setCreationDate(rent.getStartDate());
-			invoice.setStartDate(rent.getStartDate());
-			invoice.setFinishDate(rent.getFinishDate());
-			invoice.setRent(rent);
-			invoice.setTotalRentDay(totalRentDay);
-			invoice.setCustomer(this.corporateCustomerService.getByIdCorporateCustomer(rent.getCustomer().getCustomerId()));
-			invoice.setTotalBill(totalBill);
-			
-			this.invoiceService.addInvoice(invoice);
-		}
-	}
 	
 	private void checkIfCarIsRented(int carId) throws BusinessException {
 		
