@@ -77,6 +77,7 @@ public class CarManager implements CarService{
 	public Result update(UpdateCarRequest updateCarRequest) throws BusinessException{
 		
 		checkIfCarDoesNotExistById(updateCarRequest.getCarId());
+		
 		Car car = this.carDao.getById(updateCarRequest.getCarId());
 		car = this.modelMapperService.forRequest().map(updateCarRequest, Car.class);
 		this.carDao.save(car);
@@ -88,7 +89,8 @@ public class CarManager implements CarService{
 	@Override
 	public Result delete(DeleteCarRequest deleteCarRequest) throws BusinessException{
 		
-		checkIfCarDoesNotExistById(deleteCarRequest.getCarId());		
+		checkIfCarDoesNotExistById(deleteCarRequest.getCarId());
+		
 		Car car = this.modelMapperService.forRequest().map(deleteCarRequest, Car.class);
 		this.carDao.delete(car);
 			
@@ -147,6 +149,7 @@ public class CarManager implements CarService{
 
 	@Override
 	public Car getCar (int id) {
+		
 		return this.carDao.getById(id);
 	}
 }

@@ -63,7 +63,8 @@ public class OrderedAdditionalServiceManager implements OrderedAdditionalService
 			throws BusinessException {
 		
 		List<AdditionalService> services = new ArrayList<>();
-		for (Integer id : createOrderedAdditionalServiceRequest.getAdditionalServices()) {		
+		for (Integer id : createOrderedAdditionalServiceRequest.getAdditionalServices()) {
+			
 			AdditionalServiceDto data = this.additionalServiceService.getById(id).getData();
 			AdditionalService map = this.modelMapperService.forDto().map(data, AdditionalService.class);
 			services.add(map);		
@@ -75,6 +76,7 @@ public class OrderedAdditionalServiceManager implements OrderedAdditionalService
 		
 		
 		this.orderedAdditionalServiceDao.save(orderedAdditionalService);
+		
 		return new SuccessResult("Ordered Service saved.");
 	}
 

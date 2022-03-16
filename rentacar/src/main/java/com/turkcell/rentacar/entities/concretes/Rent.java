@@ -58,8 +58,8 @@ public class Rent {
 	@JoinColumn(name = "ordered_additional_service_id")
 	private OrderedAdditionalService orderedAdditionalServices;
 	
-	@OneToOne(mappedBy = "rent" ,cascade = CascadeType.ALL , fetch = FetchType.LAZY,orphanRemoval = true)
-	private Invoice invoice;
+	/*@OneToOne(mappedBy = "rent" ,cascade = CascadeType.ALL , fetch = FetchType.LAZY,orphanRemoval = true)
+	private Invoice invoice;*/
 	
 	@ManyToOne
 	@JoinColumn(name = "customer_id")

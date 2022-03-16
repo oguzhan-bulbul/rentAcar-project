@@ -33,39 +33,53 @@ public class UserManager implements UserService{
 
 	@Override
 	public DataResult<List<UserListDto>> getAll() {
+		
 		List<User> result = this.userDao.findAll();
+		
 		List<UserListDto> response = result.stream().map(user -> this.modelMapperService.forDto().map(user, UserListDto.class))
 				.collect(Collectors.toList());
+		
 		return new SuccessDataResult<List<UserListDto>>(response,"Users listed");
 	}
 
 	@Override
 	public Result add(CreateUserRequest createUserRequest) throws BusinessException {
-		User user = this.modelMapperService.forRequest().map(createUserRequest, User.class);
+		
+		User user = this.modelMapperService.forRequest().map(createUserRequest, User.class);	
 		this.userDao.save(user);
+		
 		return new SuccessResult("User saved");
 	}
 
 	@Override
 	public DataResult<UserDto> getById(int id) throws BusinessException {
+		
 		checkIfUserDoesNotExistsById(id);
+		
 		User user = this.userDao.getById(id);
 		UserDto response = this.modelMapperService.forDto().map(user, UserDto.class);
+		
 		return new SuccessDataResult<UserDto>(response,"User listed");
 	}
 
 	@Override
 	public Result update(UpdateUserRequest updateUserRequest) throws BusinessException {
+		
 		checkIfUserDoesNotExistsById(updateUserRequest.getUserId());
+		
 		User user = this.modelMapperService.forRequest().map(updateUserRequest, User.class);
 		this.userDao.save(user);
+		
 		return new SuccessResult("User updated");
 	}
 
 	@Override
 	public Result delete(DeleteUserRequest deleteUserRequest) throws BusinessException {
+		
 		checkIfUserDoesNotExistsById(deleteUserRequest.getUserId());
+		
 		this.userDao.deleteById(deleteUserRequest.getUserId());
+		
 		return new SuccessResult("User deleted");
 	}
 	

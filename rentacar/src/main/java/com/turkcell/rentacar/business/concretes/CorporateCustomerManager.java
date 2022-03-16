@@ -35,6 +35,7 @@ public class CorporateCustomerManager implements CorporateCustomerService{
 
 	@Override
 	public DataResult<List<CorporateCustomerListDto>> getAll() {
+		
 		List<CorporateCustomer> result = this.corporateCustomerDao.findAll();
 		List<CorporateCustomerListDto> response = result.stream()
 				.map(corporateCustomer -> this.modelMapperService.forDto()
@@ -65,16 +66,22 @@ public class CorporateCustomerManager implements CorporateCustomerService{
 
 	@Override
 	public Result update(UpdateCorporateCustomerRequest updateCorporateCustomerRequest) throws BusinessException {
+		
 		checkIfCorporateCustomerDoesNotExistById(updateCorporateCustomerRequest.getCustomerId());
+		
 		CorporateCustomer result = this.modelMapperService.forRequest().map(updateCorporateCustomerRequest, CorporateCustomer.class);
 		this.corporateCustomerDao.save(result);
+		
 		return new SuccessResult("Corporate Customer updated");
 	}
 
 	@Override
 	public Result delete(DeleteCorporateCustomerRequest deleteCorporateCustomerRequest) throws BusinessException {
+		
 		checkIfCorporateCustomerDoesNotExistById(deleteCorporateCustomerRequest.getCustomerId());
+		
 		this.corporateCustomerDao.deleteById(deleteCorporateCustomerRequest.getCustomerId());
+		
 		return new SuccessResult("Corporate Customer deleted.");
 	}
 	
@@ -89,7 +96,7 @@ private void checkIfCorporateCustomerDoesNotExistById(int id) throws BusinessExc
 
 @Override
 public CorporateCustomer getByIdCorporateCustomer(int id) {
-	// TODO Auto-generated method stub
+	
 	return this.corporateCustomerDao.getById(id);
 }
 	

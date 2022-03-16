@@ -21,6 +21,7 @@ import com.turkcell.rentacar.business.abstracts.RentService;
 import com.turkcell.rentacar.business.dtos.RentDto;
 import com.turkcell.rentacar.business.dtos.RentListDto;
 import com.turkcell.rentacar.business.requests.createRequests.CreateCarMaintenanceRequest;
+import com.turkcell.rentacar.business.requests.createRequests.CreateRentForCorporateRequest;
 import com.turkcell.rentacar.business.requests.createRequests.CreateRentForIndividualRequest;
 import com.turkcell.rentacar.business.requests.deleteRequests.DeleteRentRequest;
 import com.turkcell.rentacar.business.requests.updateRequests.UpdateRentRequest;
@@ -90,18 +91,38 @@ public class RentManager implements RentService{
 	}
 
 	@Override
-	public Result add(CreateRentForIndividualRequest createRentRequest) throws BusinessException {
+	public Result addForIndividualCustomer(CreateRentForIndividualRequest createRentRequest) throws BusinessException {
 		
-		this.carMaintenanceService.checkIfCarIsInMaintenanceForRentRequestIsSucces(createRentRequest);
+		this.carMaintenanceService.checkIfCarIsInMaintenanceForRentRequestIsSucces(createRentRequest.getCarId(),createRentRequest.getStartDate());
 		checkIfOrderedAdditionalServiceIsUsed(createRentRequest.getOrderedAdditionalServiceId());
 		checkIfCarIsRented(createRentRequest.getCarId());
 		
 		Rent rent = this.modelMapperService.forDto().map(createRentRequest, Rent.class);
 		rent.setRentId(0);
-		rent.setBill(calculatedCityBill(createRentRequest)+calculatedServiceBill(createRentRequest.getOrderedAdditionalServiceId()));
+		rent.setBill(calculatedCityBill(createRentRequest.getRentedCityId(),createRentRequest.getDeliveredCityId())
+				+calculatedServiceBill(createRentRequest.getOrderedAdditionalServiceId()));
 		rent.setCustomer(this.customerService.getById(createRentRequest.getIndividualCustomerId()));
 		
-		this.rentDao.save(rent);
+		this.rentDao.save(rent);	
+		createInvoice(rent);
+					
+		return new SuccessResult("Rent is created");
+	}
+	
+	@Override
+	public Result addForCorporateCustomer(CreateRentForCorporateRequest createRentRequest) throws BusinessException {
+		
+		this.carMaintenanceService.checkIfCarIsInMaintenanceForRentRequestIsSucces(createRentRequest.getCarId(),createRentRequest.getStartDate());
+		checkIfOrderedAdditionalServiceIsUsed(createRentRequest.getOrderedAdditionalServiceId());
+		checkIfCarIsRented(createRentRequest.getCarId());
+		
+		Rent rent = this.modelMapperService.forDto().map(createRentRequest, Rent.class);
+		rent.setRentId(0);
+		rent.setBill(calculatedCityBill(createRentRequest.getRentedCityId(),createRentRequest.getDeliveredCityId())
+				+calculatedServiceBill(createRentRequest.getOrderedAdditionalServiceId()));
+		rent.setCustomer(this.customerService.getById(createRentRequest.getCorporateCustomerId()));
+		
+		this.rentDao.save(rent);	
 		createInvoice(rent);
 					
 		return new SuccessResult("Rent is created");
@@ -112,15 +133,20 @@ public class RentManager implements RentService{
 
 	@Override
 	public DataResult<RentDto> getById(int id) throws BusinessException {
+		
 		checkIfRentDoesNotExistsById(id);
+		
 		Rent rent = this.rentDao.getById(id);
 		RentDto rentDto = this.modelMapperService.forDto().map(rent, RentDto.class);
+		
 		return new SuccessDataResult<RentDto>(rentDto,"Rent listed");
 	}
 
 	@Override
 	public Result update(UpdateRentRequest updateRentRequest) throws BusinessException {
+		
 		checkIfRentDoesNotExistsById(updateRentRequest.getRentId());
+		
 		Rent rent = this.modelMapperService.forRequest().map(updateRentRequest, Rent.class);
 	    this.rentDao.save(rent);
 	    updateInvoice(rent);
@@ -145,6 +171,7 @@ public class RentManager implements RentService{
 	
 	@Override
 	public Result updateRent(Rent rent) throws BusinessException {
+		
 		this.rentDao.save(rent);
 		updateInvoice(rent);
 		
@@ -153,9 +180,9 @@ public class RentManager implements RentService{
 	
 	public Result checkIfCarIsRentedForCarMaintenanceIsSucces(CreateCarMaintenanceRequest createCarMaintenanceRequest) throws BusinessException {
 		
-		checkIfCarIsRentedForCarMaintenance(createCarMaintenanceRequest);		
-		return new SuccessResult("Car is available for maintenance");
+		checkIfCarIsRentedForCarMaintenance(createCarMaintenanceRequest);	
 		
+		return new SuccessResult("Car is available for maintenance");		
 	}
 	
 
@@ -164,8 +191,7 @@ public class RentManager implements RentService{
 		
 		if(!this.rentDao.existsById(id)) {
 			
-			throw new BusinessException("Rent does not exists");
-			
+			throw new BusinessException("Rent does not exists");	
 		}		
 	}
 	
@@ -182,11 +208,11 @@ public class RentManager implements RentService{
 		return lastBill;
 	}
 	
-	private double calculatedCityBill(CreateRentForIndividualRequest createRentRequest) {
+	private double calculatedCityBill(int rentedCityId, int deliveredCityId) {
 		
 		double cityPayment = 0;
 		
-		if(createRentRequest.getRentedCityId() != createRentRequest.getDeliveredCityId()) {
+		if(rentedCityId != deliveredCityId) {
 			cityPayment = 750;
 		}
 		
@@ -197,17 +223,15 @@ public class RentManager implements RentService{
 		
 		if(rent.getFinishDate()!=null) {
 			
-			Invoice invoice = new Invoice();
+			Invoice invoice = new Invoice();		
 			int totalRentDay = (int)ChronoUnit.DAYS.between(rent.getStartDate(), rent.getFinishDate());
 			double totalBill = this.carService.getCar(rent.getCar().getCarId()).getCarDailyPrice() + rent.getBill();
-			
+			System.out.println(rent.getStartDate());
 			invoice.setCreationDate(rent.getStartDate());
 			invoice.setStartDate(rent.getStartDate());
 			invoice.setFinishDate(rent.getFinishDate());
-			invoice.setRent(rent);
+			invoice.setRent(this.rentDao.getById(rent.getRentId()));
 			invoice.setTotalRentDay(totalRentDay);
-			System.out.println(rent.getRentId());
-			System.out.println(rent.getCustomer().getCustomerId());
 			invoice.setCustomer(rent.getCustomer());
 			invoice.setTotalBill(totalBill);
 			
@@ -222,8 +246,7 @@ public class RentManager implements RentService{
 			int totalRentDay = (int)ChronoUnit.DAYS.between(rent.getStartDate(), rent.getFinishDate());
 			double totalBill = this.carService.getCar(rent.getCar().getCarId()).getCarDailyPrice() + rent.getBill();
 		
-			Invoice invoice = new Invoice();
-			invoice.setInvoiceNo(rent.getInvoice().getInvoiceNo());
+			Invoice invoice = this.invoiceService.getByRentId(rent.getRentId());		
 			invoice.setCreationDate(rent.getStartDate());
 			invoice.setStartDate(rent.getStartDate());
 			invoice.setFinishDate(rent.getFinishDate());
@@ -265,7 +288,9 @@ public class RentManager implements RentService{
 	}
 	
 	private void checkIfOrderedAdditionalServiceIsUsed(int id) throws BusinessException {
+		
 		if(this.rentDao.existsByOrderedAdditionalServices_OrderedAdditionalServiceId(id)) {
+			
 			throw new BusinessException("Ordered Service already used.rent");
 		}
 	}

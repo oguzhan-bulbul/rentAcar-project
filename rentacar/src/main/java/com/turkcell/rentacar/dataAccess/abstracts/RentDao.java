@@ -13,6 +13,8 @@ import com.turkcell.rentacar.entities.concretes.Rent;
 public interface RentDao extends JpaRepository<Rent, Integer>{
 	
 	List<Rent> getAllByCar_CarId(int carid);
-	boolean existsByOrderedAdditionalServices_OrderedAdditionalServiceId(int id);	
+	
+	boolean existsByOrderedAdditionalServices_OrderedAdditionalServiceId(int id);
+	
 
 }

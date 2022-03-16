@@ -1,5 +1,6 @@
 package com.turkcell.rentacar.business.abstracts;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import com.turkcell.rentacar.business.dtos.CarMaintenanceDto;
@@ -26,6 +27,6 @@ public interface CarMaintenanceService {
 	
 	DataResult<List<CarMaintenanceListDto>> getByCarId(int id);
 	
-	Result checkIfCarIsInMaintenanceForRentRequestIsSucces(CreateRentForIndividualRequest createRentRequest) throws BusinessException;
+	Result checkIfCarIsInMaintenanceForRentRequestIsSucces( int carId , LocalDate startDate) throws BusinessException;
 
 }

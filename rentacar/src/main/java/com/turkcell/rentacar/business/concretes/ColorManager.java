@@ -61,6 +61,7 @@ public class ColorManager implements ColorService{
 		
 		
 		checkIfColorDoesNotExistsById(id);
+		
 		Color result = this.colorDao.getById(id);
 		ColorDto response = this.modelMapperService.forDto().map(result, ColorDto.class);
 			
@@ -73,6 +74,7 @@ public class ColorManager implements ColorService{
 	public Result update(UpdateColorRequest updateColorRequest) throws BusinessException {
 			
 		checkIfColorDoesNotExistsById(updateColorRequest.getColorId());
+		
 		Color color = this.colorDao.getById(updateColorRequest.getColorId());
 		color=this.modelMapperService.forRequest().map(updateColorRequest, Color.class);
 		this.colorDao.save(color);
@@ -86,6 +88,7 @@ public class ColorManager implements ColorService{
 	public Result delete(DeleteColorRequest deleteColorRequest) throws BusinessException {
 		
 		checkIfColorDoesNotExistsById(deleteColorRequest.getColorId());
+		
 		Color color = this.modelMapperService.forRequest().map(deleteColorRequest, Color.class);
 		this.colorDao.delete(color);
 			

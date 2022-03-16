@@ -70,7 +70,8 @@ public class InvoiceManager implements InvoiceService{
 	@Override
 	public Result update(UpdateInvoiceRequest updateInvoiceRequest) throws BusinessException {
 		
-		checkIfInvoiceDoesNotExistById(updateInvoiceRequest.getInvoiceNo());	
+		checkIfInvoiceDoesNotExistById(updateInvoiceRequest.getInvoiceNo());
+		
 		Invoice result = this.modelMapperService.forRequest().map(updateInvoiceRequest, Invoice.class);
 		this.invoiceDao.save(result);
 		
@@ -79,17 +80,22 @@ public class InvoiceManager implements InvoiceService{
 
 	@Override
 	public Result delete(DeleteInvoiceRequest deleteInvoiceRequest) throws BusinessException {
+		
 		checkIfInvoiceDoesNotExistById(deleteInvoiceRequest.getInvoiceNo());
+		
 		this.invoiceDao.deleteById(deleteInvoiceRequest.getInvoiceNo());
+		
 		return new SuccessResult("Invoice deleted.");
 	}
 	
 	@Override
 	public DataResult<List<InvoiceListDto>> getAllByCustomerId(int id) {
+		
 		List<Invoice> result = this.invoiceDao.getAllByCustomer_CustomerId(id);
 		List<InvoiceListDto> response =result.stream()
 				.map(invoice -> this.modelMapperService.forDto()
 						.map(invoice, InvoiceListDto.class)).collect(Collectors.toList());
+		
 		return new SuccessDataResult<List<InvoiceListDto>>(response,"Customer's invoices listed");
 	}
 
@@ -110,6 +116,10 @@ public class InvoiceManager implements InvoiceService{
 		this.invoiceDao.saveAndFlush(invoice);
 		
 		return new SuccessResult("Invoice saved");
+	}
+	
+	public Invoice getByRentId(int id) {
+		return this.invoiceDao.getByRent_RentId(id);
 	}
 	
 	private void checkIfInvoiceDoesNotExistById(int id) throws BusinessException{

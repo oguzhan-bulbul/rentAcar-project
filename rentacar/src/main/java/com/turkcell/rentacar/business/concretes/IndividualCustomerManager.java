@@ -37,10 +37,12 @@ public class IndividualCustomerManager implements IndividualCustomerService{
 
 	@Override
 	public DataResult<List<IndividualCustomerListDto>> getAll() {
+		
 		List<IndividualCustomer> result = this.individualCustomerDao.findAll();
 		List<IndividualCustomerListDto> response = result.stream()
 				.map(individualCustomer -> this.modelMapperService.forDto()
 						.map(individualCustomer, IndividualCustomerListDto.class)).collect(Collectors.toList());
+		
 		return new SuccessDataResult<List<IndividualCustomerListDto>>(response,"Individual Customers Listed");
 	}
 
@@ -55,7 +57,9 @@ public class IndividualCustomerManager implements IndividualCustomerService{
 
 	@Override
 	public DataResult<IndividualCustomerDto> getById(int id) throws BusinessException {
+		
 		checkIfIndividualCustomerDoesNotExistById(id);
+		
 		IndividualCustomer result = this.individualCustomerDao.getById(id);
 		IndividualCustomerDto response = this.modelMapperService.forDto().map(result, IndividualCustomerDto.class);
 		
@@ -64,7 +68,9 @@ public class IndividualCustomerManager implements IndividualCustomerService{
 
 	@Override
 	public Result update(UpdateIndividualCustomerRequest updateIndividualCustomerRequest) throws BusinessException {
+		
 		checkIfIndividualCustomerDoesNotExistById(updateIndividualCustomerRequest.getCustomerId());
+		
 		IndividualCustomer result = this.modelMapperService.forRequest().map(updateIndividualCustomerRequest, IndividualCustomer.class);
 		this.individualCustomerDao.save(result);
 		return new SuccessResult("Individual Customer updated");
@@ -72,7 +78,9 @@ public class IndividualCustomerManager implements IndividualCustomerService{
 
 	@Override
 	public Result delete(DeleteIndividualCustomerRequest deleteIndividualCustomerRequest) throws BusinessException {
+		
 		checkIfIndividualCustomerDoesNotExistById(deleteIndividualCustomerRequest.getCustomerId());
+		
 		this.individualCustomerDao.deleteById(deleteIndividualCustomerRequest.getCustomerId());
 		
 		return new SuccessResult("Individual Customer deleted.");

@@ -32,5 +32,7 @@ public interface InvoiceService {
 	DataResult<List<InvoiceListDto>> getAllByCustomerId(int id);
 	
 	DataResult<List<InvoiceListDto>> getAllBetweenDates(LocalDate startDate, LocalDate finishDate);
+	
+	Invoice getByRentId(int id);
 
 }

@@ -1,6 +1,7 @@
 package com.turkcell.rentacar.business.concretes;
 
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -114,9 +115,9 @@ public class CarMaintenanceManager implements CarMaintenanceService{
 		return new SuccessDataResult<List<CarMaintenanceListDto>>(response,"All of Car's maintenance information listed");
 	}
 	
-	public Result checkIfCarIsInMaintenanceForRentRequestIsSucces(CreateRentForIndividualRequest createRentRequest) throws BusinessException {
+	public Result checkIfCarIsInMaintenanceForRentRequestIsSucces(int carId, LocalDate startDate) throws BusinessException {
 		
-		checkIfCarIsInMaintenanceForRentRequest(createRentRequest);
+		checkIfCarIsInMaintenanceForRentRequest(carId,startDate);
 		
 		return new SuccessResult("Car is available");
 		
@@ -144,12 +145,12 @@ public class CarMaintenanceManager implements CarMaintenanceService{
 		}
 	}
 	
-	private void checkIfCarIsInMaintenanceForRentRequest(CreateRentForIndividualRequest createRentRequest) throws BusinessException {
+	private void checkIfCarIsInMaintenanceForRentRequest(int carId, LocalDate startDate) throws BusinessException {
 		
-		List<CarMaintenance> result = this.carMaintenanceDao.getAllByCar_CarId(createRentRequest.getCarId());
+		List<CarMaintenance> result = this.carMaintenanceDao.getAllByCar_CarId(carId);
           
         for (CarMaintenance carMaintenance : result) {
-			if(carMaintenance.getReturnDate() == null || createRentRequest.getStartDate().isBefore(carMaintenance.getReturnDate())) {
+			if(carMaintenance.getReturnDate() == null || startDate.isBefore(carMaintenance.getReturnDate())) {
 				
 				throw new BusinessException("Car is in maintenance");
 				
