@@ -137,6 +137,20 @@ public class CarManager implements CarService{
 		return new SuccessDataResult<List<CarListDto>>(response,"Cars listed");
 		
 	}
+	
+	@Override
+	public Car getCar (int id) {
+		
+		return this.carDao.getById(id);
+	}
+
+	@Override
+	public Result updateCarKm(int carId, int currentKm) {
+		Car car = this.carDao.getById(carId);
+		car.setCurrentKm(car.getCurrentKm()+currentKm);
+		this.carDao.save(car);
+		return new SuccessResult("Car km updated.");
+	}
 
 	private void checkIfCarDoesNotExistById(int id) throws BusinessException{
 		
@@ -147,9 +161,5 @@ public class CarManager implements CarService{
 		}				
 	}
 
-	@Override
-	public Car getCar (int id) {
-		
-		return this.carDao.getById(id);
-	}
+
 }

@@ -34,5 +34,7 @@ public interface CarService {
 	
 	Car getCar(int id);
 	
+	Result updateCarKm(int carId,int currentKm);
+	
 
 }

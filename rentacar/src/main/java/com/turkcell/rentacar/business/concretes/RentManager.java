@@ -24,6 +24,7 @@ import com.turkcell.rentacar.business.requests.createRequests.CreateCarMaintenan
 import com.turkcell.rentacar.business.requests.createRequests.CreateRentForCorporateRequest;
 import com.turkcell.rentacar.business.requests.createRequests.CreateRentForIndividualRequest;
 import com.turkcell.rentacar.business.requests.deleteRequests.DeleteRentRequest;
+import com.turkcell.rentacar.business.requests.endRequest.EndRentRequest;
 import com.turkcell.rentacar.business.requests.updateRequests.UpdateRentRequest;
 import com.turkcell.rentacar.core.utilities.exceptions.BusinessException;
 import com.turkcell.rentacar.core.utilities.mapping.ModelMapperService;
@@ -100,10 +101,8 @@ public class RentManager implements RentService{
 		rent.setRentId(0);
 		rent.setBill(calculatedCityBill(createRentRequest.getRentedCityId(),createRentRequest.getDeliveredCityId())
 				+calculatedServiceBill(createRentRequest.getOrderedAdditionalServiceId()));
-		rent.setCustomer(this.customerService.getById(createRentRequest.getIndividualCustomerId()));
-		
-		this.rentDao.save(rent);	
-		createInvoice(rent);
+		rent.setCustomer(this.customerService.getById(createRentRequest.getIndividualCustomerId()));	
+		this.rentDao.save(rent);
 					
 		return new SuccessResult("Rent is created");
 	}
@@ -120,6 +119,7 @@ public class RentManager implements RentService{
 		rent.setBill(calculatedCityBill(createRentRequest.getRentedCityId(),createRentRequest.getDeliveredCityId())
 				+calculatedServiceBill(createRentRequest.getOrderedAdditionalServiceId()));
 		rent.setCustomer(this.customerService.getById(createRentRequest.getCorporateCustomerId()));
+		rent.setStartedKm(this.carService.getById(rent.getCar().getCarId()).getData().getCurrentKm());
 		
 		this.rentDao.save(rent);	
 		createInvoice(rent);
@@ -127,9 +127,20 @@ public class RentManager implements RentService{
 		return new SuccessResult("Rent is created");
 	}
 	
-	
-	
 
+	@Override
+	public Result endRent(EndRentRequest endRentRequest) {
+		
+		Rent rent = this.rentDao.getById(endRentRequest.getRentId());
+		
+		rent.setReturnKm(endRentRequest.getReturnedKm());
+		
+		this.carService.updateCarKm(rent.getCar().getCarId(), endRentRequest.getReturnedKm());
+		this.rentDao.save(rent);
+			
+		return new SuccessResult("Rent is done");
+	}
+	
 	@Override
 	public DataResult<RentDto> getById(int id) throws BusinessException {
 		
@@ -293,6 +304,7 @@ public class RentManager implements RentService{
 			throw new BusinessException("Ordered Service already used.rent");
 		}
 	}
+
 
 
 

@@ -5,6 +5,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 
 import lombok.AllArgsConstructor;
@@ -24,6 +25,7 @@ public class CreateCarRequest {
 	@Positive
 	private int colorId;
 	
+	
 	@NotNull
 	@Max(2022)
 	@Min(2000)
@@ -33,6 +35,10 @@ public class CreateCarRequest {
 	@Max(3000)
 	@Min(50)
 	private double carDailyPrice;
+	
+	@NotNull
+	@PositiveOrZero
+	private int currentKm;
 	
 	@NotBlank
 	@NotNull

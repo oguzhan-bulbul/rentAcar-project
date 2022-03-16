@@ -34,6 +34,9 @@ public class Car {
 	@Column(name = "car_model_year")
 	private int carModelYear;
 	
+	@Column(name = "current_km")
+	private int currentKm;
+	
 	@Column(name = "description")
 	private String description;
 	
@@ -50,5 +53,8 @@ public class Car {
 	
 	@OneToMany(mappedBy = "car")
 	private List<Rent> rents;
+	
+	@OneToMany(mappedBy = "car")
+	private List<CarDamage> carDamages;
 	
 }

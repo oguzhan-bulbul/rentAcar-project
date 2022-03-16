@@ -1,5 +1,6 @@
 package com.turkcell.rentacar.core.entities;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
@@ -30,6 +31,9 @@ public class Customer extends User{
 	
 	@Column(name = "customer_id",insertable = false ,updatable = false)
 	private int customerId;
+	
+	@Column(name = "date_registered")
+	private LocalDate dateRegistered;
 	
 	@OneToMany(mappedBy = "customer" , cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	private List<Rent> rent;

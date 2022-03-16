@@ -34,6 +34,12 @@ public class Rent {
 	@JoinColumn(name = "rented_city")
 	private City rentedCity;
 	
+	@Column(name = "started_Km")
+	private int startedKm;
+	
+	@Column(name = "return_km")
+	private int returnKm;
+	
 	@OneToOne
 	@JoinColumn(name = "delivered_city")
 	private City deliveredCity;

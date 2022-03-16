@@ -19,6 +19,7 @@ import com.turkcell.rentacar.business.dtos.RentListDto;
 import com.turkcell.rentacar.business.requests.createRequests.CreateRentForCorporateRequest;
 import com.turkcell.rentacar.business.requests.createRequests.CreateRentForIndividualRequest;
 import com.turkcell.rentacar.business.requests.deleteRequests.DeleteRentRequest;
+import com.turkcell.rentacar.business.requests.endRequest.EndRentRequest;
 import com.turkcell.rentacar.business.requests.updateRequests.UpdateRentRequest;
 import com.turkcell.rentacar.core.utilities.exceptions.BusinessException;
 import com.turkcell.rentacar.core.utilities.results.DataResult;
@@ -48,6 +49,12 @@ public class RentsController {
     public Result add(@RequestBody @Valid CreateRentForCorporateRequest createRentRequest) throws BusinessException{
     	
         return this.rentService.addForCorporateCustomer(createRentRequest);
+    }
+    
+    @PostMapping("/endrent")
+    public Result endRent(@RequestBody @Valid EndRentRequest endRentRequest) {
+    	
+    	return this.rentService.endRent(endRentRequest);
     }
 
     @GetMapping("/getById")

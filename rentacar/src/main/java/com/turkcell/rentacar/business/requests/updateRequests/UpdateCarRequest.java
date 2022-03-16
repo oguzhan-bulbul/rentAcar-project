@@ -5,6 +5,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 
 import lombok.AllArgsConstructor;
@@ -29,6 +30,10 @@ public class UpdateCarRequest {
 	@Max(2022)
 	@Min(2000)
 	private int carModelYear;
+	
+	@NotNull
+	@PositiveOrZero
+	private int currentKm;
 	
 	@NotBlank
 	@NotNull

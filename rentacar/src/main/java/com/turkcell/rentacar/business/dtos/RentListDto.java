@@ -17,6 +17,10 @@ public class RentListDto {
 	
 	private String deliveredCity;
 	
+	private int startedKm;
+	
+	private int returnedKm;
+	
 	private LocalDate startDate;
 	
 	private LocalDate finishDate;

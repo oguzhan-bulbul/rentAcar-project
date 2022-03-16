@@ -8,6 +8,7 @@ import com.turkcell.rentacar.business.requests.createRequests.CreateCarMaintenan
 import com.turkcell.rentacar.business.requests.createRequests.CreateRentForCorporateRequest;
 import com.turkcell.rentacar.business.requests.createRequests.CreateRentForIndividualRequest;
 import com.turkcell.rentacar.business.requests.deleteRequests.DeleteRentRequest;
+import com.turkcell.rentacar.business.requests.endRequest.EndRentRequest;
 import com.turkcell.rentacar.business.requests.updateRequests.UpdateRentRequest;
 import com.turkcell.rentacar.core.utilities.exceptions.BusinessException;
 import com.turkcell.rentacar.core.utilities.results.DataResult;
@@ -23,6 +24,8 @@ public interface RentService {
 	Result addForIndividualCustomer(CreateRentForIndividualRequest createRentRequest) throws BusinessException;
 	
 	Result addForCorporateCustomer(CreateRentForCorporateRequest createRentRequest) throws BusinessException;
+	
+	Result endRent(EndRentRequest endRentRequest);
 	
 	DataResult<RentDto> getById(int id) throws BusinessException;
 	

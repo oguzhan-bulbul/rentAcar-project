@@ -12,6 +12,7 @@ public class CarDto {
 	private String brandName;
 	private String colorName;
 	private int carModelYear;
+	private int currentKm;
 	private double carDailyPrice;
 	private String description;
 	
