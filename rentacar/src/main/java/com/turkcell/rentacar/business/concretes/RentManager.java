@@ -33,7 +33,6 @@ import com.turkcell.rentacar.core.utilities.results.SuccessDataResult;
 import com.turkcell.rentacar.core.utilities.results.SuccessResult;
 import com.turkcell.rentacar.dataAccess.abstracts.RentDao;
 import com.turkcell.rentacar.entities.concretes.AdditionalService;
-import com.turkcell.rentacar.entities.concretes.CorporateCustomer;
 import com.turkcell.rentacar.entities.concretes.Invoice;
 import com.turkcell.rentacar.entities.concretes.OrderedAdditionalService;
 import com.turkcell.rentacar.entities.concretes.Rent;

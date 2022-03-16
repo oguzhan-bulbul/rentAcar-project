@@ -2,7 +2,6 @@ package com.turkcell.rentacar.entities.concretes;
 
 
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
