@@ -4,8 +4,10 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -47,13 +49,13 @@ public class IndividualCustomersController {
 		return this.individualCustomerService.getById(id);		
 	};
 	
-	@PostMapping("/update")
+	@PutMapping("/update")
 	public Result update(@RequestBody @Valid UpdateIndividualCustomerRequest updateIndividualCustomerRequest) throws BusinessException{
 		return this.individualCustomerService.update(updateIndividualCustomerRequest);
 		
 	};
 	
-	@PostMapping("/delete")
+	@DeleteMapping("/delete")
 	public Result delete(@RequestBody @Valid DeleteIndividualCustomerRequest deleteIndividualCustomerRequest) throws BusinessException{
 		return this.individualCustomerService.delete(deleteIndividualCustomerRequest);	
 	};

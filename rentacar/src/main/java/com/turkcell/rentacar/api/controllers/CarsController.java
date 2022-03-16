@@ -6,8 +6,10 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -57,14 +59,14 @@ public class CarsController {
 		
 	}
 	
-	@PostMapping("/update")
+	@PutMapping("/update")
 	public Result update(@RequestBody @Valid UpdateCarRequest updateCarRequest) throws BusinessException{
 		
 		return this.carService.update(updateCarRequest);
 		
 	}
 	
-	@PostMapping("/delete")
+	@DeleteMapping("/delete")
 	public Result delete(@RequestBody @Valid DeleteCarRequest deleteCarRequest) throws BusinessException{
 		
 		return this.carService.delete(deleteCarRequest);
