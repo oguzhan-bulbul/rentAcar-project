@@ -39,9 +39,9 @@ public class Payment {
 	@JoinColumn(name = "invoice_id")
 	private Invoice invoice;
 	
-	@ManyToOne
+	/*@ManyToOne
 	@JoinColumn(name = "ordered_additional_service_id")
-	private OrderedAdditionalService orderedAdditionalService;
+	private OrderedAdditionalService orderedAdditionalService;*/
 	
 	@ManyToOne
 	@JoinColumn(name = "customer_id")

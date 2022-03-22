@@ -61,8 +61,7 @@ public class Rent {
 	@JoinColumn(name = "car_id")
 	private Car car;
 	
-	@OneToOne
-	@JoinColumn(name = "ordered_additional_service_id")
+	@OneToOne(mappedBy = "rent")
 	private OrderedAdditionalService orderedAdditionalServices;
 	
 	/*@OneToOne(mappedBy = "rent" ,cascade = CascadeType.ALL , fetch = FetchType.LAZY)

@@ -1,6 +1,7 @@
 package com.turkcell.rentacar.business.requests.createRequests;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -37,7 +38,7 @@ public class CreateRentForCorporateRequest {
 	
 	private LocalDate finishDate;
 	
-	private int orderedAdditionalServiceId;
+	private List<Integer> additionalServices;
 	
 	@NotNull
 	@Positive

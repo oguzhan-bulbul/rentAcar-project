@@ -23,6 +23,7 @@ import com.turkcell.rentacar.business.abstracts.PaymentService;
 import com.turkcell.rentacar.business.abstracts.RentService;
 import com.turkcell.rentacar.business.dtos.PaymentDto;
 import com.turkcell.rentacar.business.dtos.PaymentListDto;
+import com.turkcell.rentacar.business.requests.createRequests.CreateOrderedAdditionalServiceRequest;
 import com.turkcell.rentacar.business.requests.deleteRequests.DeletePaymentRequest;
 import com.turkcell.rentacar.business.requests.updateRequests.UpdatePaymentRequest;
 import com.turkcell.rentacar.core.services.abstracts.PosService;
@@ -63,16 +64,16 @@ public class PaymentsController {
     @PostMapping("/addforindividual")
     Result addForIndividualCustomer(@RequestBody @Valid IndividualPaymentModel paymentModel) throws BusinessException {
     	
-    	
+    	CreateOrderedAdditionalServiceRequest createOrderedAdditionalServiceRequest = new CreateOrderedAdditionalServiceRequest();
  
-    	OrderedAdditionalService orderedAdditionalService = this.orderedAdditionalServiceService.add(paymentModel.getCreateOrderedAdditionalServiceRequest()).getData();
-    	paymentModel.getCreateRentForIndividualRequest().setOrderedAdditionalServiceId(orderedAdditionalService.getOrderedAdditionalServiceId());
-    	Rent rent = this.rentService.addForIndividualCustomer(paymentModel.getCreateRentForIndividualRequest()).getData();	
+    	
+    	Rent rent = this.rentService.addForIndividualCustomer(paymentModel.getCreateRentForIndividualRequest()).getData();
+    	createOrderedAdditionalServiceRequest.setRentId(rent.getRentId());
+    	createOrderedAdditionalServiceRequest.setAdditionalServices(paymentModel.getCreateRentForIndividualRequest().getAdditionalServices());
+    	this.orderedAdditionalServiceService.add(createOrderedAdditionalServiceRequest);
     	this.invoiceService.addInvoice(rent.getRentId());
     	this.posService.isCardValid(paymentModel.getCreateCardRequest());
     	this.posService.isPaymentSucces(rent.getBill()); 	
-    	
-  	
         return this.paymentService.add(rent.getRentId());
     }
     

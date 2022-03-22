@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CreateOrderedAdditionalServiceRequest {
 	
+	private int rentId;
+	
 	private List<Integer> additionalServices;
 	
 

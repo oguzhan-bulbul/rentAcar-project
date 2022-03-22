@@ -2,6 +2,7 @@ package com.turkcell.rentacar.business.concretes;
 
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -9,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
-
+import com.turkcell.rentacar.business.abstracts.AdditionalServiceService;
 import com.turkcell.rentacar.business.abstracts.CarMaintenanceService;
 import com.turkcell.rentacar.business.abstracts.CarService;
 import com.turkcell.rentacar.business.abstracts.CustomerService;
@@ -17,6 +18,7 @@ import com.turkcell.rentacar.business.abstracts.InvoiceService;
 import com.turkcell.rentacar.business.abstracts.OrderedAdditionalServiceService;
 import com.turkcell.rentacar.business.abstracts.RentService;
 import com.turkcell.rentacar.business.constants.messages.BusinessMessages;
+import com.turkcell.rentacar.business.dtos.AdditionalServiceDto;
 import com.turkcell.rentacar.business.dtos.RentDto;
 import com.turkcell.rentacar.business.dtos.RentListDto;
 import com.turkcell.rentacar.business.requests.createRequests.CreateCarMaintenanceRequest;
@@ -33,6 +35,7 @@ import com.turkcell.rentacar.core.utilities.results.SuccessDataResult;
 import com.turkcell.rentacar.core.utilities.results.SuccessResult;
 import com.turkcell.rentacar.dataAccess.abstracts.RentDao;
 import com.turkcell.rentacar.entities.concretes.AdditionalService;
+import com.turkcell.rentacar.entities.concretes.Car;
 import com.turkcell.rentacar.entities.concretes.OrderedAdditionalService;
 import com.turkcell.rentacar.entities.concretes.Rent;
 
@@ -42,7 +45,7 @@ public class RentManager implements RentService{
 	private final RentDao rentDao;
 	private final ModelMapperService modelMapperService;
 	private final CarMaintenanceService carMaintenanceService;
-	private final OrderedAdditionalServiceService orderedAdditionalServiceService;
+	private final AdditionalServiceService additionalServiceService;
 	private final CustomerService customerService;
 	private final CarService carService;
 
@@ -51,7 +54,7 @@ public class RentManager implements RentService{
 	@Autowired
 	public RentManager(RentDao rentDao, ModelMapperService modelMapperService,
 			@Lazy CarMaintenanceService carMaintenanceService,
-			@Lazy OrderedAdditionalServiceService orderedAdditionalServiceService,
+			@Lazy AdditionalServiceService additionalServiceService,
 			@Lazy InvoiceService invoiceService,
 			@Lazy CustomerService customerService, 
 			@Lazy CarService carService) {
@@ -59,7 +62,7 @@ public class RentManager implements RentService{
 		this.rentDao = rentDao;
 		this.modelMapperService = modelMapperService;
 		this.carMaintenanceService = carMaintenanceService;
-		this.orderedAdditionalServiceService = orderedAdditionalServiceService;
+		this.additionalServiceService = additionalServiceService;
 		this.customerService=customerService;
 		this.carService = carService;
 
@@ -89,13 +92,13 @@ public class RentManager implements RentService{
 	public DataResult<Rent> addForIndividualCustomer(CreateRentForIndividualRequest createRentRequest) throws BusinessException {
 		
 		this.carMaintenanceService.checkIfCarIsInMaintenanceForRentRequestIsSucces(createRentRequest.getCarId(),createRentRequest.getStartDate());
-		checkIfOrderedAdditionalServiceIsUsed(createRentRequest.getOrderedAdditionalServiceId());
 		checkIfCarIsRented(createRentRequest.getCarId());
 		
 		Rent rent = this.modelMapperService.forDto().map(createRentRequest, Rent.class);
 		rent.setRentId(0);
 		rent.setBill(calculatedCityBill(createRentRequest.getRentedCityId(),createRentRequest.getDeliveredCityId())
-				+calculatedServiceBill(createRentRequest.getOrderedAdditionalServiceId()));
+				+calculatedServiceBill(createRentRequest.getAdditionalServices())
+				+calculatedCarBill(createRentRequest.getCarId(), createRentRequest.getStartDate(), createRentRequest.getFinishDate()));
 		rent.setCustomer(this.customerService.getById(createRentRequest.getIndividualCustomerId()));	
 		this.rentDao.save(rent);
 					
@@ -106,13 +109,12 @@ public class RentManager implements RentService{
 	public DataResult<Rent> addForCorporateCustomer(CreateRentForCorporateRequest createRentRequest) throws BusinessException {
 		
 		this.carMaintenanceService.checkIfCarIsInMaintenanceForRentRequestIsSucces(createRentRequest.getCarId(),createRentRequest.getStartDate());
-		checkIfOrderedAdditionalServiceIsUsed(createRentRequest.getOrderedAdditionalServiceId());
 		checkIfCarIsRented(createRentRequest.getCarId());
 		
 		Rent rent = this.modelMapperService.forDto().map(createRentRequest, Rent.class);
 		rent.setRentId(0);
 		rent.setBill(calculatedCityBill(createRentRequest.getRentedCityId(),createRentRequest.getDeliveredCityId())
-				+calculatedServiceBill(createRentRequest.getOrderedAdditionalServiceId()));
+				+calculatedServiceBill(createRentRequest.getAdditionalServices()));
 		rent.setCustomer(this.customerService.getById(createRentRequest.getCorporateCustomerId()));
 		rent.setStartedKm(this.carService.getById(rent.getCar().getCarId()).getData().getCurrentKm());
 		
@@ -197,14 +199,28 @@ public class RentManager implements RentService{
 		}		
 	}
 	
-	private double calculatedServiceBill(Integer orderedAdditionalServiceId) throws BusinessException {
+	private double calculatedCarBill(int carId , LocalDate startDate, LocalDate finishDate) {
+		
+		if(finishDate!=null) {
+			Car car = this.carService.getCar(carId);
+			double rentalDay = (double) ChronoUnit.DAYS.between(startDate, finishDate);
+			double bill= car.getCarDailyPrice() * rentalDay;
+			
+			return bill;
+		}
+		
+		return 0;
+		
+		
+	}
+	
+	private double calculatedServiceBill(List<Integer> additionalServices) throws BusinessException {
 		
 		double lastBill = 0;
 			
-		OrderedAdditionalService orderedAdditionalService = this.orderedAdditionalServiceService.getByIdAsEntity(orderedAdditionalServiceId);
-		
-		for (AdditionalService additionalService : orderedAdditionalService.getAdditionalServices()) {
-			lastBill += additionalService.getAdditionalServiceDailyPrice();
+		for (int i=0; i<additionalServices.size();i++) {
+			AdditionalServiceDto data = this.additionalServiceService.getById(additionalServices.get(i)).getData();
+			lastBill += data.getAdditionalServiceDailyPrice();
 		}
 		
 		return lastBill;
@@ -236,14 +252,6 @@ public class RentManager implements RentService{
 		}	
 	}
 	
-	
-	private void checkIfOrderedAdditionalServiceIsUsed(int id) throws BusinessException {
-		
-		if(this.rentDao.existsByOrderedAdditionalServices_OrderedAdditionalServiceId(id)) {
-			
-			throw new BusinessException(BusinessMessages.ORDEREDADDITIONALSERVICEEXISTS);
-		}
-	}
 
 
 

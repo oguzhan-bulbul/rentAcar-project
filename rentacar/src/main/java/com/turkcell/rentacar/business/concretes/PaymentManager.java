@@ -72,7 +72,6 @@ public class PaymentManager implements PaymentService{
 		Payment payment = new Payment();	
 		payment.setCustomer(rent.getCustomer());
 		payment.setInvoice(this.invoiceService.getByRentId(rentId));
-		payment.setOrderedAdditionalService(rent.getOrderedAdditionalServices());
 		payment.setRent(rent);
 		payment.setTotalAmount(rent.getBill());
 		this.paymentDao.save(payment);

@@ -46,11 +46,12 @@ public class OrderedAdditionalService {
 	private List<AdditionalService> additionalServices;
 	
 	
-	@OneToOne(mappedBy = "orderedAdditionalServices")
+	@OneToOne
+	@JoinColumn(name = "rent_id")
 	private Rent rent;
 	
-	@OneToMany(mappedBy = "orderedAdditionalService")
-	private List<Payment> payment;
+	/*@OneToMany(mappedBy = "orderedAdditionalService")
+	private List<Payment> payment;*/
 	
 	
 

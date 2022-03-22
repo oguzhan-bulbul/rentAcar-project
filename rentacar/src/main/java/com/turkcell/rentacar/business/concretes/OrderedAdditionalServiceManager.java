@@ -105,7 +105,7 @@ public class OrderedAdditionalServiceManager implements OrderedAdditionalService
 				.map(updateOrderedAdditionalServiceRequest, OrderedAdditionalService.class);
 		
 		this.orderedAdditionalServiceDao.save(orderedAdditionalService);
-		updateRent(orderedAdditionalService);
+		//updateRent(orderedAdditionalService);
 		
 		return new SuccessResult("Ordered Service Updated");
 	}
@@ -154,7 +154,7 @@ public class OrderedAdditionalServiceManager implements OrderedAdditionalService
 	}
 	
 	
-	private void updateRent(OrderedAdditionalService orderedAdditionalService) throws BusinessException {
+	/*private void updateRent(OrderedAdditionalService orderedAdditionalService) throws BusinessException {
 		
 		Rent rent = this.rentService.getRentEntityById(orderedAdditionalService.getRent().getRentId());
 		
@@ -162,7 +162,7 @@ public class OrderedAdditionalServiceManager implements OrderedAdditionalService
 		
 		this.rentService.updateRent(rent);
 		
-	}
+	}*/
 
 	@Override
 	public OrderedAdditionalService getEntityByRentId(int rentId) {
