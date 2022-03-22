@@ -114,7 +114,8 @@ public class RentManager implements RentService{
 		Rent rent = this.modelMapperService.forDto().map(createRentRequest, Rent.class);
 		rent.setRentId(0);
 		rent.setBill(calculatedCityBill(createRentRequest.getRentedCityId(),createRentRequest.getDeliveredCityId())
-				+calculatedServiceBill(createRentRequest.getAdditionalServices()));
+				+calculatedServiceBill(createRentRequest.getAdditionalServices())
+				+calculatedCarBill(createRentRequest.getCarId(), createRentRequest.getStartDate(), createRentRequest.getFinishDate()));
 		rent.setCustomer(this.customerService.getById(createRentRequest.getCorporateCustomerId()));
 		rent.setStartedKm(this.carService.getById(rent.getCar().getCarId()).getData().getCurrentKm());
 		

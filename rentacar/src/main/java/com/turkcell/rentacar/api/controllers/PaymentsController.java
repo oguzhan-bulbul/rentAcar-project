@@ -5,7 +5,9 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,13 +41,16 @@ public class PaymentsController {
 	
 	
 	private final PaymentService paymentService;
+	
 	private final PosService posService;
 	private final RentService rentService;
 	private final InvoiceService invoiceService;
 	private final OrderedAdditionalServiceService orderedAdditionalServiceService;
 	
+	
+	
 	@Autowired
-	public PaymentsController(PaymentService paymentService, PosService posService, RentService rentService, InvoiceService invoiceService, OrderedAdditionalServiceService orderedAdditionalServiceService) {
+	public PaymentsController(PaymentService paymentService, @Qualifier("xbank") PosService posService, RentService rentService, InvoiceService invoiceService, OrderedAdditionalServiceService orderedAdditionalServiceService) {
         this.paymentService = paymentService;
 		this.posService = posService;
 		this.rentService = rentService;
@@ -60,7 +65,7 @@ public class PaymentsController {
         return this.paymentService.getAll();
     }
     
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED)
     @PostMapping("/addforindividual")
     Result addForIndividualCustomer(@RequestBody @Valid IndividualPaymentModel paymentModel) throws BusinessException {
     	
@@ -81,9 +86,11 @@ public class PaymentsController {
     @PostMapping("/addforcorporate")
     Result addForCorporateCustomer(@RequestBody @Valid CorporatePaymentModel paymentModel) throws BusinessException {
     	
-    
+    	CreateOrderedAdditionalServiceRequest createOrderedAdditionalServiceRequest = new CreateOrderedAdditionalServiceRequest();
     	
-    	Rent rent = this.rentService.addForCorporateCustomer(paymentModel.getCreateRentForCorporateRequest()).getData();    		
+    	Rent rent = this.rentService.addForCorporateCustomer(paymentModel.getCreateRentForCorporateRequest()).getData();
+    	createOrderedAdditionalServiceRequest.setRentId(rent.getRentId());
+    	createOrderedAdditionalServiceRequest.setAdditionalServices(paymentModel.getCreateRentForCorporateRequest().getAdditionalServices());
     	this.invoiceService.addInvoice(rent.getRentId());
     	this.posService.isCardValid(paymentModel.getCreateCardRequest());
     	this.posService.isPaymentSucces(rent.getBill());  

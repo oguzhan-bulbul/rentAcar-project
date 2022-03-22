@@ -16,7 +16,6 @@ public class CorporatePaymentModel {
 	private CreateRentForCorporateRequest createRentForCorporateRequest;
 	
 	private CreateCardRequest createCardRequest;
-	
-	private CreateOrderedAdditionalServiceRequest createOrderedAdditionalServiceRequest;
+
 
 }

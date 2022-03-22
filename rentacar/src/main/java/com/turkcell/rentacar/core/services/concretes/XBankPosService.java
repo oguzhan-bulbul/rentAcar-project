@@ -2,6 +2,7 @@ package com.turkcell.rentacar.core.services.concretes;
 
 import java.util.Random;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
@@ -13,9 +14,9 @@ import com.turkcell.rentacar.core.utilities.results.SuccessResult;
 
 import lombok.NoArgsConstructor;
 
-@Service("posService")
+@Service
 @NoArgsConstructor
-@Profile("xbank")
+@Qualifier("xbank")
 public class XBankPosService implements PosService{
 	
 	@Override

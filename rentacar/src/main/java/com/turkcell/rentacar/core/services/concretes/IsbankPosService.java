@@ -14,7 +14,7 @@ import com.turkcell.rentacar.core.utilities.results.SuccessResult;
 
 import lombok.NoArgsConstructor;
 
-@Service("posService")
+@Service
 @NoArgsConstructor
 @Primary
 public class IsbankPosService implements PosService{
