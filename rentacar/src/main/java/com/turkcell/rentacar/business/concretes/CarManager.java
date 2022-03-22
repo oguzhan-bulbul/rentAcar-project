@@ -11,6 +11,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import com.turkcell.rentacar.business.abstracts.CarService;
+import com.turkcell.rentacar.business.constants.messages.BusinessMessages;
 import com.turkcell.rentacar.business.dtos.CarDto;
 import com.turkcell.rentacar.business.dtos.CarListDto;
 import com.turkcell.rentacar.business.requests.createRequests.CreateCarRequest;
@@ -163,7 +164,7 @@ public class CarManager implements CarService{
 		
 		if(!this.carDao.existsById(id)) {
 			
-			throw new BusinessException("Car does not exists.");
+			throw new BusinessException(BusinessMessages.CARNOTFOUND);
 			
 		}				
 	}

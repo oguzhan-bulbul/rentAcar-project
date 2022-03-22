@@ -5,6 +5,8 @@ package com.turkcell.rentacar.entities.concretes;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
@@ -18,6 +20,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @PrimaryKeyJoinColumn(name = "corporate_customer_id")
+@Inheritance(strategy = InheritanceType.JOINED)
 @Entity
 @Table(name = "corporate_customers")
 public class CorporateCustomer extends Customer{

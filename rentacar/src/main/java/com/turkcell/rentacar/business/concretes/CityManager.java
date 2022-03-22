@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.turkcell.rentacar.business.abstracts.CityService;
+import com.turkcell.rentacar.business.constants.messages.BusinessMessages;
 import com.turkcell.rentacar.business.dtos.CityDto;
 import com.turkcell.rentacar.business.dtos.CityListDto;
 import com.turkcell.rentacar.business.requests.createRequests.CreateCityRequest;
@@ -90,14 +91,14 @@ public class CityManager implements CityService{
 		
 		if(!this.cityDao.existsById(id)) {
 			
-			throw new BusinessException(" City does not exists.");
+			throw new BusinessException(BusinessMessages.CITYNOTFOUND);
 		}
 	}
 	
 	private void checkIfCityExistsByCityName(CreateCityRequest createCityRequest) throws BusinessException {
 		if(this.cityDao.existsByCityName(createCityRequest.getCityName())) {
 			
-			throw new BusinessException(" City already exists.");
+			throw new BusinessException(BusinessMessages.CITYEXISTS);
 		}
 	}
 

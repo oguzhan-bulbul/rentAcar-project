@@ -36,10 +36,7 @@ public class CreateRentForIndividualRequest {
 	
 	private LocalDate finishDate;
 	
-	@NotNull
-	@Positive
-	private Integer orderedAdditionalServiceId;
-	
+	private int orderedAdditionalServiceId;
 	@NotNull
 	@Positive
 	private int carId;

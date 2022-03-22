@@ -21,9 +21,9 @@ public interface RentService {
 	
 	DataResult<List<RentListDto>> getAllByCarId(int id);
 	
-	Result addForIndividualCustomer(CreateRentForIndividualRequest createRentRequest) throws BusinessException;
+	DataResult<Rent> addForIndividualCustomer(CreateRentForIndividualRequest createRentRequest) throws BusinessException;
 	
-	Result addForCorporateCustomer(CreateRentForCorporateRequest createRentRequest) throws BusinessException;
+	DataResult<Rent> addForCorporateCustomer(CreateRentForCorporateRequest createRentRequest) throws BusinessException;
 	
 	Result endRent(EndRentRequest endRentRequest);
 	
@@ -37,7 +37,7 @@ public interface RentService {
 	
 	Result updateRent(Rent rent) throws BusinessException;
 	
-	Result checkIfCarIsRentedForCarMaintenanceIsSucces(CreateCarMaintenanceRequest createCarMaintenanceRequest) throws BusinessException;
+	Result checkIfCarIsRentedIsSucces(int id) throws BusinessException;
 
 	
 

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.turkcell.rentacar.business.abstracts.AdditionalServiceService;
+import com.turkcell.rentacar.business.constants.messages.BusinessMessages;
 import com.turkcell.rentacar.business.dtos.AdditionalServiceDto;
 import com.turkcell.rentacar.business.dtos.AdditionalServiceListDto;
 import com.turkcell.rentacar.business.requests.createRequests.CreateAdditionalServiceRequest;
@@ -97,7 +98,7 @@ public class AdditionalServiceManager implements AdditionalServiceService{
 		
 		if(!this.additionalServiceDao.existsById(id)) {
 			
-			throw new BusinessException("Additional Service does not exists.");
+			throw new BusinessException(BusinessMessages.ADDITIONALSERVICENOTFOUND);
 		}
 	}
 	
@@ -105,7 +106,7 @@ public class AdditionalServiceManager implements AdditionalServiceService{
 		
 		if(this.additionalServiceDao.existsByAdditionalServiceName(createAdditionalServiceRequest.getAdditionalServiceName())) {
 			
-			throw new BusinessException("Additional Service already exists.");
+			throw new BusinessException(BusinessMessages.ADDITIONALSERVICENOTFOUND);
 		}
 	}
 

@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import com.turkcell.rentacar.business.abstracts.CorporateCustomerService;
+import com.turkcell.rentacar.business.constants.messages.BusinessMessages;
 import com.turkcell.rentacar.business.dtos.CorporateCustomerDto;
 import com.turkcell.rentacar.business.dtos.CorporateCustomerListDto;
 import com.turkcell.rentacar.business.requests.createRequests.CreateCorporateCustomerRequest;
@@ -85,20 +86,20 @@ public class CorporateCustomerManager implements CorporateCustomerService{
 		return new SuccessResult("Corporate Customer deleted.");
 	}
 	
-private void checkIfCorporateCustomerDoesNotExistById(int id) throws BusinessException{
+	private void checkIfCorporateCustomerDoesNotExistById(int id) throws BusinessException{
 		
 		if(!this.corporateCustomerDao.existsById(id)) {
 			
-			throw new BusinessException("Corporate Customer does not exists.");
+			throw new BusinessException(BusinessMessages.CORPORATECUSTOMERNOTFOUND);
 			
 		}				
 	}
 
-@Override
-public CorporateCustomer getByIdCorporateCustomer(int id) {
-	
-	return this.corporateCustomerDao.getById(id);
-}
+	@Override
+	public CorporateCustomer getByIdCorporateCustomer(int id) {
+		
+		return this.corporateCustomerDao.getById(id);
+	}
 	
 	
 	

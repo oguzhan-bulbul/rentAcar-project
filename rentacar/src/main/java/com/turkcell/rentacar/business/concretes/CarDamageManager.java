@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.turkcell.rentacar.business.abstracts.CarDamageService;
 import com.turkcell.rentacar.business.abstracts.CarService;
+import com.turkcell.rentacar.business.constants.messages.BusinessMessages;
 import com.turkcell.rentacar.business.dtos.CarDamageDto;
 import com.turkcell.rentacar.business.dtos.CarDamageListDto;
 import com.turkcell.rentacar.business.requests.createRequests.CreateCarDamageRequest;
@@ -98,7 +99,7 @@ public class CarDamageManager implements CarDamageService{
 		
 		if(!this.carDamageDao.existsById(id)) {
 			
-			throw new BusinessException("Car does not exists.");
+			throw new BusinessException(BusinessMessages.CARDAMAGENOTFOUND);
 			
 		}				
 	}

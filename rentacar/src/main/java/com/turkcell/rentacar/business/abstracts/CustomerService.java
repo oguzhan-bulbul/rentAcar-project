@@ -6,6 +6,4 @@ public interface CustomerService {
 	
 	Customer getById(int id);
 	
-	
-
 }

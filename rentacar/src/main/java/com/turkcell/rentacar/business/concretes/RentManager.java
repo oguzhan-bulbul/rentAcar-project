@@ -16,6 +16,7 @@ import com.turkcell.rentacar.business.abstracts.CustomerService;
 import com.turkcell.rentacar.business.abstracts.InvoiceService;
 import com.turkcell.rentacar.business.abstracts.OrderedAdditionalServiceService;
 import com.turkcell.rentacar.business.abstracts.RentService;
+import com.turkcell.rentacar.business.constants.messages.BusinessMessages;
 import com.turkcell.rentacar.business.dtos.RentDto;
 import com.turkcell.rentacar.business.dtos.RentListDto;
 import com.turkcell.rentacar.business.requests.createRequests.CreateCarMaintenanceRequest;
@@ -85,7 +86,7 @@ public class RentManager implements RentService{
 	}
 
 	@Override
-	public Result addForIndividualCustomer(CreateRentForIndividualRequest createRentRequest) throws BusinessException {
+	public DataResult<Rent> addForIndividualCustomer(CreateRentForIndividualRequest createRentRequest) throws BusinessException {
 		
 		this.carMaintenanceService.checkIfCarIsInMaintenanceForRentRequestIsSucces(createRentRequest.getCarId(),createRentRequest.getStartDate());
 		checkIfOrderedAdditionalServiceIsUsed(createRentRequest.getOrderedAdditionalServiceId());
@@ -98,11 +99,11 @@ public class RentManager implements RentService{
 		rent.setCustomer(this.customerService.getById(createRentRequest.getIndividualCustomerId()));	
 		this.rentDao.save(rent);
 					
-		return new SuccessResult("Rent is created");
+		return new SuccessDataResult<Rent>(rent,"Rent is created");
 	}
 	
 	@Override
-	public Result addForCorporateCustomer(CreateRentForCorporateRequest createRentRequest) throws BusinessException {
+	public DataResult<Rent> addForCorporateCustomer(CreateRentForCorporateRequest createRentRequest) throws BusinessException {
 		
 		this.carMaintenanceService.checkIfCarIsInMaintenanceForRentRequestIsSucces(createRentRequest.getCarId(),createRentRequest.getStartDate());
 		checkIfOrderedAdditionalServiceIsUsed(createRentRequest.getOrderedAdditionalServiceId());
@@ -117,7 +118,7 @@ public class RentManager implements RentService{
 		
 		this.rentDao.save(rent);
 					
-		return new SuccessResult("Rent is created");
+		return new SuccessDataResult<Rent>(rent,"Rent is created");
 	}
 	
 
@@ -179,9 +180,9 @@ public class RentManager implements RentService{
 		return new SuccessResult("Rent updated");
 	}
 	
-	public Result checkIfCarIsRentedForCarMaintenanceIsSucces(CreateCarMaintenanceRequest createCarMaintenanceRequest) throws BusinessException {
+	public Result checkIfCarIsRentedIsSucces(int carId) throws BusinessException {
 		
-		checkIfCarIsRentedForCarMaintenance(createCarMaintenanceRequest);	
+		checkIfCarIsRented(carId);	
 		
 		return new SuccessResult("Car is available for maintenance");		
 	}
@@ -192,7 +193,7 @@ public class RentManager implements RentService{
 		
 		if(!this.rentDao.existsById(id)) {
 			
-			throw new BusinessException("Rent does not exists");	
+			throw new BusinessException(BusinessMessages.RENTNOTFOUND);	
 		}		
 	}
 	
@@ -229,31 +230,18 @@ public class RentManager implements RentService{
 			
 			if(rent.getFinishDate() == null || rent.getFinishDate().isAfter(LocalDate.now())) {
 				
-				throw new BusinessException("Car is in rent now.");
+				throw new BusinessException(BusinessMessages.CARINRENT);
 				
 			}
 		}	
 	}
 	
-	private void checkIfCarIsRentedForCarMaintenance(CreateCarMaintenanceRequest createCarMaintenanceRequest) throws BusinessException {
-		
-		List<Rent> result = this.rentDao.getAllByCar_CarId(createCarMaintenanceRequest.getCarId());		
-		
-		for (Rent rent : result) {
-			
-			if(rent.getFinishDate() == null || rent.getFinishDate().isAfter(LocalDate.now())) {
-				
-				throw new BusinessException("Car is in rent now.");
-				
-			}
-		}	
-	}
 	
 	private void checkIfOrderedAdditionalServiceIsUsed(int id) throws BusinessException {
 		
 		if(this.rentDao.existsByOrderedAdditionalServices_OrderedAdditionalServiceId(id)) {
 			
-			throw new BusinessException("Ordered Service already used.rent");
+			throw new BusinessException(BusinessMessages.ORDEREDADDITIONALSERVICEEXISTS);
 		}
 	}
 

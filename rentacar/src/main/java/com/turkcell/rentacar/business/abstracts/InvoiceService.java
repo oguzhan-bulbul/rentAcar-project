@@ -26,7 +26,7 @@ public interface InvoiceService {
 	
 	Result delete(DeleteInvoiceRequest deleteInvoiceRequest) throws BusinessException;
 	
-	Result addInvoice(Invoice invoice) throws BusinessException;
+	Result addInvoice(int rentId) throws BusinessException;
 	
 	DataResult<List<InvoiceListDto>> getAllByCustomerId(int id);
 	

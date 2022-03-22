@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.turkcell.rentacar.business.abstracts.ColorService;
+import com.turkcell.rentacar.business.constants.messages.BusinessMessages;
 import com.turkcell.rentacar.business.dtos.ColorDto;
 import com.turkcell.rentacar.business.dtos.ColorListDto;
 import com.turkcell.rentacar.business.requests.createRequests.CreateColorRequest;
@@ -103,7 +104,7 @@ public class ColorManager implements ColorService{
 		
 		if(this.colorDao.existsByColorName(name)) {
 			
-			throw new BusinessException("Color is already exists.");
+			throw new BusinessException(BusinessMessages.COLOREXISTS);
 			
 		}		
 	}
@@ -112,7 +113,7 @@ public class ColorManager implements ColorService{
 		
 		if(!this.colorDao.existsById(id)) {
 			
-			throw new BusinessException("Color does not exists");
+			throw new BusinessException(BusinessMessages.COLORNOTFOUND);
 			
 		}		
 	}

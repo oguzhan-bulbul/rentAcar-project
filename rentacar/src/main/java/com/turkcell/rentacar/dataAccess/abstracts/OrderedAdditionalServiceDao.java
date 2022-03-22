@@ -10,6 +10,8 @@ import com.turkcell.rentacar.entities.concretes.OrderedAdditionalService;
 @Repository
 public interface OrderedAdditionalServiceDao extends JpaRepository<OrderedAdditionalService, Integer>{
 	
+	OrderedAdditionalService getByRent_RentId(int rentId);
+	
 	
 	
 	

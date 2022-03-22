@@ -1,14 +1,18 @@
 package com.turkcell.rentacar.entities.concretes;
 
 import java.time.LocalDate;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -61,12 +65,15 @@ public class Rent {
 	@JoinColumn(name = "ordered_additional_service_id")
 	private OrderedAdditionalService orderedAdditionalServices;
 	
-	/*@OneToOne(mappedBy = "rent" ,cascade = CascadeType.ALL , fetch = FetchType.LAZY,orphanRemoval = true)
+	/*@OneToOne(mappedBy = "rent" ,cascade = CascadeType.ALL , fetch = FetchType.LAZY)
 	private Invoice invoice;*/
 	
 	@ManyToOne
 	@JoinColumn(name = "customer_id")
 	private Customer customer;
+	
+	@OneToMany(mappedBy = "rent")
+	private List<Payment> payment;
 	
 }
 

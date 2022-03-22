@@ -1,13 +1,15 @@
 package com.turkcell.rentacar.business.concretes;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
 import com.turkcell.rentacar.business.abstracts.InvoiceService;
-
+import com.turkcell.rentacar.business.abstracts.RentService;
+import com.turkcell.rentacar.business.constants.messages.BusinessMessages;
 import com.turkcell.rentacar.business.dtos.InvoiceDto;
 import com.turkcell.rentacar.business.dtos.InvoiceListDto;
 import com.turkcell.rentacar.business.requests.createRequests.CreateInvoiceRequest;
@@ -21,16 +23,19 @@ import com.turkcell.rentacar.core.utilities.results.SuccessDataResult;
 import com.turkcell.rentacar.core.utilities.results.SuccessResult;
 import com.turkcell.rentacar.dataAccess.abstracts.InvoiceDao;
 import com.turkcell.rentacar.entities.concretes.Invoice;
+import com.turkcell.rentacar.entities.concretes.Rent;
 
 @Service
 public class InvoiceManager implements InvoiceService{
 	
 	private InvoiceDao invoiceDao;
 	private ModelMapperService modelMapperService;
+	private final RentService rentService;
 	
 	
-	public InvoiceManager(InvoiceDao invoiceDao, ModelMapperService modelMapperService) {
+	public InvoiceManager(InvoiceDao invoiceDao, ModelMapperService modelMapperService, RentService rentService) {
 
+		this.rentService = rentService;
 		this.invoiceDao = invoiceDao;
 		this.modelMapperService = modelMapperService;
 		
@@ -123,9 +128,11 @@ public class InvoiceManager implements InvoiceService{
 	}
 
 	@Override
-	public Result addInvoice(Invoice invoice) throws BusinessException {
+	public Result addInvoice(int rentId) throws BusinessException {
 		
-		this.invoiceDao.saveAndFlush(invoice);
+		Invoice invoice = new Invoice();
+		setInvoiceFields(invoice, rentId);
+		this.invoiceDao.save(invoice);
 		
 		return new SuccessResult("Invoice saved");
 	}
@@ -138,9 +145,22 @@ public class InvoiceManager implements InvoiceService{
 		
 		if(!this.invoiceDao.existsById(id)) {
 			
-			throw new BusinessException("Invoice does not exists.");
+			throw new BusinessException(BusinessMessages.INVOICENOTFOUND);
 			
 		}				
+	}
+	
+	private void setInvoiceFields(Invoice invoice , int rentId) {
+		
+		Rent rent = this.rentService.getRentEntityById(rentId);
+		invoice.setRent(rent);
+		invoice.setTotalRentDay((int)ChronoUnit.DAYS.between(rent.getStartDate(), rent.getFinishDate()));
+        invoice.setCustomer(rent.getCustomer());
+        invoice.setTotalBill(rent.getBill());
+        invoice.setStartDate(rent.getStartDate());
+        invoice.setFinishDate(rent.getFinishDate());
+        invoice.setCreationDate(LocalDate.now());
+        invoice.setInvoiceNo(0);
 	}
 
 	

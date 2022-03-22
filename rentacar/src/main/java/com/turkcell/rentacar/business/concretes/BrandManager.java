@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.turkcell.rentacar.business.abstracts.BrandService;
+import com.turkcell.rentacar.business.constants.messages.BusinessMessages;
 import com.turkcell.rentacar.business.dtos.BrandDto;
 import com.turkcell.rentacar.business.dtos.BrandListDto;
 import com.turkcell.rentacar.business.requests.createRequests.CreateBrandRequest;
@@ -87,7 +88,12 @@ public class BrandManager implements BrandService{
 		return new SuccessResult("The brand is deleted");		
 	}
 	
-private void checkIfBrandExistsByName(String name) throws BusinessException{
+	public Result checkIfBrandDoesNotExists(int id) throws BusinessException {
+		checkIfBrandDoesNotExistsById(id);
+		return new SuccessResult("Brand exists.");
+	}
+	
+	private void checkIfBrandExistsByName(String name) throws BusinessException{
 		
 		if(this.brandDao.existsByBrandName(name)) {
 			
@@ -99,7 +105,7 @@ private void checkIfBrandExistsByName(String name) throws BusinessException{
 		
 		if(!this.brandDao.existsById(id)) {
 			
-			throw new BusinessException("Brand does not exists");
+			throw new BusinessException(BusinessMessages.BRANDNOTFOUND);
 			
 		}		
 	}

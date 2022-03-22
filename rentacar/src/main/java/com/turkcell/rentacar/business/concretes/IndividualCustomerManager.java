@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import com.turkcell.rentacar.business.abstracts.IndividualCustomerService;
+import com.turkcell.rentacar.business.constants.messages.BusinessMessages;
 import com.turkcell.rentacar.business.dtos.IndividualCustomerDto;
 import com.turkcell.rentacar.business.dtos.IndividualCustomerListDto;
 import com.turkcell.rentacar.business.requests.createRequests.CreateIndividualCustomerRequest;
@@ -90,7 +91,7 @@ public class IndividualCustomerManager implements IndividualCustomerService{
 		
 		if(!this.individualCustomerDao.existsById(id)) {
 			
-			throw new BusinessException("Individual Customer does not exists.");
+			throw new BusinessException(BusinessMessages.INDIVIDUALCUSTOMERNOTFOUND);
 			
 		}				
 	}

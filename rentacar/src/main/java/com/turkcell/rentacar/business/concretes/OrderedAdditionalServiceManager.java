@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.turkcell.rentacar.business.abstracts.AdditionalServiceService;
 import com.turkcell.rentacar.business.abstracts.OrderedAdditionalServiceService;
 import com.turkcell.rentacar.business.abstracts.RentService;
+import com.turkcell.rentacar.business.constants.messages.BusinessMessages;
 import com.turkcell.rentacar.business.dtos.AdditionalServiceDto;
 import com.turkcell.rentacar.business.dtos.OrderedAdditionalServiceDto;
 import com.turkcell.rentacar.business.dtos.OrderedAdditionalServiceListDto;
@@ -59,7 +60,7 @@ public class OrderedAdditionalServiceManager implements OrderedAdditionalService
 	}
 
 	@Override
-	public Result add(CreateOrderedAdditionalServiceRequest createOrderedAdditionalServiceRequest)
+	public DataResult<OrderedAdditionalService> add(CreateOrderedAdditionalServiceRequest createOrderedAdditionalServiceRequest)
 			throws BusinessException {
 		
 		List<AdditionalService> services = new ArrayList<>();
@@ -75,9 +76,11 @@ public class OrderedAdditionalServiceManager implements OrderedAdditionalService
 		orderedAdditionalService.setAdditionalServices(services);
 		
 		
+		
+		
 		this.orderedAdditionalServiceDao.save(orderedAdditionalService);
 		
-		return new SuccessResult("Ordered Service saved.");
+		return new SuccessDataResult<OrderedAdditionalService>(orderedAdditionalService,"Ordered Service saved.");
 	}
 
 	@Override
@@ -138,7 +141,7 @@ public class OrderedAdditionalServiceManager implements OrderedAdditionalService
 		
 		if(!this.orderedAdditionalServiceDao.existsById(id)) {
 			
-			throw new BusinessException(" Ordered Additional Service does not exists.");
+			throw new BusinessException(BusinessMessages.ORDEREDADDITIONALSERVICENOTFOUND);
 		}
 	}
 	
@@ -146,7 +149,7 @@ public class OrderedAdditionalServiceManager implements OrderedAdditionalService
 		
 		if(this.orderedAdditionalServiceDao.existsById(id)) {
 			
-			throw new BusinessException(" Ordered Additional Service already used. ");
+			throw new BusinessException(BusinessMessages.ORDEREDADDITIONALSERVICEEXISTS);
 		}
 	}
 	
@@ -159,6 +162,12 @@ public class OrderedAdditionalServiceManager implements OrderedAdditionalService
 		
 		this.rentService.updateRent(rent);
 		
+	}
+
+	@Override
+	public OrderedAdditionalService getEntityByRentId(int rentId) {
+		
+		return this.orderedAdditionalServiceDao.getByRent_RentId(rentId);
 	}
 
 }

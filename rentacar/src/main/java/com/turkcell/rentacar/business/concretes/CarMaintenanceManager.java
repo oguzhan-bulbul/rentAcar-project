@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.turkcell.rentacar.business.abstracts.CarMaintenanceService;
 import com.turkcell.rentacar.business.abstracts.RentService;
+import com.turkcell.rentacar.business.constants.messages.BusinessMessages;
 import com.turkcell.rentacar.business.dtos.CarMaintenanceDto;
 import com.turkcell.rentacar.business.dtos.CarMaintenanceListDto;
 import com.turkcell.rentacar.business.requests.createRequests.CreateCarMaintenanceRequest;
@@ -58,7 +59,7 @@ public class CarMaintenanceManager implements CarMaintenanceService{
 	@Override
 	public Result add(CreateCarMaintenanceRequest createCarMaintenanceRequest) throws BusinessException {
 				
-		this.rentService.checkIfCarIsRentedForCarMaintenanceIsSucces(createCarMaintenanceRequest);
+		this.rentService.checkIfCarIsRentedIsSucces(createCarMaintenanceRequest.getCarId());
 		checkIfCarIsInMaintenance(createCarMaintenanceRequest);
 		
 		CarMaintenance carMaintenance = this.modelMapperService.forRequest()
@@ -116,7 +117,7 @@ public class CarMaintenanceManager implements CarMaintenanceService{
 	
 	public Result checkIfCarIsInMaintenanceForRentRequestIsSucces(int carId, LocalDate startDate) throws BusinessException {
 		
-		checkIfCarIsInMaintenanceForRentRequest(carId,startDate);
+		checkIfCarIsInMaintenance(carId,startDate);
 		
 		return new SuccessResult("Car is available");
 		
@@ -126,7 +127,7 @@ public class CarMaintenanceManager implements CarMaintenanceService{
 		
 		if(!this.carMaintenanceDao.existsById(id)) {
 			
-			throw new BusinessException("Car Maintenance does not exists.");
+			throw new BusinessException(BusinessMessages.CARMAINTENANCENOTFOUND);
 			
 		}				
 	}
@@ -138,20 +139,20 @@ public class CarMaintenanceManager implements CarMaintenanceService{
         for (CarMaintenance carMaintenance : response) {
 			if(carMaintenance.getReturnDate() == null) {
 				
-				throw new BusinessException("Car is in maintenance");
+				throw new BusinessException(BusinessMessages.CARINMAINTENANCE);
 				
 			}
 		}
 	}
 	
-	private void checkIfCarIsInMaintenanceForRentRequest(int carId, LocalDate startDate) throws BusinessException {
+	private void checkIfCarIsInMaintenance(int carId, LocalDate startDate) throws BusinessException {
 		
 		List<CarMaintenance> result = this.carMaintenanceDao.getAllByCar_CarId(carId);
           
         for (CarMaintenance carMaintenance : result) {
 			if(carMaintenance.getReturnDate() == null || startDate.isBefore(carMaintenance.getReturnDate())) {
 				
-				throw new BusinessException("Car is in maintenance");
+				throw new BusinessException(BusinessMessages.CARINMAINTENANCE);
 				
 			}
 		}
