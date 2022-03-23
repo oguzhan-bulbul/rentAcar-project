@@ -18,9 +18,11 @@ public interface OrderedAdditionalServiceService {
 	
 	DataResult<List<OrderedAdditionalServiceListDto>> getAll();
 		
-	public DataResult<OrderedAdditionalService> add(CreateOrderedAdditionalServiceRequest createOrderedAdditionalServiceRequest)
+	DataResult<OrderedAdditionalService> add(CreateOrderedAdditionalServiceRequest createOrderedAdditionalServiceRequest)
 			throws BusinessException;
 	
+	DataResult<OrderedAdditionalService> addWithFields(int rentId , List<Integer> additionalServices)
+			throws BusinessException;
 	DataResult<OrderedAdditionalServiceDto> getById(int id) throws BusinessException;
 	
 	Result update(UpdateOrderedAdditionalServiceRequest updateOrderedAdditionalServiceRequest) throws BusinessException;

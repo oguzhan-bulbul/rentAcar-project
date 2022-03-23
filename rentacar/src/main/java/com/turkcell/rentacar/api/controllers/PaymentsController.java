@@ -68,31 +68,30 @@ public class PaymentsController {
     @Transactional(propagation = Propagation.REQUIRED)
     @PostMapping("/addforindividual")
     Result addForIndividualCustomer(@RequestBody @Valid IndividualPaymentModel paymentModel) throws BusinessException {
-    	
-    	CreateOrderedAdditionalServiceRequest createOrderedAdditionalServiceRequest = new CreateOrderedAdditionalServiceRequest();
- 
-    	
+    		
     	Rent rent = this.rentService.addForIndividualCustomer(paymentModel.getCreateRentForIndividualRequest()).getData();
-    	createOrderedAdditionalServiceRequest.setRentId(rent.getRentId());
-    	createOrderedAdditionalServiceRequest.setAdditionalServices(paymentModel.getCreateRentForIndividualRequest().getAdditionalServices());
-    	this.orderedAdditionalServiceService.add(createOrderedAdditionalServiceRequest);
+    	
+    	this.orderedAdditionalServiceService.addWithFields(rent.getRentId(), paymentModel.getCreateRentForIndividualRequest().getAdditionalServices());
+    	
     	this.invoiceService.addInvoice(rent.getRentId());
+    	
     	this.posService.isCardValid(paymentModel.getCreateCardRequest());
-    	this.posService.isPaymentSucces(rent.getBill()); 	
+    	
+    	this.posService.isPaymentSucces(rent.getBill()); 
+    	
         return this.paymentService.add(rent.getRentId());
     }
     
     @Transactional
     @PostMapping("/addforcorporate")
     Result addForCorporateCustomer(@RequestBody @Valid CorporatePaymentModel paymentModel) throws BusinessException {
-    	
-    	CreateOrderedAdditionalServiceRequest createOrderedAdditionalServiceRequest = new CreateOrderedAdditionalServiceRequest();
-    	
+    		
     	Rent rent = this.rentService.addForCorporateCustomer(paymentModel.getCreateRentForCorporateRequest()).getData();
-    	createOrderedAdditionalServiceRequest.setRentId(rent.getRentId());
-    	createOrderedAdditionalServiceRequest.setAdditionalServices(paymentModel.getCreateRentForCorporateRequest().getAdditionalServices());
-    	this.invoiceService.addInvoice(rent.getRentId());
+    	
+    	this.orderedAdditionalServiceService.addWithFields(rent.getRentId(), paymentModel.getCreateRentForCorporateRequest().getAdditionalServices());
+    	
     	this.posService.isCardValid(paymentModel.getCreateCardRequest());
+    	
     	this.posService.isPaymentSucces(rent.getBill());  
     	
         return this.paymentService.add(rent.getRentId());

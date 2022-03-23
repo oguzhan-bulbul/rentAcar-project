@@ -82,6 +82,26 @@ public class OrderedAdditionalServiceManager implements OrderedAdditionalService
 		
 		return new SuccessDataResult<OrderedAdditionalService>(orderedAdditionalService,"Ordered Service saved.");
 	}
+	
+	@Override
+	public DataResult<OrderedAdditionalService> addWithFields(int rentId, List<Integer> additionalServices)
+			throws BusinessException {
+		
+		List<AdditionalService> services = new ArrayList<>();
+		for (Integer id : additionalServices) {
+			
+			AdditionalServiceDto data = this.additionalServiceService.getById(id).getData();
+			AdditionalService map = this.modelMapperService.forDto().map(data, AdditionalService.class);
+			services.add(map);		
+		}
+		
+		OrderedAdditionalService orderedAdditionalService = new OrderedAdditionalService();
+		orderedAdditionalService.setRent(this.rentService.getRentEntityById(rentId));
+		orderedAdditionalService.setAdditionalServices(services);	
+		this.orderedAdditionalServiceDao.save(orderedAdditionalService);
+		
+		return new SuccessDataResult<OrderedAdditionalService>(orderedAdditionalService,"Ordered Service saved.");
+	}
 
 	@Override
 	public DataResult<OrderedAdditionalServiceDto> getById(int id) throws BusinessException {
@@ -169,5 +189,7 @@ public class OrderedAdditionalServiceManager implements OrderedAdditionalService
 		
 		return this.orderedAdditionalServiceDao.getByRent_RentId(rentId);
 	}
+
+
 
 }
