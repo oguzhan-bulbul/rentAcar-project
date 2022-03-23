@@ -27,9 +27,9 @@ public interface RentService {
 	
 	DataResult<Rent> addForCorporateCustomer(CreateRentForCorporateRequest createRentRequest) throws BusinessException;
 	
-	Result endRentForIndividual(IndividualEndRentModel paymentModel);
+	Result endRentForIndividual(IndividualEndRentModel paymentModel) throws BusinessException;
 	
-	Result endRentForCorporate(CorporateEndRentModel paymentModel);
+	Result endRentForCorporate(CorporateEndRentModel paymentModel) throws BusinessException;
 	
 	DataResult<RentDto> getById(int id) throws BusinessException;
 	

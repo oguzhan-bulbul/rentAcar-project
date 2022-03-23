@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.turkcell.rentacar.api.models.CorporateEndRentModel;
+import com.turkcell.rentacar.api.models.CorporatePaymentModel;
 import com.turkcell.rentacar.api.models.IndividualEndRentModel;
 import com.turkcell.rentacar.api.models.IndividualPaymentModel;
 import com.turkcell.rentacar.api.models.SavedCreditCard;
@@ -140,24 +141,27 @@ public class RentManager implements RentService{
 	
 
 	@Override
-	public Result endRentForIndividual(IndividualEndRentModel paymentmodel) {
+	public Result endRentForIndividual(IndividualEndRentModel individualEndRentModel) throws BusinessException {
 		
-		Rent rent = this.rentDao.getById(endRentRequest.getRentId());
+		Rent rent = this.rentDao.getById(individualEndRentModel.getEndRentRequest().getRentId());
 		
-		rent.setReturnKm(endRentRequest.getReturnedKm());
+		rent.setReturnKm(individualEndRentModel.getEndRentRequest().getReturnedKm());
 		
-		this.carService.updateCarKm(rent.getCar().getCarId(), endRentRequest.getReturnedKm());
-		this.rentDao.save(rent);
+		this.carService.updateCarKm(rent.getCar().getCarId(), individualEndRentModel.getEndRentRequest().getReturnedKm());
+		checkIfReturnedDayIsOutOfDateForIndividual(individualEndRentModel, rent);
+		
 			
 		return new SuccessResult("Rent is done");
 	}
 	
 	@Override
-	public Result endRentForCorporate(CorporateEndRentModel paymentModel) {
+	public Result endRentForCorporate(CorporateEndRentModel corporateEndRentModel) throws BusinessException {
 		
-		Rent rent = this.rentDao.getById(paymentModel.getEndRentRequest().getRentId());
-		rent.setReturnKm(paymentModel.getEndRentRequest().getReturnedKm());
-		this.carService.updateCarKm(rent.getCar().getCarId(), paymentModel.getEndRentRequest().getReturnedKm());
+		Rent rent = this.rentDao.getById(corporateEndRentModel.getEndRentRequest().getRentId());
+		rent.setReturnKm(corporateEndRentModel.getEndRentRequest().getReturnedKm());
+		this.rentDao.save(rent);
+		this.carService.updateCarKm(rent.getCar().getCarId(), corporateEndRentModel.getEndRentRequest().getReturnedKm());
+		checkIfReturnedDayIsOutOfDateForCorporate(corporateEndRentModel, rent);
 		
 			
 		return new SuccessResult("Rent is done");
@@ -280,26 +284,31 @@ public class RentManager implements RentService{
 	
 	private void checkIfReturnedDayIsOutOfDateForIndividual(IndividualEndRentModel individualEndRentModel , Rent rent) throws BusinessException {
 		
-		if(individualEndRentModel.getEndRentRequest().getReturnDate() != rent.getFinishDate()) {			
+		if(individualEndRentModel.getEndRentRequest().getReturnDate() != rent.getFinishDate()) {
+			
 			CreateRentForIndividualRequest createRentForIndividualRequest = manuelMappingForCreateRentForIndividual(rent);
 			createRentForIndividualRequest.setStartDate(rent.getFinishDate());
 			createRentForIndividualRequest.setFinishDate(individualEndRentModel.getEndRentRequest().getReturnDate());
 			createRentForIndividualRequest.setIndividualCustomerId(rent.getCustomer().getCustomerId());
 			
 			IndividualPaymentModel individualPaymentModel = new IndividualPaymentModel();
-			SavedCreditCard savedCreditCard;
 			individualPaymentModel.setCreateRentForIndividualRequest(createRentForIndividualRequest);
 			individualPaymentModel.setCreateCardRequest(individualEndRentModel.getCreateCardRequest());
-			this.paymentService.makePaymentForIndividualCustomer(individualPaymentModel);
+			this.paymentService.makePaymentForIndividualCustomer(individualPaymentModel,SavedCreditCard.NO);
 		}
 	}
 	
-	private void checkIfReturnedDayIsOutOfDateForCorporate(CorporateEndRentModel corporateEndRentModel , Rent rent) {
+	private void checkIfReturnedDayIsOutOfDateForCorporate(CorporateEndRentModel corporateEndRentModel , Rent rent) throws BusinessException {
 		
 		if(corporateEndRentModel.getEndRentRequest().getReturnDate() != rent.getFinishDate()) {			
-			Rent rentToCreateNew = rent;
-			rentToCreateNew.setStartDate(rent.getFinishDate());
-			rentToCreateNew.setFinishDate(corporateEndRentModel.getEndRentRequest().getReturnDate());	
+			CreateRentForCorporateRequest createRentForCorporateRequest = manuelMappingForCreateRentForCorporate(rent);
+			createRentForCorporateRequest.setStartDate(rent.getFinishDate());
+			createRentForCorporateRequest.setFinishDate(corporateEndRentModel.getEndRentRequest().getReturnDate());
+			
+			CorporatePaymentModel corporatePaymentModel = new CorporatePaymentModel();
+			corporatePaymentModel.setCreateRentForCorporateRequest(createRentForCorporateRequest);
+			corporatePaymentModel.setCreateCardRequest(corporateEndRentModel.getCreateCardRequest());
+			this.paymentService.makePaymentForCorporateCustomer(corporatePaymentModel, SavedCreditCard.NO);
 		}
 	}
 	
@@ -314,13 +323,27 @@ public class RentManager implements RentService{
 		createRentForIndividualRequest.setAdditionalServices(additionalServices);
 		createRentForIndividualRequest.setDeliveredCityId(rent.getDeliveredCity().getCityId());
 		createRentForIndividualRequest.setRentedCityId(rent.getDeliveredCity().getCityId());
+		createRentForIndividualRequest.setIndividualCustomerId(rent.getCustomer().getCustomerId());
 		
 		return createRentForIndividualRequest;
 		
 	}
 	
-	private CreateRentForCorporateRequest manuelMappingForCreateRentForCorporate(Rent rent) {
-		return null;
+	private CreateRentForCorporateRequest manuelMappingForCreateRentForCorporate(Rent rent) throws BusinessException {
+		
+		CreateRentForCorporateRequest createRentForCorporateRequest = new CreateRentForCorporateRequest();
+		createRentForCorporateRequest.setCarId(rent.getCar().getCarId());
+		
+		List<Integer> additionalServices = new ArrayList<Integer>();
+		for(AdditionalService additionalService : this.orderedAdditionalServiceService.getByIdAsEntity(rent.getRentId()).getAdditionalServices()) {
+			additionalServices.add(additionalService.getAdditionalServiceId());	
+		}
+		createRentForCorporateRequest.setAdditionalServices(additionalServices);
+		createRentForCorporateRequest.setDeliveredCityId(rent.getDeliveredCity().getCityId());
+		createRentForCorporateRequest.setRentedCityId(rent.getDeliveredCity().getCityId());
+		createRentForCorporateRequest.setCorporateCustomerId(rent.getCustomer().getCustomerId());
+		
+		return createRentForCorporateRequest;
 		
 	}
 	
