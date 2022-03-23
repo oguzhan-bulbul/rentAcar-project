@@ -4,17 +4,17 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.turkcell.rentacar.business.abstracts.CustomerService;
+import com.turkcell.rentacar.api.models.CorporatePaymentModel;
+import com.turkcell.rentacar.api.models.IndividualPaymentModel;
 import com.turkcell.rentacar.business.abstracts.InvoiceService;
 import com.turkcell.rentacar.business.abstracts.OrderedAdditionalServiceService;
 import com.turkcell.rentacar.business.abstracts.PaymentService;
+import com.turkcell.rentacar.business.abstracts.PosService;
 import com.turkcell.rentacar.business.abstracts.RentService;
 import com.turkcell.rentacar.business.dtos.PaymentDto;
 import com.turkcell.rentacar.business.dtos.PaymentListDto;
-import com.turkcell.rentacar.business.dtos.RentDto;
-import com.turkcell.rentacar.business.dtos.RentListDto;
-import com.turkcell.rentacar.business.requests.createRequests.CreatePaymentRequest;
 import com.turkcell.rentacar.business.requests.deleteRequests.DeletePaymentRequest;
 import com.turkcell.rentacar.business.requests.updateRequests.UpdatePaymentRequest;
 import com.turkcell.rentacar.core.utilities.exceptions.BusinessException;
@@ -24,7 +24,6 @@ import com.turkcell.rentacar.core.utilities.results.Result;
 import com.turkcell.rentacar.core.utilities.results.SuccessDataResult;
 import com.turkcell.rentacar.core.utilities.results.SuccessResult;
 import com.turkcell.rentacar.dataAccess.abstracts.PaymentDao;
-import com.turkcell.rentacar.entities.concretes.OrderedAdditionalService;
 import com.turkcell.rentacar.entities.concretes.Payment;
 import com.turkcell.rentacar.entities.concretes.Rent;
 
@@ -35,22 +34,21 @@ public class PaymentManager implements PaymentService{
 	private final ModelMapperService modelMapperService;
 	private final RentService rentService;
 	private final OrderedAdditionalServiceService orderedAdditionalServiceService;
-	private final CustomerService customerService;
 	private final InvoiceService invoiceService;
+	private final PosService posService;
 	
 	
-	public PaymentManager(PaymentDao paymentDao, ModelMapperService modelMapperService,
-			CustomerService customerService, 
+	public PaymentManager(PaymentDao paymentDao, ModelMapperService modelMapperService, 
 			InvoiceService invoiceService, 
 			RentService rentService, 
-			OrderedAdditionalServiceService orderedAdditionalServiceService) {
+			OrderedAdditionalServiceService orderedAdditionalServiceService, PosService posService) {
 		
 		this.paymentDao = paymentDao;
 		this.modelMapperService = modelMapperService;
 		this.rentService = rentService;
 		this.orderedAdditionalServiceService = orderedAdditionalServiceService;
-		this.customerService = customerService;
 		this.invoiceService = invoiceService;
+		this.posService = posService;
 	}
 
 	@Override
@@ -63,18 +61,50 @@ public class PaymentManager implements PaymentService{
 		
 		return new SuccessDataResult<List<PaymentListDto>>(response,"Rents listed");
 	}
-
+	
+	@Transactional
 	@Override
-	public Result add(int rentId) throws BusinessException {
+	public Result makePaymentForIndividualCustomer(IndividualPaymentModel paymentModel) throws BusinessException {
 		
-		Rent rent = this.rentService.getRentEntityById(rentId);
-		
+		Rent rent = this.rentService.addForIndividualCustomer(paymentModel.getCreateRentForIndividualRequest()).getData();
+    	
+    	this.orderedAdditionalServiceService.addWithFields(rent.getRentId(), paymentModel.getCreateRentForIndividualRequest().getAdditionalServices());
+    	
+    	this.invoiceService.addInvoice(rent.getRentId());
+    	
+    	this.posService.pos(paymentModel.getCreateCardRequest());
+    	
 		Payment payment = new Payment();	
 		payment.setCustomer(rent.getCustomer());
-		payment.setInvoice(this.invoiceService.getByRentId(rentId));
+		payment.setInvoice(this.invoiceService.getByRentId(rent.getRentId()));
 		payment.setRent(rent);
 		payment.setTotalAmount(rent.getBill());
 		this.paymentDao.save(payment);
+		
+		return new SuccessResult("saved");
+		
+	}
+	
+	@Transactional
+	@Override
+	public Result makePaymentForCorporateCustomer(CorporatePaymentModel paymentModel) throws BusinessException {
+		
+		Rent rent = this.rentService.addForCorporateCustomer(paymentModel.getCreateRentForCorporateRequest()).getData();
+    	
+    	this.orderedAdditionalServiceService
+    	.addWithFields(rent.getRentId(), paymentModel.getCreateRentForCorporateRequest().getAdditionalServices());
+    	
+    	this.invoiceService.addInvoice(rent.getRentId());
+    	
+    	this.posService.pos(paymentModel.getCreateCardRequest());
+    	
+		Payment payment = new Payment();	
+		payment.setCustomer(rent.getCustomer());
+		payment.setInvoice(this.invoiceService.getByRentId(rent.getRentId()));
+		payment.setRent(rent);
+		payment.setTotalAmount(rent.getBill());
+		this.paymentDao.save(payment);
+		
 		return new SuccessResult("saved");
 		
 	}

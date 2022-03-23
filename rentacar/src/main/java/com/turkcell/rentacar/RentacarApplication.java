@@ -8,6 +8,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.validation.FieldError;
@@ -22,8 +23,9 @@ import com.turkcell.rentacar.core.utilities.results.ErrorDataResult;
 
 @SpringBootApplication
 @RestControllerAdvice
-@EnableTransactionManagement
+@EnableTransactionManagement(proxyTargetClass = true)
 @EntityScan("com.turkcell.rentacar.entities")
+@EnableAspectJAutoProxy(proxyTargetClass = true)
 public class RentacarApplication {
 
 	public static void main(String[] args) {

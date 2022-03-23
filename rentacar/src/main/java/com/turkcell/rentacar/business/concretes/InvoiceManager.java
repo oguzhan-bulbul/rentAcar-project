@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.turkcell.rentacar.business.abstracts.InvoiceService;
 import com.turkcell.rentacar.business.abstracts.RentService;
@@ -126,7 +127,8 @@ public class InvoiceManager implements InvoiceService{
 		
 		return new SuccessDataResult<List<InvoiceListDto>>(response,"Voices listed.");
 	}
-
+	
+	@Transactional
 	@Override
 	public Result addInvoice(int rentId) throws BusinessException {
 		

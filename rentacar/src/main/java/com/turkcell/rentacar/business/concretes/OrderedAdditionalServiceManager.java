@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.turkcell.rentacar.business.abstracts.AdditionalServiceService;
 import com.turkcell.rentacar.business.abstracts.OrderedAdditionalServiceService;
@@ -83,6 +84,7 @@ public class OrderedAdditionalServiceManager implements OrderedAdditionalService
 		return new SuccessDataResult<OrderedAdditionalService>(orderedAdditionalService,"Ordered Service saved.");
 	}
 	
+	@Transactional
 	@Override
 	public DataResult<OrderedAdditionalService> addWithFields(int rentId, List<Integer> additionalServices)
 			throws BusinessException {

@@ -1,13 +1,14 @@
-package com.turkcell.rentacar.core.services.concretes;
+package com.turkcell.rentacar.business.outservices;
 
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.turkcell.rentacar.api.models.CreateCardRequest;
-import com.turkcell.rentacar.core.services.abstracts.PosService;
+import com.turkcell.rentacar.business.abstracts.PosService;
 import com.turkcell.rentacar.core.utilities.exceptions.BusinessException;
 import com.turkcell.rentacar.core.utilities.results.Result;
 import com.turkcell.rentacar.core.utilities.results.SuccessResult;
@@ -16,10 +17,9 @@ import lombok.NoArgsConstructor;
 
 @Service
 @NoArgsConstructor
-@Qualifier("xbank")
-public class XBankPosService implements PosService{
+public class XBankPosService {
 	
-	@Override
+
 	public Result isCardValid(CreateCardRequest createCardRequest) throws BusinessException {
 		
 		Random isSucces = new Random();
@@ -33,7 +33,7 @@ public class XBankPosService implements PosService{
 		return new SuccessResult(" x bank Kart gecerli");
 	}
 
-	@Override
+
 	public Result isPaymentSucces(double amount) throws BusinessException {
 		
 		Random isSucces = new Random();

@@ -22,13 +22,13 @@ import com.turkcell.rentacar.api.models.IndividualPaymentModel;
 import com.turkcell.rentacar.business.abstracts.InvoiceService;
 import com.turkcell.rentacar.business.abstracts.OrderedAdditionalServiceService;
 import com.turkcell.rentacar.business.abstracts.PaymentService;
+import com.turkcell.rentacar.business.abstracts.PosService;
 import com.turkcell.rentacar.business.abstracts.RentService;
 import com.turkcell.rentacar.business.dtos.PaymentDto;
 import com.turkcell.rentacar.business.dtos.PaymentListDto;
 import com.turkcell.rentacar.business.requests.createRequests.CreateOrderedAdditionalServiceRequest;
 import com.turkcell.rentacar.business.requests.deleteRequests.DeletePaymentRequest;
 import com.turkcell.rentacar.business.requests.updateRequests.UpdatePaymentRequest;
-import com.turkcell.rentacar.core.services.abstracts.PosService;
 import com.turkcell.rentacar.core.utilities.exceptions.BusinessException;
 import com.turkcell.rentacar.core.utilities.results.DataResult;
 import com.turkcell.rentacar.core.utilities.results.Result;
@@ -50,7 +50,10 @@ public class PaymentsController {
 	
 	
 	@Autowired
-	public PaymentsController(PaymentService paymentService, @Qualifier("xbank") PosService posService, RentService rentService, InvoiceService invoiceService, OrderedAdditionalServiceService orderedAdditionalServiceService) {
+	public PaymentsController(PaymentService paymentService,PosService posService,
+			RentService rentService, InvoiceService invoiceService,
+			OrderedAdditionalServiceService orderedAdditionalServiceService) {
+		
         this.paymentService = paymentService;
 		this.posService = posService;
 		this.rentService = rentService;
@@ -69,32 +72,14 @@ public class PaymentsController {
     @PostMapping("/addforindividual")
     Result addForIndividualCustomer(@RequestBody @Valid IndividualPaymentModel paymentModel) throws BusinessException {
     		
-    	Rent rent = this.rentService.addForIndividualCustomer(paymentModel.getCreateRentForIndividualRequest()).getData();
-    	
-    	this.orderedAdditionalServiceService.addWithFields(rent.getRentId(), paymentModel.getCreateRentForIndividualRequest().getAdditionalServices());
-    	
-    	this.invoiceService.addInvoice(rent.getRentId());
-    	
-    	this.posService.isCardValid(paymentModel.getCreateCardRequest());
-    	
-    	this.posService.isPaymentSucces(rent.getBill()); 
-    	
-        return this.paymentService.add(rent.getRentId());
+    	return this.paymentService.makePaymentForIndividualCustomer(paymentModel);
     }
     
     @Transactional
     @PostMapping("/addforcorporate")
     Result addForCorporateCustomer(@RequestBody @Valid CorporatePaymentModel paymentModel) throws BusinessException {
     		
-    	Rent rent = this.rentService.addForCorporateCustomer(paymentModel.getCreateRentForCorporateRequest()).getData();
-    	
-    	this.orderedAdditionalServiceService.addWithFields(rent.getRentId(), paymentModel.getCreateRentForCorporateRequest().getAdditionalServices());
-    	
-    	this.posService.isCardValid(paymentModel.getCreateCardRequest());
-    	
-    	this.posService.isPaymentSucces(rent.getBill());  
-    	
-        return this.paymentService.add(rent.getRentId());
+    	return this.paymentService.makePaymentForCorporateCustomer(paymentModel);
     }
 
     @GetMapping("/getById")
