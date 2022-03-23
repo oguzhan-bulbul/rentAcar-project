@@ -1,5 +1,7 @@
 package com.turkcell.rentacar.business.requests.endRequest;
 
+import java.time.LocalDate;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
@@ -19,5 +21,7 @@ public class EndRentRequest {
 	@NotNull
 	@Positive
 	private int returnedKm;
+	
+	private LocalDate returnDate;
 
 }

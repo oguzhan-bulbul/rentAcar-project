@@ -1,4 +1,4 @@
-package com.turkcell.rentacar.api.models;
+package com.turkcell.rentacar.business.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,21 +7,17 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateCardRequest {
+
+public class CreditCardDto {
 	
 	private String cardHolder;
 	
 	private String cardNo;
 	
-	private int CVV;
-	
-	private double totalBalance;
-	
 	private int expirationMonth;
 	
-	private int exporationYear;
+	private int expirationYear;
 	
+	private int CVV;
 	
-	
-
 }

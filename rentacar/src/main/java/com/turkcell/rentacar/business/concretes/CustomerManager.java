@@ -3,8 +3,8 @@ package com.turkcell.rentacar.business.concretes;
 import org.springframework.stereotype.Service;
 
 import com.turkcell.rentacar.business.abstracts.CustomerService;
-import com.turkcell.rentacar.core.entities.Customer;
 import com.turkcell.rentacar.dataAccess.abstracts.CustomerDao;
+import com.turkcell.rentacar.entities.concretes.Customer;
 
 @Service
 public class CustomerManager implements CustomerService{

@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.turkcell.rentacar.api.models.CorporateEndRentModel;
+import com.turkcell.rentacar.api.models.IndividualEndRentModel;
+import com.turkcell.rentacar.api.models.IndividualPaymentModel;
 import com.turkcell.rentacar.business.abstracts.RentService;
 import com.turkcell.rentacar.business.dtos.RentDto;
 import com.turkcell.rentacar.business.dtos.RentListDto;
@@ -53,10 +56,16 @@ public class RentsController {
         return this.rentService.addForCorporateCustomer(createRentRequest);
     }
     
-    @PostMapping("/endrent")
-    public Result endRent(@RequestBody @Valid EndRentRequest endRentRequest) {
+    @PostMapping("/endrentforindividual")
+    public Result endRentForIndividual(@RequestBody @Valid IndividualEndRentModel paymentModel) {
     	
-    	return this.rentService.endRent(endRentRequest);
+    	return this.rentService.endRent(paymentModel);
+    }
+    
+    @PostMapping("/endrentforcorporate")
+    public Result endRentForCorporate(@RequestBody @Valid CorporateEndRentModel paymentModel) {
+    	
+    	return this.rentService.endRent(paymentModel);
     }
 
     @GetMapping("/getById")

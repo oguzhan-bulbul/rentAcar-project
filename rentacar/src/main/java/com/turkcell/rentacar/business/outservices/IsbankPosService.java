@@ -28,7 +28,7 @@ public class IsbankPosService{
 		Random rand = new Random();
 		int sayi = rand.nextInt(100);
 		
-		if(sayi < 50) {
+		if(sayi < 2) {
 			System.out.println("isbank");
 			throw new BusinessException("Kart gecersiz");
 			
@@ -44,7 +44,7 @@ public class IsbankPosService{
 		Random rand = new Random();
 		int sayi = rand.nextInt(100);
 		
-		if(sayi < 50) {
+		if(sayi < 2) {
 			throw new BusinessException("Is bank Odeme gecersiz");
 		}
 		

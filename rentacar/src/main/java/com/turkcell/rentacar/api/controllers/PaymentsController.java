@@ -11,14 +11,17 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.turkcell.rentacar.api.models.CorporatePaymentModel;
 import com.turkcell.rentacar.api.models.IndividualPaymentModel;
+import com.turkcell.rentacar.api.models.SavedCreditCard;
 import com.turkcell.rentacar.business.abstracts.InvoiceService;
 import com.turkcell.rentacar.business.abstracts.OrderedAdditionalServiceService;
 import com.turkcell.rentacar.business.abstracts.PaymentService;
@@ -69,17 +72,19 @@ public class PaymentsController {
     }
     
     @Transactional(propagation = Propagation.REQUIRED)
-    @PostMapping("/addforindividual")
-    Result addForIndividualCustomer(@RequestBody @Valid IndividualPaymentModel paymentModel) throws BusinessException {
+    @PostMapping("/addforindividual/{savedCreditCard}")
+    Result addForIndividualCustomer(@RequestBody @Valid IndividualPaymentModel paymentModel,
+    		@RequestParam @PathVariable(value = "savedCreditCard") SavedCreditCard savedCreditCard) throws BusinessException {
     		
-    	return this.paymentService.makePaymentForIndividualCustomer(paymentModel);
+    	return this.paymentService.makePaymentForIndividualCustomer(paymentModel,savedCreditCard);
     }
     
     @Transactional
-    @PostMapping("/addforcorporate")
-    Result addForCorporateCustomer(@RequestBody @Valid CorporatePaymentModel paymentModel) throws BusinessException {
+    @PostMapping("/addforcorporate/{savedCreditCard}")
+    Result addForCorporateCustomer(@RequestBody @Valid CorporatePaymentModel paymentModel ,
+    		@RequestParam @PathVariable(value = "savedCreditCard") SavedCreditCard savedCreditCard) throws BusinessException {
     		
-    	return this.paymentService.makePaymentForCorporateCustomer(paymentModel);
+    	return this.paymentService.makePaymentForCorporateCustomer(paymentModel, savedCreditCard);
     }
 
     @GetMapping("/getById")

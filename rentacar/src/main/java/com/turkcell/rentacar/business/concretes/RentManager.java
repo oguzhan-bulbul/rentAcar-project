@@ -3,6 +3,7 @@ package com.turkcell.rentacar.business.concretes;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -11,12 +12,17 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.turkcell.rentacar.api.models.CorporateEndRentModel;
+import com.turkcell.rentacar.api.models.IndividualEndRentModel;
+import com.turkcell.rentacar.api.models.IndividualPaymentModel;
+import com.turkcell.rentacar.api.models.SavedCreditCard;
 import com.turkcell.rentacar.business.abstracts.AdditionalServiceService;
 import com.turkcell.rentacar.business.abstracts.CarMaintenanceService;
 import com.turkcell.rentacar.business.abstracts.CarService;
 import com.turkcell.rentacar.business.abstracts.CustomerService;
 import com.turkcell.rentacar.business.abstracts.InvoiceService;
 import com.turkcell.rentacar.business.abstracts.OrderedAdditionalServiceService;
+import com.turkcell.rentacar.business.abstracts.PaymentService;
 import com.turkcell.rentacar.business.abstracts.RentService;
 import com.turkcell.rentacar.business.constants.messages.BusinessMessages;
 import com.turkcell.rentacar.business.dtos.AdditionalServiceDto;
@@ -49,6 +55,8 @@ public class RentManager implements RentService{
 	private final AdditionalServiceService additionalServiceService;
 	private final CustomerService customerService;
 	private final CarService carService;
+	private final PaymentService paymentService;
+	private final OrderedAdditionalServiceService orderedAdditionalServiceService;
 
 
 		
@@ -58,7 +66,9 @@ public class RentManager implements RentService{
 			@Lazy AdditionalServiceService additionalServiceService,
 			@Lazy InvoiceService invoiceService,
 			@Lazy CustomerService customerService, 
-			@Lazy CarService carService) {
+			@Lazy CarService carService, 
+			@Lazy PaymentService paymentService, 
+			@Lazy OrderedAdditionalServiceService orderedAdditionalServiceService) {
 		
 		this.rentDao = rentDao;
 		this.modelMapperService = modelMapperService;
@@ -66,6 +76,8 @@ public class RentManager implements RentService{
 		this.additionalServiceService = additionalServiceService;
 		this.customerService=customerService;
 		this.carService = carService;
+		this.paymentService = paymentService;
+		this.orderedAdditionalServiceService = orderedAdditionalServiceService;
 
 	}
 
@@ -128,7 +140,7 @@ public class RentManager implements RentService{
 	
 
 	@Override
-	public Result endRent(EndRentRequest endRentRequest) {
+	public Result endRentForIndividual(IndividualEndRentModel paymentmodel) {
 		
 		Rent rent = this.rentDao.getById(endRentRequest.getRentId());
 		
@@ -136,6 +148,17 @@ public class RentManager implements RentService{
 		
 		this.carService.updateCarKm(rent.getCar().getCarId(), endRentRequest.getReturnedKm());
 		this.rentDao.save(rent);
+			
+		return new SuccessResult("Rent is done");
+	}
+	
+	@Override
+	public Result endRentForCorporate(CorporateEndRentModel paymentModel) {
+		
+		Rent rent = this.rentDao.getById(paymentModel.getEndRentRequest().getRentId());
+		rent.setReturnKm(paymentModel.getEndRentRequest().getReturnedKm());
+		this.carService.updateCarKm(rent.getCar().getCarId(), paymentModel.getEndRentRequest().getReturnedKm());
+		
 			
 		return new SuccessResult("Rent is done");
 	}
@@ -253,6 +276,52 @@ public class RentManager implements RentService{
 				
 			}
 		}	
+	}
+	
+	private void checkIfReturnedDayIsOutOfDateForIndividual(IndividualEndRentModel individualEndRentModel , Rent rent) throws BusinessException {
+		
+		if(individualEndRentModel.getEndRentRequest().getReturnDate() != rent.getFinishDate()) {			
+			CreateRentForIndividualRequest createRentForIndividualRequest = manuelMappingForCreateRentForIndividual(rent);
+			createRentForIndividualRequest.setStartDate(rent.getFinishDate());
+			createRentForIndividualRequest.setFinishDate(individualEndRentModel.getEndRentRequest().getReturnDate());
+			createRentForIndividualRequest.setIndividualCustomerId(rent.getCustomer().getCustomerId());
+			
+			IndividualPaymentModel individualPaymentModel = new IndividualPaymentModel();
+			SavedCreditCard savedCreditCard;
+			individualPaymentModel.setCreateRentForIndividualRequest(createRentForIndividualRequest);
+			individualPaymentModel.setCreateCardRequest(individualEndRentModel.getCreateCardRequest());
+			this.paymentService.makePaymentForIndividualCustomer(individualPaymentModel);
+		}
+	}
+	
+	private void checkIfReturnedDayIsOutOfDateForCorporate(CorporateEndRentModel corporateEndRentModel , Rent rent) {
+		
+		if(corporateEndRentModel.getEndRentRequest().getReturnDate() != rent.getFinishDate()) {			
+			Rent rentToCreateNew = rent;
+			rentToCreateNew.setStartDate(rent.getFinishDate());
+			rentToCreateNew.setFinishDate(corporateEndRentModel.getEndRentRequest().getReturnDate());	
+		}
+	}
+	
+	private CreateRentForIndividualRequest manuelMappingForCreateRentForIndividual(Rent rent) throws BusinessException {
+		CreateRentForIndividualRequest createRentForIndividualRequest = new CreateRentForIndividualRequest();
+		createRentForIndividualRequest.setCarId(rent.getCar().getCarId());
+		
+		List<Integer> additionalServices = new ArrayList<Integer>();
+		for(AdditionalService additionalService : this.orderedAdditionalServiceService.getByIdAsEntity(rent.getRentId()).getAdditionalServices()) {
+			additionalServices.add(additionalService.getAdditionalServiceId());	
+		}
+		createRentForIndividualRequest.setAdditionalServices(additionalServices);
+		createRentForIndividualRequest.setDeliveredCityId(rent.getDeliveredCity().getCityId());
+		createRentForIndividualRequest.setRentedCityId(rent.getDeliveredCity().getCityId());
+		
+		return createRentForIndividualRequest;
+		
+	}
+	
+	private CreateRentForCorporateRequest manuelMappingForCreateRentForCorporate(Rent rent) {
+		return null;
+		
 	}
 	
 

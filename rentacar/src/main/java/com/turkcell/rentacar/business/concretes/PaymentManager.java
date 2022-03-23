@@ -7,7 +7,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.turkcell.rentacar.api.models.CorporatePaymentModel;
+import com.turkcell.rentacar.api.models.CreateCardRequest;
 import com.turkcell.rentacar.api.models.IndividualPaymentModel;
+import com.turkcell.rentacar.api.models.SavedCreditCard;
+import com.turkcell.rentacar.business.abstracts.CreditCardService;
 import com.turkcell.rentacar.business.abstracts.InvoiceService;
 import com.turkcell.rentacar.business.abstracts.OrderedAdditionalServiceService;
 import com.turkcell.rentacar.business.abstracts.PaymentService;
@@ -36,12 +39,13 @@ public class PaymentManager implements PaymentService{
 	private final OrderedAdditionalServiceService orderedAdditionalServiceService;
 	private final InvoiceService invoiceService;
 	private final PosService posService;
+	private final CreditCardService creditCardService;
 	
 	
 	public PaymentManager(PaymentDao paymentDao, ModelMapperService modelMapperService, 
 			InvoiceService invoiceService, 
 			RentService rentService, 
-			OrderedAdditionalServiceService orderedAdditionalServiceService, PosService posService) {
+			OrderedAdditionalServiceService orderedAdditionalServiceService, PosService posService, CreditCardService creditCardService) {
 		
 		this.paymentDao = paymentDao;
 		this.modelMapperService = modelMapperService;
@@ -49,6 +53,7 @@ public class PaymentManager implements PaymentService{
 		this.orderedAdditionalServiceService = orderedAdditionalServiceService;
 		this.invoiceService = invoiceService;
 		this.posService = posService;
+		this.creditCardService = creditCardService;
 	}
 
 	@Override
@@ -64,7 +69,7 @@ public class PaymentManager implements PaymentService{
 	
 	@Transactional
 	@Override
-	public Result makePaymentForIndividualCustomer(IndividualPaymentModel paymentModel) throws BusinessException {
+	public Result makePaymentForIndividualCustomer(IndividualPaymentModel paymentModel, SavedCreditCard savedCreditCard) throws BusinessException {
 		
 		Rent rent = this.rentService.addForIndividualCustomer(paymentModel.getCreateRentForIndividualRequest()).getData();
     	
@@ -72,13 +77,14 @@ public class PaymentManager implements PaymentService{
     	
     	this.invoiceService.addInvoice(rent.getRentId());
     	
+    	saveCreditCard(paymentModel.getCreateCardRequest(), savedCreditCard, 
+    			paymentModel.getCreateRentForIndividualRequest().getIndividualCustomerId());
+    	
     	this.posService.pos(paymentModel.getCreateCardRequest());
     	
-		Payment payment = new Payment();	
-		payment.setCustomer(rent.getCustomer());
-		payment.setInvoice(this.invoiceService.getByRentId(rent.getRentId()));
-		payment.setRent(rent);
-		payment.setTotalAmount(rent.getBill());
+    	
+    	
+		Payment payment = manuelMappingPayment(rent);
 		this.paymentDao.save(payment);
 		
 		return new SuccessResult("saved");
@@ -87,7 +93,7 @@ public class PaymentManager implements PaymentService{
 	
 	@Transactional
 	@Override
-	public Result makePaymentForCorporateCustomer(CorporatePaymentModel paymentModel) throws BusinessException {
+	public Result makePaymentForCorporateCustomer(CorporatePaymentModel paymentModel, SavedCreditCard savedCreditCard) throws BusinessException {
 		
 		Rent rent = this.rentService.addForCorporateCustomer(paymentModel.getCreateRentForCorporateRequest()).getData();
     	
@@ -96,21 +102,32 @@ public class PaymentManager implements PaymentService{
     	
     	this.invoiceService.addInvoice(rent.getRentId());
     	
-    	this.posService.pos(paymentModel.getCreateCardRequest());
+    	saveCreditCard(paymentModel.getCreateCardRequest(), savedCreditCard, 
+    			paymentModel.getCreateRentForCorporateRequest().getCorporateCustomerId());
     	
-		Payment payment = new Payment();	
-		payment.setCustomer(rent.getCustomer());
-		payment.setInvoice(this.invoiceService.getByRentId(rent.getRentId()));
-		payment.setRent(rent);
-		payment.setTotalAmount(rent.getBill());
+    	this.posService.pos(paymentModel.getCreateCardRequest());
+    		
+		Payment payment = manuelMappingPayment(rent);
+		
 		this.paymentDao.save(payment);
 		
 		return new SuccessResult("saved");
 		
 	}
 
+	private Payment manuelMappingPayment(Rent rent) {
+		
+		Payment payment = new Payment();	
+		payment.setCustomer(rent.getCustomer());
+		payment.setInvoice(this.invoiceService.getByRentId(rent.getRentId()));
+		payment.setRent(rent);
+		payment.setTotalAmount(rent.getBill());
+		return payment;
+	}
+
 	@Override
 	public DataResult<PaymentDto> getById(int id) throws BusinessException {
+		
 		Payment payment = this.paymentDao.getById(id);
 		PaymentDto paymentDto = this.modelMapperService.forDto().map(payment, PaymentDto.class);
 		
@@ -128,6 +145,14 @@ public class PaymentManager implements PaymentService{
 		
 		this.paymentDao.deleteById(deletePaymentRequest.getPaymentId());
         return new SuccessResult("Payment is deleted.");
+	}
+	
+	private void saveCreditCard(CreateCardRequest createCardRequest , SavedCreditCard savedCreditCard, int customerId) throws BusinessException {
+		
+		if(savedCreditCard == SavedCreditCard.YES) {
+    		this.creditCardService.add(createCardRequest,customerId);
+    	}
+		
 	}
 
 }

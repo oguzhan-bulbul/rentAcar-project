@@ -7,8 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.OneToMany;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,32 +17,31 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "payments")
-public class Payment {
+public class CreditCard {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "payment_id")
-	private int paymentId;
+	private int creditCardId;
 	
-	@Column(name = "total_amount")
-	private double totalAmount;
+	@Column(name = "card_holder")
+	private String cardHolder;
 	
-	@ManyToOne
-	@JoinColumn(name = "rent_id")
-	private Rent rent;
+	@Column(name = "card_no")
+	private String CardNo;
 	
-	@OneToOne
-	@JoinColumn(name = "invoice_id")
-	private Invoice invoice;
+	@Column(name = "expiration_month")
+	private int expirationMonth;
 	
-	/*@ManyToOne
-	@JoinColumn(name = "ordered_additional_service_id")
-	private OrderedAdditionalService orderedAdditionalService;*/
+	@Column(name = "expiration_year")
+	private int expirationYear;
+	
+	@Column(name = "cvv")
+	private int CVV;
 	
 	@ManyToOne
 	@JoinColumn(name = "customer_id")
 	private Customer customer;
 	
 	
+
 }

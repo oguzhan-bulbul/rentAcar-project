@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.turkcell.rentacar.api.models.CorporatePaymentModel;
 import com.turkcell.rentacar.api.models.IndividualPaymentModel;
+import com.turkcell.rentacar.api.models.SavedCreditCard;
 import com.turkcell.rentacar.business.dtos.PaymentDto;
 import com.turkcell.rentacar.business.dtos.PaymentListDto;
 import com.turkcell.rentacar.business.requests.createRequests.CreatePaymentRequest;
@@ -17,9 +18,9 @@ public interface PaymentService {
 	
 	DataResult<List<PaymentListDto>> getAll();
 	
-	Result makePaymentForIndividualCustomer(IndividualPaymentModel paymentModel) throws BusinessException;
+	Result makePaymentForIndividualCustomer(IndividualPaymentModel paymentModel,SavedCreditCard savedCreditCard) throws BusinessException;
 	
-	Result makePaymentForCorporateCustomer(CorporatePaymentModel paymentModel) throws BusinessException;
+	Result makePaymentForCorporateCustomer(CorporatePaymentModel paymentModel, SavedCreditCard savedCreditCard) throws BusinessException;
 	
 	
 	DataResult<PaymentDto> getById(int id) throws BusinessException;

@@ -2,6 +2,8 @@ package com.turkcell.rentacar.business.abstracts;
 
 import java.util.List;
 
+import com.turkcell.rentacar.api.models.CorporateEndRentModel;
+import com.turkcell.rentacar.api.models.IndividualEndRentModel;
 import com.turkcell.rentacar.business.dtos.RentDto;
 import com.turkcell.rentacar.business.dtos.RentListDto;
 import com.turkcell.rentacar.business.requests.createRequests.CreateCarMaintenanceRequest;
@@ -25,7 +27,9 @@ public interface RentService {
 	
 	DataResult<Rent> addForCorporateCustomer(CreateRentForCorporateRequest createRentRequest) throws BusinessException;
 	
-	Result endRent(EndRentRequest endRentRequest);
+	Result endRentForIndividual(IndividualEndRentModel paymentModel);
+	
+	Result endRentForCorporate(CorporateEndRentModel paymentModel);
 	
 	DataResult<RentDto> getById(int id) throws BusinessException;
 	

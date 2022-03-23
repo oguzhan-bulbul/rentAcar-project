@@ -16,6 +16,7 @@ public class IndividualPaymentModel {
 	private CreateRentForIndividualRequest createRentForIndividualRequest;
 	
 	private CreateCardRequest createCardRequest;
+	
 
 
 }

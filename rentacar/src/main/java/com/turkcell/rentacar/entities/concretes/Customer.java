@@ -1,4 +1,4 @@
-package com.turkcell.rentacar.core.entities;
+package com.turkcell.rentacar.entities.concretes;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -14,10 +14,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
-
-import com.turkcell.rentacar.entities.concretes.Invoice;
-import com.turkcell.rentacar.entities.concretes.Payment;
-import com.turkcell.rentacar.entities.concretes.Rent;
+import com.turkcell.rentacar.core.entities.User;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -46,5 +43,8 @@ public class Customer extends User{
 	
 	@OneToMany(mappedBy = "customer" , cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private List<Payment> payments;
+	
+	@OneToMany(mappedBy = "customer")
+	private List<CreditCard> creditCards;
 	
 }

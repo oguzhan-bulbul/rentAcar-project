@@ -25,7 +25,7 @@ public class XBankPosService {
 		Random isSucces = new Random();
 		int sayi = isSucces.nextInt(100);
 		
-		if(sayi < 50) {
+		if(sayi < 2) {
 			System.out.println("xbank");
 			throw new BusinessException(" x bank Kart gecersiz");
 		}
@@ -39,7 +39,7 @@ public class XBankPosService {
 		Random isSucces = new Random();
 		int sayi = isSucces.nextInt(100);
 		
-		if(sayi < 50) {
+		if(sayi < 2) {
 			throw new BusinessException("X Bank Odeme gecersiz");
 		}
 		
