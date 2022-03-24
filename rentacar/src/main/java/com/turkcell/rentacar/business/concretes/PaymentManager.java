@@ -64,6 +64,11 @@ public class PaymentManager implements PaymentService{
 				.map(payment, PaymentListDto.class))
 				.collect(Collectors.toList());
 		
+		for(int i=0; i<result.size();i++) {
+			response.get(i).setInvoiceId(result.get(i).getInvoice().getInvoiceNo());
+			response.get(i).setCustomerId(result.get(i).getCustomer().getCustomerId());
+		}
+		
 		return new SuccessDataResult<List<PaymentListDto>>(response,"Rents listed");
 	}
 	
@@ -130,6 +135,8 @@ public class PaymentManager implements PaymentService{
 		
 		Payment payment = this.paymentDao.getById(id);
 		PaymentDto paymentDto = this.modelMapperService.forDto().map(payment, PaymentDto.class);
+		paymentDto.setCustomerId(payment.getCustomer().getCustomerId());
+		paymentDto.setInvoiceId(payment.getInvoice().getInvoiceNo());
 		
 		return new SuccessDataResult<PaymentDto>(paymentDto,"Rent listed");
 	}

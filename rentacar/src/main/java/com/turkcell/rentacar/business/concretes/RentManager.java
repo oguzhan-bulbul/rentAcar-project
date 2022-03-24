@@ -102,8 +102,9 @@ public class RentManager implements RentService{
 		return new SuccessDataResult<List<RentListDto>>(response,"Car's rent info listed");
 	}
 	
-	@Transactional
+	
 	@Override
+	@Transactional
 	public DataResult<Rent> addForIndividualCustomer(CreateRentForIndividualRequest createRentRequest) throws BusinessException {
 		
 		this.carMaintenanceService.checkIfCarIsInMaintenanceForRentRequestIsSucces(createRentRequest.getCarId(),createRentRequest.getStartDate());
@@ -121,6 +122,7 @@ public class RentManager implements RentService{
 	}
 	
 	@Override
+	@Transactional
 	public DataResult<Rent> addForCorporateCustomer(CreateRentForCorporateRequest createRentRequest) throws BusinessException {
 		
 		this.carMaintenanceService.checkIfCarIsInMaintenanceForRentRequestIsSucces(createRentRequest.getCarId(),createRentRequest.getStartDate());
@@ -141,26 +143,29 @@ public class RentManager implements RentService{
 	
 
 	@Override
+	@Transactional
 	public Result endRentForIndividual(IndividualEndRentModel individualEndRentModel) throws BusinessException {
 		
 		Rent rent = this.rentDao.getById(individualEndRentModel.getEndRentRequest().getRentId());
 		
-		rent.setReturnKm(individualEndRentModel.getEndRentRequest().getReturnedKm());
-		
+		rent.setReturnKm(individualEndRentModel.getEndRentRequest().getReturnedKm());	
 		this.carService.updateCarKm(rent.getCar().getCarId(), individualEndRentModel.getEndRentRequest().getReturnedKm());
-		checkIfReturnedDayIsOutOfDateForIndividual(individualEndRentModel, rent);
+		this.rentDao.save(rent);
 		
+		checkIfReturnedDayIsOutOfDateForIndividual(individualEndRentModel, rent);
 			
 		return new SuccessResult("Rent is done");
 	}
 	
 	@Override
+	@Transactional
 	public Result endRentForCorporate(CorporateEndRentModel corporateEndRentModel) throws BusinessException {
 		
 		Rent rent = this.rentDao.getById(corporateEndRentModel.getEndRentRequest().getRentId());
 		rent.setReturnKm(corporateEndRentModel.getEndRentRequest().getReturnedKm());
 		this.rentDao.save(rent);
 		this.carService.updateCarKm(rent.getCar().getCarId(), corporateEndRentModel.getEndRentRequest().getReturnedKm());
+		
 		checkIfReturnedDayIsOutOfDateForCorporate(corporateEndRentModel, rent);
 		
 			

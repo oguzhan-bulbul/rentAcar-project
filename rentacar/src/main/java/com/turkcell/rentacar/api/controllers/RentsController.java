@@ -57,15 +57,15 @@ public class RentsController {
     }
     
     @PostMapping("/endrentforindividual")
-    public Result endRentForIndividual(@RequestBody @Valid IndividualEndRentModel paymentModel) {
+    public Result endRentForIndividual(@RequestBody @Valid IndividualEndRentModel paymentModel) throws BusinessException {
     	
-    	return this.rentService.endRent(paymentModel);
+    	return this.rentService.endRentForIndividual(paymentModel);
     }
     
     @PostMapping("/endrentforcorporate")
-    public Result endRentForCorporate(@RequestBody @Valid CorporateEndRentModel paymentModel) {
+    public Result endRentForCorporate(@RequestBody @Valid CorporateEndRentModel paymentModel) throws BusinessException {
     	
-    	return this.rentService.endRent(paymentModel);
+    	return this.rentService.endRentForCorporate(paymentModel);
     }
 
     @GetMapping("/getById")
