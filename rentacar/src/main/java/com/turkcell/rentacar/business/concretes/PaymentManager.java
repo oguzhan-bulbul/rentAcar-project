@@ -111,10 +111,11 @@ public class PaymentManager implements PaymentService{
     	
     	Rent baseRent = this.rentService.getRentEntityById(rentId);
     	baseRent.setFinishDate(rent.getFinishDate());
+    	baseRent.setBill(baseRent.getBill()+rent.getBill());
     	this.rentService.saveRentEntity(baseRent);
     	
     	Invoice baseInvoice = this.invoiceService.getByIdEntity(invoice.getInvoiceNo());
-    	baseInvoice.setRent(baseRent);
+    	baseInvoice.setRent(baseRent);	
     	this.invoiceService.saveInvoiceEntity(baseInvoice);
     		
 		Payment payment = manuelMappingPayment(rent,baseInvoice);
@@ -165,6 +166,7 @@ public class PaymentManager implements PaymentService{
     	
     	Rent baseRent = this.rentService.getRentEntityById(rentId);
     	baseRent.setFinishDate(rent.getFinishDate());
+    	baseRent.setBill(baseRent.getBill()+rent.getBill());
     	this.rentService.saveRentEntity(baseRent);
     	
     	Invoice baseInvoice = this.invoiceService.getByIdEntity(invoice.getInvoiceNo());
