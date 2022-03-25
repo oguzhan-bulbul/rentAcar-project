@@ -74,7 +74,7 @@ public class PaymentManager implements PaymentService{
 		return new SuccessDataResult<List<PaymentListDto>>(response,"Rents listed");
 	}
 	
-	@Transactional
+	@Transactional(rollbackFor = BusinessException.class)
 	@Override
 	public Result makePaymentForIndividualCustomer(IndividualPaymentModel paymentModel, SavedCreditCard savedCreditCard) throws BusinessException {
 		
@@ -96,7 +96,7 @@ public class PaymentManager implements PaymentService{
 		
 	}
 	
-	@Transactional
+	@Transactional(rollbackFor = BusinessException.class)
 	@Override
 	public Result makeAdditionalPaymentForIndividualCustomer(int rentId,IndividualPaymentModel paymentModel,
 			SavedCreditCard savedCreditCard) throws BusinessException {
@@ -127,7 +127,7 @@ public class PaymentManager implements PaymentService{
 		return new SuccessResult("saved");
 	}
 	
-	@Transactional
+	@Transactional(rollbackFor = BusinessException.class)
 	@Override
 	public Result makePaymentForCorporateCustomer(CorporatePaymentModel paymentModel, SavedCreditCard savedCreditCard) throws BusinessException {
 		
@@ -151,7 +151,7 @@ public class PaymentManager implements PaymentService{
 		
 	}
 	
-	@Transactional
+	@Transactional(rollbackFor = BusinessException.class)
 	@Override
 	public Result makeAdditionalPaymentForCorporateCustomer(int rentId ,CorporatePaymentModel paymentModel, SavedCreditCard savedCreditCard) throws BusinessException {
 		
