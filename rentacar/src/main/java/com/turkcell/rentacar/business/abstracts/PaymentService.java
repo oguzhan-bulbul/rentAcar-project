@@ -27,6 +27,12 @@ public interface PaymentService {
 	
 	Result update(UpdatePaymentRequest updatePaymentRequest) throws BusinessException;
 	
-	Result delete(DeletePaymentRequest deletePaymentRequest) throws BusinessException;	
+	Result delete(DeletePaymentRequest deletePaymentRequest) throws BusinessException;
+
+	Result makeAdditionalPaymentForIndividualCustomer(int rentId, IndividualPaymentModel paymentModel,
+			SavedCreditCard savedCreditCard) throws BusinessException;
+
+	Result makeAdditionalPaymentForCorporateCustomer(int rentId, CorporatePaymentModel paymentModel,
+			SavedCreditCard savedCreditCard) throws BusinessException;	
 
 }

@@ -130,13 +130,13 @@ public class InvoiceManager implements InvoiceService{
 	
 	@Transactional
 	@Override
-	public Result addInvoice(int rentId) throws BusinessException {
+	public DataResult<Invoice> addInvoice(int rentId) throws BusinessException {
 		
 		Invoice invoice = new Invoice();
 		setInvoiceFields(invoice, rentId);
 		this.invoiceDao.save(invoice);
 		
-		return new SuccessResult("Invoice saved");
+		return new SuccessDataResult<Invoice>(invoice,"Invoice saved");
 	}
 	
 	public Invoice getByRentId(int id) {
@@ -163,6 +163,18 @@ public class InvoiceManager implements InvoiceService{
         invoice.setFinishDate(rent.getFinishDate());
         invoice.setCreationDate(LocalDate.now());
         invoice.setInvoiceNo(0);
+	}
+
+	@Override
+	public Result saveInvoiceEntity(Invoice invoice) {
+		this.invoiceDao.save(invoice);
+		return new SuccessResult("saved invoice");
+	}
+
+	@Override
+	public Invoice getByIdEntity(int id) {
+		
+		return this.invoiceDao.getById(id);
 	}
 
 	

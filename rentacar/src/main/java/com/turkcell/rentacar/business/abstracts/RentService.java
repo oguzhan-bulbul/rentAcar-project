@@ -42,6 +42,10 @@ public interface RentService {
 	Result updateRent(Rent rent) throws BusinessException;
 	
 	Result checkIfCarIsRentedIsSucces(int id) throws BusinessException;
+	
+	Result deleteById(int id) throws BusinessException;
+	
+	Result saveRentEntity(Rent rent);
 
 	
 

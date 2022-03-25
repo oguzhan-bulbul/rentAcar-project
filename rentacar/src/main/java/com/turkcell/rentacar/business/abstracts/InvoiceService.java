@@ -26,12 +26,16 @@ public interface InvoiceService {
 	
 	Result delete(DeleteInvoiceRequest deleteInvoiceRequest) throws BusinessException;
 	
-	Result addInvoice(int rentId) throws BusinessException;
+	DataResult<Invoice> addInvoice(int rentId) throws BusinessException;
 	
 	DataResult<List<InvoiceListDto>> getAllByCustomerId(int id);
 	
 	DataResult<List<InvoiceListDto>> getAllBetweenDates(LocalDate startDate, LocalDate finishDate);
 	
 	Invoice getByRentId(int id);
+	
+	Invoice getByIdEntity(int id);
+	
+	Result saveInvoiceEntity(Invoice invoice);
 
 }

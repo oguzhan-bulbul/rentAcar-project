@@ -18,6 +18,7 @@ import com.turkcell.rentacar.business.abstracts.PosService;
 import com.turkcell.rentacar.business.abstracts.RentService;
 import com.turkcell.rentacar.business.dtos.PaymentDto;
 import com.turkcell.rentacar.business.dtos.PaymentListDto;
+import com.turkcell.rentacar.business.dtos.RentDto;
 import com.turkcell.rentacar.business.requests.deleteRequests.DeletePaymentRequest;
 import com.turkcell.rentacar.business.requests.updateRequests.UpdatePaymentRequest;
 import com.turkcell.rentacar.core.utilities.exceptions.BusinessException;
@@ -27,6 +28,7 @@ import com.turkcell.rentacar.core.utilities.results.Result;
 import com.turkcell.rentacar.core.utilities.results.SuccessDataResult;
 import com.turkcell.rentacar.core.utilities.results.SuccessResult;
 import com.turkcell.rentacar.dataAccess.abstracts.PaymentDao;
+import com.turkcell.rentacar.entities.concretes.Invoice;
 import com.turkcell.rentacar.entities.concretes.Payment;
 import com.turkcell.rentacar.entities.concretes.Rent;
 
@@ -80,20 +82,48 @@ public class PaymentManager implements PaymentService{
     	
     	this.orderedAdditionalServiceService.addWithFields(rent.getRentId(), paymentModel.getCreateRentForIndividualRequest().getAdditionalServices());
     	
-    	this.invoiceService.addInvoice(rent.getRentId());
+    	Invoice invoice = this.invoiceService.addInvoice(rent.getRentId()).getData();
     	
     	saveCreditCard(paymentModel.getCreateCardRequest(), savedCreditCard, 
     			paymentModel.getCreateRentForIndividualRequest().getIndividualCustomerId());
     	
     	this.posService.pos(paymentModel.getCreateCardRequest());
     	
-    	
-    	
-		Payment payment = manuelMappingPayment(rent);
+		Payment payment = manuelMappingPayment(rent,invoice);
 		this.paymentDao.save(payment);
 		
 		return new SuccessResult("saved");
 		
+	}
+	
+	@Transactional
+	@Override
+	public Result makeAdditionalPaymentForIndividualCustomer(int rentId,IndividualPaymentModel paymentModel,
+			SavedCreditCard savedCreditCard) throws BusinessException {
+		Rent rent = this.rentService.addForIndividualCustomer(paymentModel.getCreateRentForIndividualRequest()).getData();
+		
+    	Invoice invoice = this.invoiceService.addInvoice(rent.getRentId()).getData();
+    	
+    	saveCreditCard(paymentModel.getCreateCardRequest(), savedCreditCard, 
+    			paymentModel.getCreateRentForIndividualRequest().getIndividualCustomerId());
+    	
+    	this.posService.pos(paymentModel.getCreateCardRequest());
+    	
+    	Rent baseRent = this.rentService.getRentEntityById(rentId);
+    	baseRent.setFinishDate(rent.getFinishDate());
+    	this.rentService.saveRentEntity(baseRent);
+    	
+    	Invoice baseInvoice = this.invoiceService.getByIdEntity(invoice.getInvoiceNo());
+    	baseInvoice.setRent(baseRent);
+    	this.invoiceService.saveInvoiceEntity(baseInvoice);
+    		
+		Payment payment = manuelMappingPayment(rent,baseInvoice);
+		
+		this.rentService.deleteById(rent.getRentId());
+		
+		this.paymentDao.save(payment);
+		
+		return new SuccessResult("saved");
 	}
 	
 	@Transactional
@@ -105,14 +135,45 @@ public class PaymentManager implements PaymentService{
     	this.orderedAdditionalServiceService
     	.addWithFields(rent.getRentId(), paymentModel.getCreateRentForCorporateRequest().getAdditionalServices());
     	
-    	this.invoiceService.addInvoice(rent.getRentId());
+    	Invoice invoice = this.invoiceService.addInvoice(rent.getRentId()).getData();
     	
     	saveCreditCard(paymentModel.getCreateCardRequest(), savedCreditCard, 
     			paymentModel.getCreateRentForCorporateRequest().getCorporateCustomerId());
     	
     	this.posService.pos(paymentModel.getCreateCardRequest());
     		
-		Payment payment = manuelMappingPayment(rent);
+		Payment payment = manuelMappingPayment(rent, invoice);
+		
+		this.paymentDao.save(payment);
+		
+		return new SuccessResult("saved");
+		
+	}
+	
+	@Transactional
+	@Override
+	public Result makeAdditionalPaymentForCorporateCustomer(int rentId ,CorporatePaymentModel paymentModel, SavedCreditCard savedCreditCard) throws BusinessException {
+		
+		Rent rent = this.rentService.addForCorporateCustomer(paymentModel.getCreateRentForCorporateRequest()).getData();
+		
+		Invoice invoice = this.invoiceService.addInvoice(rent.getRentId()).getData();
+    	
+    	saveCreditCard(paymentModel.getCreateCardRequest(), savedCreditCard, 
+    			paymentModel.getCreateRentForCorporateRequest().getCorporateCustomerId());
+    	
+    	this.posService.pos(paymentModel.getCreateCardRequest());
+    	
+    	Rent baseRent = this.rentService.getRentEntityById(rentId);
+    	baseRent.setFinishDate(rent.getFinishDate());
+    	this.rentService.saveRentEntity(baseRent);
+    	
+    	Invoice baseInvoice = this.invoiceService.getByIdEntity(invoice.getInvoiceNo());
+    	baseInvoice.setRent(baseRent);
+    	this.invoiceService.saveInvoiceEntity(baseInvoice);
+    		
+		Payment payment = manuelMappingPayment(rent,baseInvoice);
+		
+		this.rentService.deleteById(rent.getRentId());
 		
 		this.paymentDao.save(payment);
 		
@@ -120,12 +181,12 @@ public class PaymentManager implements PaymentService{
 		
 	}
 
-	private Payment manuelMappingPayment(Rent rent) {
+	private Payment manuelMappingPayment(Rent rent , Invoice invoice) {
 		
 		Payment payment = new Payment();	
 		payment.setCustomer(rent.getCustomer());
-		payment.setInvoice(this.invoiceService.getByRentId(rent.getRentId()));
-		payment.setRent(rent);
+		payment.setInvoice(invoice);
+		payment.setRent(invoice.getRent());
 		payment.setTotalAmount(rent.getBill());
 		return payment;
 	}
@@ -161,5 +222,9 @@ public class PaymentManager implements PaymentService{
     	}
 		
 	}
+
+	
+
+
 
 }

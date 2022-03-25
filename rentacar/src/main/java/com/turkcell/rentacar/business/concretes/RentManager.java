@@ -224,6 +224,13 @@ public class RentManager implements RentService{
 		return new SuccessResult("Car is available for maintenance");		
 	}
 	
+	public Result saveRentEntity(Rent rent) {
+		
+		this.rentDao.save(rent);
+		
+		return new SuccessResult("Rent Updated");
+	}
+	
 
 	
 	private void checkIfRentDoesNotExistsById(int id) throws BusinessException{
@@ -299,7 +306,7 @@ public class RentManager implements RentService{
 			IndividualPaymentModel individualPaymentModel = new IndividualPaymentModel();
 			individualPaymentModel.setCreateRentForIndividualRequest(createRentForIndividualRequest);
 			individualPaymentModel.setCreateCardRequest(individualEndRentModel.getCreateCardRequest());
-			this.paymentService.makePaymentForIndividualCustomer(individualPaymentModel,SavedCreditCard.NO);
+			this.paymentService.makeAdditionalPaymentForIndividualCustomer(rent.getRentId(), individualPaymentModel, SavedCreditCard.NO);
 		}
 	}
 	
@@ -313,7 +320,7 @@ public class RentManager implements RentService{
 			CorporatePaymentModel corporatePaymentModel = new CorporatePaymentModel();
 			corporatePaymentModel.setCreateRentForCorporateRequest(createRentForCorporateRequest);
 			corporatePaymentModel.setCreateCardRequest(corporateEndRentModel.getCreateCardRequest());
-			this.paymentService.makePaymentForCorporateCustomer(corporatePaymentModel, SavedCreditCard.NO);
+			this.paymentService.makeAdditionalPaymentForCorporateCustomer(rent.getRentId(), corporatePaymentModel, SavedCreditCard.NO);
 		}
 	}
 	
@@ -350,6 +357,12 @@ public class RentManager implements RentService{
 		
 		return createRentForCorporateRequest;
 		
+	}
+
+	@Override
+	public Result deleteById(int id) throws BusinessException {
+		this.rentDao.deleteById(id);
+		return new SuccessResult("Rent deleted.");
 	}
 	
 
