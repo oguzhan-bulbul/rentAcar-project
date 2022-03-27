@@ -23,5 +23,8 @@ public class BusinessMessages {
 	public static final String COLOREXISTS = "Color exists.";
 	public static final String ORDEREDADDITIONALSERVICEEXISTS = "Ordered Additional Service exists.";
 	public static final String CARINRENT = "Car is in rent .";
+	public static final String BRANDALREADYEXISTS = " Brand is already exists.";
+	
+	
 	
 }

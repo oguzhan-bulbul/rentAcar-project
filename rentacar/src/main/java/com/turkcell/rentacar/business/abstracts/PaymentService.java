@@ -25,8 +25,6 @@ public interface PaymentService {
 	
 	DataResult<PaymentDto> getById(int id) throws BusinessException;
 	
-	Result update(UpdatePaymentRequest updatePaymentRequest) throws BusinessException;
-	
 	Result delete(DeletePaymentRequest deletePaymentRequest) throws BusinessException;
 
 	Result makeAdditionalPaymentForIndividualCustomer(int rentId, IndividualPaymentModel paymentModel,

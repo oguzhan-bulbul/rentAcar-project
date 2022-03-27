@@ -44,17 +44,18 @@ public class RentsController {
        return this.rentService.getAll();
     }
 
-    @PostMapping("/createforindividual")
+    /*@PostMapping("/createforindividual")
     public Result add(@RequestBody @Valid CreateRentForIndividualRequest createRentRequest) throws BusinessException{
     	
         return this.rentService.addForIndividualCustomer(createRentRequest);
-    }
+    }*/
     
+    /*
     @PostMapping("/createforcorporate")
     public Result add(@RequestBody @Valid CreateRentForCorporateRequest createRentRequest) throws BusinessException{
     	
         return this.rentService.addForCorporateCustomer(createRentRequest);
-    }
+    }*/
     
     @PostMapping("/endrentforindividual")
     public Result endRentForIndividual(@RequestBody @Valid IndividualEndRentModel paymentModel) throws BusinessException {

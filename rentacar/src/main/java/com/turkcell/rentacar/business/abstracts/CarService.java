@@ -18,7 +18,7 @@ public interface CarService {
 	
 	DataResult<List<CarListDto>> getAll();
 	
-	Result add(CreateCarRequest createCarRequest);
+	Result add(CreateCarRequest createCarRequest) throws BusinessException;
 	
 	DataResult<CarDto> getById(int id) throws BusinessException;
 	

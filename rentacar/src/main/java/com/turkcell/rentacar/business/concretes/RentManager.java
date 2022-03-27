@@ -26,6 +26,7 @@ import com.turkcell.rentacar.business.abstracts.OrderedAdditionalServiceService;
 import com.turkcell.rentacar.business.abstracts.PaymentService;
 import com.turkcell.rentacar.business.abstracts.RentService;
 import com.turkcell.rentacar.business.constants.messages.BusinessMessages;
+import com.turkcell.rentacar.business.constants.messages.ResultMessages;
 import com.turkcell.rentacar.business.dtos.AdditionalServiceDto;
 import com.turkcell.rentacar.business.dtos.RentDto;
 import com.turkcell.rentacar.business.dtos.RentListDto;
@@ -81,6 +82,8 @@ public class RentManager implements RentService{
 		this.orderedAdditionalServiceService = orderedAdditionalServiceService;
 
 	}
+	
+	
 
 	@Override
 	public DataResult<List<RentListDto>> getAll() {
@@ -99,7 +102,7 @@ public class RentManager implements RentService{
 		List<RentListDto> response = result.stream().map(rent -> this.modelMapperService.forDto().map(rent, RentListDto.class))
 				.collect(Collectors.toList());
 		
-		return new SuccessDataResult<List<RentListDto>>(response,"Car's rent info listed");
+		return new SuccessDataResult<List<RentListDto>>(response,ResultMessages.LISTEDSUCCESSFUL);
 	}
 	
 	
@@ -118,7 +121,7 @@ public class RentManager implements RentService{
 		rent.setCustomer(this.customerService.getById(createRentRequest.getIndividualCustomerId()));	
 		this.rentDao.save(rent);
 					
-		return new SuccessDataResult<Rent>(rent,"Rent is created");
+		return new SuccessDataResult<Rent>(rent,ResultMessages.ADDEDSUCCESSFUL);
 	}
 	
 	@Override
@@ -138,7 +141,7 @@ public class RentManager implements RentService{
 		
 		this.rentDao.save(rent);
 					
-		return new SuccessDataResult<Rent>(rent,"Rent is created");
+		return new SuccessDataResult<Rent>(rent,ResultMessages.ADDEDSUCCESSFUL);
 	}
 	
 
@@ -154,7 +157,7 @@ public class RentManager implements RentService{
 		
 		checkIfReturnedDayIsOutOfDateForIndividual(individualEndRentModel, rent);
 			
-		return new SuccessResult("Rent is done");
+		return new SuccessResult(ResultMessages.ADDEDSUCCESSFUL);
 	}
 	
 	@Override
@@ -169,7 +172,7 @@ public class RentManager implements RentService{
 		checkIfReturnedDayIsOutOfDateForCorporate(corporateEndRentModel, rent);
 		
 			
-		return new SuccessResult("Rent is done");
+		return new SuccessResult(ResultMessages.ADDEDSUCCESSFUL);
 	}
 	
 	@Override
@@ -180,7 +183,7 @@ public class RentManager implements RentService{
 		Rent rent = this.rentDao.getById(id);
 		RentDto rentDto = this.modelMapperService.forDto().map(rent, RentDto.class);
 		
-		return new SuccessDataResult<RentDto>(rentDto,"Rent listed");
+		return new SuccessDataResult<RentDto>(rentDto,ResultMessages.LISTEDSUCCESSFUL);
 	}
 
 	@Override
@@ -191,7 +194,7 @@ public class RentManager implements RentService{
 		Rent rent = this.modelMapperService.forRequest().map(updateRentRequest, Rent.class);
 	    this.rentDao.save(rent);
 
-	    return new SuccessResult("Rent info is updated.");
+	    return new SuccessResult(ResultMessages.UPDATESUCCESSFUL);
 	}
 
 	@Override
@@ -199,7 +202,7 @@ public class RentManager implements RentService{
 		
 		checkIfRentDoesNotExistsById(deleteRentRequest.getRentId());
 		this.rentDao.deleteById(deleteRentRequest.getRentId());
-        return new SuccessResult("Rent is deleted.");
+        return new SuccessResult(ResultMessages.DELETESUCCESSFUL);
         
 	}
 	
@@ -214,21 +217,28 @@ public class RentManager implements RentService{
 		
 		this.rentDao.save(rent);
 		
-		return new SuccessResult("Rent updated");
+		return new SuccessResult(ResultMessages.UPDATESUCCESSFUL);
 	}
 	
 	public Result checkIfCarIsRentedIsSucces(int carId) throws BusinessException {
 		
 		checkIfCarIsRented(carId);	
 		
-		return new SuccessResult("Car is available for maintenance");		
+		return new SuccessResult(ResultMessages.AVAILABLE);		
 	}
 	
 	public Result saveRentEntity(Rent rent) {
 		
 		this.rentDao.save(rent);
 		
-		return new SuccessResult("Rent Updated");
+		return new SuccessResult(ResultMessages.UPDATESUCCESSFUL);
+	}
+	
+
+	@Override
+	public Result deleteById(int id) throws BusinessException {
+		this.rentDao.deleteById(id);
+		return new SuccessResult(ResultMessages.DELETESUCCESSFUL);
 	}
 	
 
@@ -306,13 +316,15 @@ public class RentManager implements RentService{
 			IndividualPaymentModel individualPaymentModel = new IndividualPaymentModel();
 			individualPaymentModel.setCreateRentForIndividualRequest(createRentForIndividualRequest);
 			individualPaymentModel.setCreateCardRequest(individualEndRentModel.getCreateCardRequest());
+			
 			this.paymentService.makeAdditionalPaymentForIndividualCustomer(rent.getRentId(), individualPaymentModel, SavedCreditCard.NO);
 		}
 	}
 	
 	private void checkIfReturnedDayIsOutOfDateForCorporate(CorporateEndRentModel corporateEndRentModel , Rent rent) throws BusinessException {
 		
-		if(corporateEndRentModel.getEndRentRequest().getReturnDate() != rent.getFinishDate()) {			
+		if(corporateEndRentModel.getEndRentRequest().getReturnDate() != rent.getFinishDate()) {	
+			
 			CreateRentForCorporateRequest createRentForCorporateRequest = manuelMappingForCreateRentForCorporate(rent);
 			createRentForCorporateRequest.setStartDate(rent.getFinishDate());
 			createRentForCorporateRequest.setFinishDate(corporateEndRentModel.getEndRentRequest().getReturnDate());
@@ -325,13 +337,16 @@ public class RentManager implements RentService{
 	}
 	
 	private CreateRentForIndividualRequest manuelMappingForCreateRentForIndividual(Rent rent) throws BusinessException {
+		
 		CreateRentForIndividualRequest createRentForIndividualRequest = new CreateRentForIndividualRequest();
 		createRentForIndividualRequest.setCarId(rent.getCar().getCarId());
 		
 		List<Integer> additionalServices = new ArrayList<Integer>();
+		
 		for(AdditionalService additionalService : this.orderedAdditionalServiceService.getByIdAsEntity(rent.getRentId()).getAdditionalServices()) {
 			additionalServices.add(additionalService.getAdditionalServiceId());	
 		}
+		
 		createRentForIndividualRequest.setAdditionalServices(additionalServices);
 		createRentForIndividualRequest.setDeliveredCityId(rent.getDeliveredCity().getCityId());
 		createRentForIndividualRequest.setRentedCityId(rent.getDeliveredCity().getCityId());
@@ -359,11 +374,6 @@ public class RentManager implements RentService{
 		
 	}
 
-	@Override
-	public Result deleteById(int id) throws BusinessException {
-		this.rentDao.deleteById(id);
-		return new SuccessResult("Rent deleted.");
-	}
 	
 
 

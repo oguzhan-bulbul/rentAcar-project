@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.turkcell.rentacar.business.abstracts.BrandService;
 import com.turkcell.rentacar.business.constants.messages.BusinessMessages;
+import com.turkcell.rentacar.business.constants.messages.ResultMessages;
 import com.turkcell.rentacar.business.dtos.BrandDto;
 import com.turkcell.rentacar.business.dtos.BrandListDto;
 import com.turkcell.rentacar.business.requests.createRequests.CreateBrandRequest;
@@ -42,17 +43,18 @@ public class BrandManager implements BrandService{
 		List<BrandListDto> response = result.stream().map(brand -> this.modelMapperService.forDto().map(brand,BrandListDto.class))
 				.collect(Collectors.toList());
 		
-		return new SuccessDataResult<List<BrandListDto>>(response, "Brands listed.");	
+		return new SuccessDataResult<List<BrandListDto>>(response,ResultMessages.LISTEDSUCCESSFUL);	
 	}
 
 	@Override
 	public Result add(CreateBrandRequest createBrandRequest) throws BusinessException{
 		
 		checkIfBrandExistsByName(createBrandRequest.getBrandName());
+		
 		Brand brand = this.modelMapperService.forRequest().map(createBrandRequest, Brand.class);					
 		this.brandDao.save(brand);
 		
-		return new SuccessResult("Brand is added");	
+		return new SuccessResult(ResultMessages.ADDEDSUCCESSFUL);	
 	}
 
 	@Override
@@ -62,7 +64,7 @@ public class BrandManager implements BrandService{
 		Brand result = this.brandDao.getById(id);
 		BrandDto response = this.modelMapperService.forDto().map(result, BrandDto.class);
 		
-		return new SuccessDataResult<BrandDto>(response,"The brand is listed.");						
+		return new SuccessDataResult<BrandDto>(response,ResultMessages.LISTEDSUCCESSFUL);						
 	}
 	
 	@Override
@@ -73,7 +75,7 @@ public class BrandManager implements BrandService{
 		brand=this.modelMapperService.forRequest().map(updateBrandRequest, Brand.class);		
 		this.brandDao.save(brand);
 		
-		return new SuccessResult("The brand is updated");									
+		return new SuccessResult(ResultMessages.UPDATESUCCESSFUL);									
 	}
 
 
@@ -85,19 +87,19 @@ public class BrandManager implements BrandService{
 		Brand brand = this.modelMapperService.forRequest().map(deleteBrandRequest, Brand.class);
 		this.brandDao.delete(brand);
 		
-		return new SuccessResult("The brand is deleted");		
+		return new SuccessResult(ResultMessages.DELETESUCCESSFUL);		
 	}
 	
 	public Result checkIfBrandDoesNotExists(int id) throws BusinessException {
 		checkIfBrandDoesNotExistsById(id);
-		return new SuccessResult("Brand exists.");
+		return new SuccessResult(ResultMessages.AVAILABLE);
 	}
 	
 	private void checkIfBrandExistsByName(String name) throws BusinessException{
 		
 		if(this.brandDao.existsByBrandName(name)) {
 			
-			throw new BusinessException("Brand is already exists.");	
+			throw new BusinessException(BusinessMessages.BRANDALREADYEXISTS);	
 		}		
 	}
 	

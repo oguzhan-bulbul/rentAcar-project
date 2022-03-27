@@ -42,11 +42,12 @@ public class InvoicesController {
 		
 	};
 	
+	/*
 	@PostMapping("/add")
 	public Result add(@RequestBody @Valid CreateInvoiceRequest createInvoiceRequest) throws BusinessException{
 		return this.invoiceService.add(createInvoiceRequest);
 		
-	};
+	};*/
 	
 	@GetMapping("/getbyid")
 	public DataResult<InvoiceDto> getById(@RequestParam int id) throws BusinessException{

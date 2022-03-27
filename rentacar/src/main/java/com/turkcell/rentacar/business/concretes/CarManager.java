@@ -10,8 +10,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
+import com.turkcell.rentacar.business.abstracts.BrandService;
 import com.turkcell.rentacar.business.abstracts.CarService;
+import com.turkcell.rentacar.business.abstracts.ColorService;
 import com.turkcell.rentacar.business.constants.messages.BusinessMessages;
+import com.turkcell.rentacar.business.constants.messages.ResultMessages;
 import com.turkcell.rentacar.business.dtos.CarDto;
 import com.turkcell.rentacar.business.dtos.CarListDto;
 import com.turkcell.rentacar.business.requests.createRequests.CreateCarRequest;
@@ -31,13 +34,20 @@ public class CarManager implements CarService{
 	
 	private final CarDao carDao;
 	private final ModelMapperService modelMapperService;
+	private final ColorService colorService;
+	private final BrandService brandService;
 	
 	
 	@Autowired
-	public CarManager(CarDao carDao, ModelMapperService modelMapperService) {
+	public CarManager(CarDao carDao,
+			ModelMapperService modelMapperService, 
+			ColorService colorService, 
+			BrandService brandService) {
 		
 		this.carDao = carDao;
 		this.modelMapperService = modelMapperService;
+		this.colorService = colorService;
+		this.brandService = brandService;
 		
 	}
 
@@ -49,17 +59,20 @@ public class CarManager implements CarService{
 				.map(car -> this.modelMapperService.forDto().map(car, CarListDto.class))
 				.collect(Collectors.toList());
 		
-		return new SuccessDataResult<List<CarListDto>>(response, "Cars listed.");
+		return new SuccessDataResult<List<CarListDto>>(response, ResultMessages.LISTEDSUCCESSFUL);
 		
 	}
 
 	@Override
-	public Result add(CreateCarRequest createCarRequest) {
+	public Result add(CreateCarRequest createCarRequest) throws BusinessException {
+		
+		this.brandService.checkIfBrandDoesNotExists(createCarRequest.getBrandId());
+		this.colorService.checkIfColorDoesNotExists(createCarRequest.getColorId());
 		
 		Car car = this.modelMapperService.forRequest().map(createCarRequest, Car.class);
 		this.carDao.save(car);
 		
-		return new SuccessResult("Car is added");
+		return new SuccessResult(ResultMessages.ADDEDSUCCESSFUL);
 		
 	}
 
@@ -70,7 +83,7 @@ public class CarManager implements CarService{
 		Car car = this.carDao.getById(id);
 		CarDto carDto = this.modelMapperService.forDto().map(car, CarDto.class);
 		
-		return new SuccessDataResult<CarDto>(carDto,"The brand is listed.");
+		return new SuccessDataResult<CarDto>(carDto,ResultMessages.LISTEDSUCCESSFUL);
 		
 	}
 
@@ -78,12 +91,14 @@ public class CarManager implements CarService{
 	public Result update(UpdateCarRequest updateCarRequest) throws BusinessException{
 		
 		checkIfCarDoesNotExistById(updateCarRequest.getCarId());
+		this.brandService.checkIfBrandDoesNotExists(updateCarRequest.getBrandId());
+		this.colorService.checkIfColorDoesNotExists(updateCarRequest.getColorId());
 		
 		Car car = this.carDao.getById(updateCarRequest.getCarId());
 		car = this.modelMapperService.forRequest().map(updateCarRequest, Car.class);
 		this.carDao.save(car);
 			
-		return new SuccessDataResult<UpdateCarRequest>(updateCarRequest,"The brand is updated");
+		return new SuccessResult(ResultMessages.UPDATESUCCESSFUL);
 				
 	}
 
@@ -95,7 +110,7 @@ public class CarManager implements CarService{
 		Car car = this.modelMapperService.forRequest().map(deleteCarRequest, Car.class);
 		this.carDao.delete(car);
 			
-		return new SuccessDataResult<DeleteCarRequest>(deleteCarRequest,"The brand is deleted");
+		return new SuccessResult(ResultMessages.DELETESUCCESSFUL);
 			
 		
 	}

@@ -71,7 +71,6 @@ public class PaymentsController {
         return this.paymentService.getAll();
     }
     
-    @Transactional(propagation = Propagation.REQUIRED)
     @PostMapping("/addforindividual/{savedCreditCard}")
     Result addForIndividualCustomer(@RequestBody @Valid IndividualPaymentModel paymentModel,
     		@RequestParam @PathVariable(value = "savedCreditCard") SavedCreditCard savedCreditCard) throws BusinessException {
@@ -79,7 +78,6 @@ public class PaymentsController {
     	return this.paymentService.makePaymentForIndividualCustomer(paymentModel,savedCreditCard);
     }
     
-    @Transactional
     @PostMapping("/addforcorporate/{savedCreditCard}")
     Result addForCorporateCustomer(@RequestBody @Valid CorporatePaymentModel paymentModel ,
     		@RequestParam @PathVariable(value = "savedCreditCard") SavedCreditCard savedCreditCard) throws BusinessException {
@@ -91,16 +89,12 @@ public class PaymentsController {
     DataResult<PaymentDto> getById(int id) throws BusinessException {
         return this.paymentService.getById(id);
     }
-
-    @PutMapping("/update")
-    Result update(@RequestBody @Valid UpdatePaymentRequest updatePaymentRequest) throws BusinessException {
-        return this.paymentService.update(updatePaymentRequest);
-    }
-
+    
+    /*
     @DeleteMapping("/delete")
     Result deleteById(DeletePaymentRequest deletePaymentRequest) throws BusinessException {
         return this.paymentService.delete(deletePaymentRequest);
-    }
+    }*/
     
 
 }

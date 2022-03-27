@@ -43,10 +43,10 @@ public class OrderedAdditionalServicesController {
 		return this.orderedAdditionalServiceService.getAll();
 	}
 	
-	@PostMapping("/add")
+	/*@PostMapping("/add")
 	public Result add(@RequestBody @Valid CreateOrderedAdditionalServiceRequest createOrderedAdditionalServiceRequest) throws BusinessException{
 		return this.orderedAdditionalServiceService.add(createOrderedAdditionalServiceRequest);
-	}
+	}*/
 	
 	@GetMapping("/getbyid")
 	public DataResult<OrderedAdditionalServiceDto> getById(@RequestParam int id) throws BusinessException{

@@ -16,6 +16,7 @@ import com.turkcell.rentacar.business.abstracts.OrderedAdditionalServiceService;
 import com.turkcell.rentacar.business.abstracts.PaymentService;
 import com.turkcell.rentacar.business.abstracts.PosService;
 import com.turkcell.rentacar.business.abstracts.RentService;
+import com.turkcell.rentacar.business.constants.messages.ResultMessages;
 import com.turkcell.rentacar.business.dtos.PaymentDto;
 import com.turkcell.rentacar.business.dtos.PaymentListDto;
 import com.turkcell.rentacar.business.dtos.RentDto;
@@ -71,7 +72,7 @@ public class PaymentManager implements PaymentService{
 			response.get(i).setCustomerId(result.get(i).getCustomer().getCustomerId());
 		}
 		
-		return new SuccessDataResult<List<PaymentListDto>>(response,"Rents listed");
+		return new SuccessDataResult<List<PaymentListDto>>(response,ResultMessages.LISTEDSUCCESSFUL);
 	}
 	
 	@Transactional(rollbackFor = BusinessException.class)
@@ -92,7 +93,7 @@ public class PaymentManager implements PaymentService{
 		Payment payment = manuelMappingPayment(rent,invoice);
 		this.paymentDao.save(payment);
 		
-		return new SuccessResult("saved");
+		return new SuccessResult(ResultMessages.ADDEDSUCCESSFUL);
 		
 	}
 	
@@ -124,7 +125,7 @@ public class PaymentManager implements PaymentService{
 		
 		this.paymentDao.save(payment);
 		
-		return new SuccessResult("saved");
+		return new SuccessResult(ResultMessages.ADDEDSUCCESSFUL);
 	}
 	
 	@Transactional(rollbackFor = BusinessException.class)
@@ -147,7 +148,7 @@ public class PaymentManager implements PaymentService{
 		
 		this.paymentDao.save(payment);
 		
-		return new SuccessResult("saved");
+		return new SuccessResult(ResultMessages.ADDEDSUCCESSFUL);
 		
 	}
 	
@@ -179,18 +180,8 @@ public class PaymentManager implements PaymentService{
 		
 		this.paymentDao.save(payment);
 		
-		return new SuccessResult("saved");
+		return new SuccessResult(ResultMessages.ADDEDSUCCESSFUL);
 		
-	}
-
-	private Payment manuelMappingPayment(Rent rent , Invoice invoice) {
-		
-		Payment payment = new Payment();	
-		payment.setCustomer(rent.getCustomer());
-		payment.setInvoice(invoice);
-		payment.setRent(invoice.getRent());
-		payment.setTotalAmount(rent.getBill());
-		return payment;
 	}
 
 	@Override
@@ -201,20 +192,15 @@ public class PaymentManager implements PaymentService{
 		paymentDto.setCustomerId(payment.getCustomer().getCustomerId());
 		paymentDto.setInvoiceId(payment.getInvoice().getInvoiceNo());
 		
-		return new SuccessDataResult<PaymentDto>(paymentDto,"Rent listed");
+		return new SuccessDataResult<PaymentDto>(paymentDto,ResultMessages.LISTEDSUCCESSFUL);
 	}
 
-	@Override
-	public Result update(UpdatePaymentRequest updatePaymentRequest) throws BusinessException {
-
-		return null;
-	}
 
 	@Override
 	public Result delete(DeletePaymentRequest deletePaymentRequest) throws BusinessException {
 		
 		this.paymentDao.deleteById(deletePaymentRequest.getPaymentId());
-        return new SuccessResult("Payment is deleted.");
+        return new SuccessResult(ResultMessages.DELETESUCCESSFUL);
 	}
 	
 	private void saveCreditCard(CreateCardRequest createCardRequest , SavedCreditCard savedCreditCard, int customerId) throws BusinessException {
@@ -223,6 +209,16 @@ public class PaymentManager implements PaymentService{
     		this.creditCardService.add(createCardRequest,customerId);
     	}
 		
+	}
+	
+	private Payment manuelMappingPayment(Rent rent , Invoice invoice) {
+		
+		Payment payment = new Payment();	
+		payment.setCustomer(rent.getCustomer());
+		payment.setInvoice(invoice);
+		payment.setRent(invoice.getRent());
+		payment.setTotalAmount(rent.getBill());
+		return payment;
 	}
 
 	

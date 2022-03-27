@@ -39,7 +39,7 @@ public class XBankPosService {
 		Random isSucces = new Random();
 		int sayi = isSucces.nextInt(100);
 		
-		if(sayi < 2) {
+		if(sayi < 98) {
 			throw new BusinessException("X Bank Odeme gecersiz");
 		}
 		

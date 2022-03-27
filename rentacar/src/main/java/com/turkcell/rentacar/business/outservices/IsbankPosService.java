@@ -44,7 +44,7 @@ public class IsbankPosService{
 		Random rand = new Random();
 		int sayi = rand.nextInt(100);
 		
-		if(sayi < 2) {
+		if(sayi < 98) {
 			throw new BusinessException("Is bank Odeme gecersiz");
 		}
 		

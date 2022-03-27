@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.turkcell.rentacar.business.abstracts.ColorService;
 import com.turkcell.rentacar.business.constants.messages.BusinessMessages;
+import com.turkcell.rentacar.business.constants.messages.ResultMessages;
 import com.turkcell.rentacar.business.dtos.ColorDto;
 import com.turkcell.rentacar.business.dtos.ColorListDto;
 import com.turkcell.rentacar.business.requests.createRequests.CreateColorRequest;
@@ -42,18 +43,19 @@ public class ColorManager implements ColorService{
 		List<ColorListDto> response = result.stream().map(color->this.modelMapperService.forDto()
 				.map(color,ColorListDto.class)).collect(Collectors.toList());
 				
-		return new SuccessDataResult<List<ColorListDto>>(response, "Colors listed.");
+		return new SuccessDataResult<List<ColorListDto>>(response, ResultMessages.LISTEDSUCCESSFUL);
 		
 	}
 
 	@Override
 	public Result add(CreateColorRequest createColorRequest) throws BusinessException{
 		
-		checkIfColorExistsByName(createColorRequest.getColorName());		
+		checkIfColorExistsByName(createColorRequest.getColorName());
+		
 		Color color = modelMapperService.forRequest().map(createColorRequest, Color.class);	
 		this.colorDao.save(color);
 		
-		return new SuccessResult("Color added.");
+		return new SuccessResult(ResultMessages.ADDEDSUCCESSFUL);
 		
 	}
 	
@@ -66,7 +68,7 @@ public class ColorManager implements ColorService{
 		Color result = this.colorDao.getById(id);
 		ColorDto response = this.modelMapperService.forDto().map(result, ColorDto.class);
 			
-		return new SuccessDataResult<ColorDto>(response,"The color is listed.");
+		return new SuccessDataResult<ColorDto>(response,ResultMessages.LISTEDSUCCESSFUL);
 			
 				
 	}
@@ -80,7 +82,7 @@ public class ColorManager implements ColorService{
 		color=this.modelMapperService.forRequest().map(updateColorRequest, Color.class);
 		this.colorDao.save(color);
 			
-		return new SuccessResult("The color is updated");
+		return new SuccessResult(ResultMessages.UPDATESUCCESSFUL);
 			
 			
 	}
@@ -93,7 +95,7 @@ public class ColorManager implements ColorService{
 		Color color = this.modelMapperService.forRequest().map(deleteColorRequest, Color.class);
 		this.colorDao.delete(color);
 			
-		return new SuccessResult("The color is deleted");
+		return new SuccessResult(ResultMessages.DELETESUCCESSFUL);
 			
 				
 	}
@@ -116,5 +118,12 @@ public class ColorManager implements ColorService{
 			throw new BusinessException(BusinessMessages.COLORNOTFOUND);
 			
 		}		
+	}
+	
+	public Result checkIfColorDoesNotExists(int id) throws BusinessException {
+		
+		checkIfColorDoesNotExistsById(id);
+		
+		return new SuccessResult(ResultMessages.AVAILABLE);
 	}
 }
