@@ -16,7 +16,7 @@ public class IsBakPosAdapter implements PosService{
 		IsbankPosService isbankPosService = new IsbankPosService();
 		isbankPosService.isCardValid(createCardRequest);
 		
-		isbankPosService.isPaymentSucces(createCardRequest.getTotalBalance());
+		isbankPosService.isPaymentSucces();
 		return new SuccessResult("ISBANK ODEME TAMAMLANDI");
 	}
 

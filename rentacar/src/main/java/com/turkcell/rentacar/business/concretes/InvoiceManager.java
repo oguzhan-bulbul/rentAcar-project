@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.turkcell.rentacar.business.abstracts.InvoiceService;
 import com.turkcell.rentacar.business.abstracts.RentService;
 import com.turkcell.rentacar.business.constants.messages.BusinessMessages;
+import com.turkcell.rentacar.business.constants.messages.ResultMessages;
 import com.turkcell.rentacar.business.dtos.InvoiceDto;
 import com.turkcell.rentacar.business.dtos.InvoiceListDto;
 import com.turkcell.rentacar.business.requests.createRequests.CreateInvoiceRequest;
@@ -54,7 +55,7 @@ public class InvoiceManager implements InvoiceService{
 			response.get(i).setCustomerId(result.get(i).getCustomer().getCustomerId());
 		}
 	
-		return new SuccessDataResult<List<InvoiceListDto>>(response,"Invoices Listed");
+		return new SuccessDataResult<List<InvoiceListDto>>(response,ResultMessages.LISTEDSUCCESSFUL);
 	}
 
 	@Override
@@ -63,7 +64,7 @@ public class InvoiceManager implements InvoiceService{
 		Invoice result = this.modelMapperService.forRequest().map(createInvoiceRequest, Invoice.class);
 		this.invoiceDao.save(result);
 		
-		return new SuccessResult("Invoice saved");
+		return new SuccessResult(ResultMessages.ADDEDSUCCESSFUL);
 	}
 
 	@Override
@@ -74,7 +75,7 @@ public class InvoiceManager implements InvoiceService{
 		Invoice result = this.invoiceDao.getById(id);
 		InvoiceDto response = this.modelMapperService.forDto().map(result, InvoiceDto.class);
 		
-		return new SuccessDataResult<InvoiceDto>(response,"Corporate Customer listed");
+		return new SuccessDataResult<InvoiceDto>(response,ResultMessages.LISTEDSUCCESSFUL);
 	}
 
 	@Override
@@ -85,7 +86,7 @@ public class InvoiceManager implements InvoiceService{
 		Invoice result = this.modelMapperService.forRequest().map(updateInvoiceRequest, Invoice.class);
 		this.invoiceDao.save(result);
 		
-		return new SuccessResult("Invoice updated");
+		return new SuccessResult(ResultMessages.UPDATESUCCESSFUL);
 	}
 
 	@Override
@@ -95,7 +96,7 @@ public class InvoiceManager implements InvoiceService{
 		
 		this.invoiceDao.deleteById(deleteInvoiceRequest.getInvoiceNo());
 		
-		return new SuccessResult("Invoice deleted.");
+		return new SuccessResult(ResultMessages.DELETESUCCESSFUL);
 	}
 	
 	@Override
@@ -110,7 +111,7 @@ public class InvoiceManager implements InvoiceService{
 			response.get(i).setCustomerId(result.get(i).getCustomer().getCustomerId());
 		}
 		
-		return new SuccessDataResult<List<InvoiceListDto>>(response,"Customer's invoices listed");
+		return new SuccessDataResult<List<InvoiceListDto>>(response,ResultMessages.LISTEDSUCCESSFUL);
 	}
 
 	@Override
@@ -125,7 +126,7 @@ public class InvoiceManager implements InvoiceService{
 			response.get(i).setCustomerId(result.get(i).getCustomer().getCustomerId());
 		}
 		
-		return new SuccessDataResult<List<InvoiceListDto>>(response,"Voices listed.");
+		return new SuccessDataResult<List<InvoiceListDto>>(response,ResultMessages.LISTEDSUCCESSFUL);
 	}
 	
 	@Transactional
@@ -136,7 +137,7 @@ public class InvoiceManager implements InvoiceService{
 		setInvoiceFields(invoice, rentId);
 		this.invoiceDao.save(invoice);
 		
-		return new SuccessDataResult<Invoice>(invoice,"Invoice saved");
+		return new SuccessDataResult<Invoice>(invoice,ResultMessages.ADDEDSUCCESSFUL);
 	}
 	
 	public Invoice getByRentId(int id) {
@@ -168,7 +169,7 @@ public class InvoiceManager implements InvoiceService{
 	@Override
 	public Result saveInvoiceEntity(Invoice invoice) {
 		this.invoiceDao.save(invoice);
-		return new SuccessResult("saved invoice");
+		return new SuccessResult(ResultMessages.ADDEDSUCCESSFUL);
 	}
 
 	@Override

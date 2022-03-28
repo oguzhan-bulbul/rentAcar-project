@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.turkcell.rentacar.business.abstracts.IndividualCustomerService;
 import com.turkcell.rentacar.business.constants.messages.BusinessMessages;
+import com.turkcell.rentacar.business.constants.messages.ResultMessages;
 import com.turkcell.rentacar.business.dtos.IndividualCustomerDto;
 import com.turkcell.rentacar.business.dtos.IndividualCustomerListDto;
 import com.turkcell.rentacar.business.requests.createRequests.CreateIndividualCustomerRequest;
@@ -43,7 +44,7 @@ public class IndividualCustomerManager implements IndividualCustomerService{
 				.map(individualCustomer -> this.modelMapperService.forDto()
 						.map(individualCustomer, IndividualCustomerListDto.class)).collect(Collectors.toList());
 		
-		return new SuccessDataResult<List<IndividualCustomerListDto>>(response,"Individual Customers Listed");
+		return new SuccessDataResult<List<IndividualCustomerListDto>>(response,ResultMessages.LISTEDSUCCESSFUL);
 	}
 
 	@Override
@@ -52,7 +53,7 @@ public class IndividualCustomerManager implements IndividualCustomerService{
 		IndividualCustomer result = this.modelMapperService.forRequest().map(createIndividualCustomerRequest, IndividualCustomer.class);
 		this.individualCustomerDao.save(result);
 		
-		return new SuccessResult("Individual Customer saved");
+		return new SuccessResult(ResultMessages.ADDEDSUCCESSFUL);
 	}
 
 	@Override
@@ -63,7 +64,7 @@ public class IndividualCustomerManager implements IndividualCustomerService{
 		IndividualCustomer result = this.individualCustomerDao.getById(id);
 		IndividualCustomerDto response = this.modelMapperService.forDto().map(result, IndividualCustomerDto.class);
 		
-		return new SuccessDataResult<IndividualCustomerDto>(response,"Individual Customer listed");
+		return new SuccessDataResult<IndividualCustomerDto>(response,ResultMessages.LISTEDSUCCESSFUL);
 	}
 
 	@Override
@@ -73,7 +74,7 @@ public class IndividualCustomerManager implements IndividualCustomerService{
 		
 		IndividualCustomer result = this.modelMapperService.forRequest().map(updateIndividualCustomerRequest, IndividualCustomer.class);
 		this.individualCustomerDao.save(result);
-		return new SuccessResult("Individual Customer updated");
+		return new SuccessResult(ResultMessages.UPDATESUCCESSFUL);
 	}
 
 	@Override
@@ -83,7 +84,7 @@ public class IndividualCustomerManager implements IndividualCustomerService{
 		
 		this.individualCustomerDao.deleteById(deleteIndividualCustomerRequest.getCustomerId());
 		
-		return new SuccessResult("Individual Customer deleted.");
+		return new SuccessResult(ResultMessages.DELETESUCCESSFUL);
 		
 	}
 	

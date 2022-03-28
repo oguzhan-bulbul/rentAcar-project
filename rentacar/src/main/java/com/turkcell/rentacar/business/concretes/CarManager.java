@@ -124,7 +124,7 @@ public class CarManager implements CarService{
 				.map(car -> this.modelMapperService.forDto().map(car, CarListDto.class))
 				.collect(Collectors.toList());
 		
-		return new SuccessDataResult<List<CarListDto>>(response,"Pages listed");
+		return new SuccessDataResult<List<CarListDto>>(response,ResultMessages.LISTEDSUCCESSFUL);
 		
 	}
 
@@ -137,7 +137,7 @@ public class CarManager implements CarService{
 				map(car -> this.modelMapperService.forDto().map(car, CarListDto.class))
 				.collect(Collectors.toList());
 		
-		return new SuccessDataResult<List<CarListDto>>(response,"Cars listed.");
+		return new SuccessDataResult<List<CarListDto>>(response,ResultMessages.LISTEDSUCCESSFUL);
 		
 	}
 
@@ -150,7 +150,7 @@ public class CarManager implements CarService{
 				map(car -> this.modelMapperService.forDto().map(car, CarListDto.class))
 				.collect(Collectors.toList());
 			
-		return new SuccessDataResult<List<CarListDto>>(response,"Cars listed");
+		return new SuccessDataResult<List<CarListDto>>(response,ResultMessages.LISTEDSUCCESSFUL);
 		
 	}
 	
@@ -165,14 +165,14 @@ public class CarManager implements CarService{
 		Car car = this.carDao.getById(carId);
 		car.setCurrentKm(car.getCurrentKm()+currentKm);
 		this.carDao.save(car);
-		return new SuccessResult("Car km updated.");
+		return new SuccessResult(ResultMessages.UPDATESUCCESSFUL);
 	}
 	
 	public Result checkIfCarDoesNotExists(int id) throws BusinessException {
 		
 		checkIfCarDoesNotExistById(id);
 		
-		return new SuccessResult("Car checked");
+		return new SuccessResult(ResultMessages.AVAILABLE);
 	}
 
 	private void checkIfCarDoesNotExistById(int id) throws BusinessException{

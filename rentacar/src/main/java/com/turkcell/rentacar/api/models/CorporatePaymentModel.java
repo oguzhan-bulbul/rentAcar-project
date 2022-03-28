@@ -1,7 +1,5 @@
 package com.turkcell.rentacar.api.models;
 
-import com.turkcell.rentacar.business.requests.createRequests.CreateCorporateCustomerRequest;
-import com.turkcell.rentacar.business.requests.createRequests.CreateOrderedAdditionalServiceRequest;
 import com.turkcell.rentacar.business.requests.createRequests.CreateRentForCorporateRequest;
 
 import lombok.AllArgsConstructor;

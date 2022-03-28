@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import com.turkcell.rentacar.api.models.CreateCardRequest;
 import com.turkcell.rentacar.business.abstracts.CreditCardService;
 import com.turkcell.rentacar.business.abstracts.CustomerService;
-import com.turkcell.rentacar.business.dtos.ColorListDto;
+import com.turkcell.rentacar.business.constants.messages.ResultMessages;
 import com.turkcell.rentacar.business.dtos.CreditCardDto;
 import com.turkcell.rentacar.business.dtos.CreditCardListDto;
 import com.turkcell.rentacar.business.requests.deleteRequests.DeleteCreditCardRequest;
@@ -44,7 +44,7 @@ public class CreditCardManager implements CreditCardService{
 		List<CreditCardListDto> response = result.stream().map(creditCard -> this.modelMapperService.forDto().map(creditCard, CreditCardListDto.class))
 		.collect(Collectors.toList());
 		
-		return new SuccessDataResult<List<CreditCardListDto>>(response,"Cards Listed");
+		return new SuccessDataResult<List<CreditCardListDto>>(response,ResultMessages.LISTEDSUCCESSFUL);
 	}
 
 	@Override
@@ -54,7 +54,7 @@ public class CreditCardManager implements CreditCardService{
 		creditCard.setCustomer(this.customerService.getById(customerId));
 		this.creditCardDao.save(creditCard);
 		
-		return new SuccessResult("Card Saved");
+		return new SuccessResult(ResultMessages.ADDEDSUCCESSFUL);
 	}
 
 	@Override
@@ -64,7 +64,7 @@ public class CreditCardManager implements CreditCardService{
 		
 		CreditCardDto response = this.modelMapperService.forDto().map(result, CreditCardDto.class);
 		
-		return new SuccessDataResult<CreditCardDto>(response,"Card listed");
+		return new SuccessDataResult<CreditCardDto>(response,ResultMessages.LISTEDSUCCESSFUL);
 	}
 
 	@Override
@@ -75,7 +75,7 @@ public class CreditCardManager implements CreditCardService{
 				.map(creditCard -> this.modelMapperService.forDto().map(creditCard, CreditCardListDto.class))
 				.collect(Collectors.toList());
 		
-		return new SuccessDataResult<List<CreditCardListDto>>(response,"Cards Listed");
+		return new SuccessDataResult<List<CreditCardListDto>>(response,ResultMessages.LISTEDSUCCESSFUL);
 	}
 
 	@Override
@@ -84,14 +84,14 @@ public class CreditCardManager implements CreditCardService{
 		CreditCard creditCard = this.modelMapperService.forDto().map(updateCreditCardRequest, CreditCard.class);
 		this.creditCardDao.save(creditCard);
 		
-		return new SuccessResult("Card updated");
+		return new SuccessResult(ResultMessages.UPDATESUCCESSFUL);
 	}
 
 	@Override
 	public Result delete(DeleteCreditCardRequest deleteCreditCardRequest) throws BusinessException {
 		
 		this.creditCardDao.deleteById(deleteCreditCardRequest.getCreditCardId());
-		return new SuccessResult("Card deleted");
+		return new SuccessResult(ResultMessages.DELETESUCCESSFUL);
 	}
 
 }

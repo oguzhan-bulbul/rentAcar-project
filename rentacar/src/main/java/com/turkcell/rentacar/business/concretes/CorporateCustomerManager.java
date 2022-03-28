@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.turkcell.rentacar.business.abstracts.CorporateCustomerService;
 import com.turkcell.rentacar.business.constants.messages.BusinessMessages;
+import com.turkcell.rentacar.business.constants.messages.ResultMessages;
 import com.turkcell.rentacar.business.dtos.CorporateCustomerDto;
 import com.turkcell.rentacar.business.dtos.CorporateCustomerListDto;
 import com.turkcell.rentacar.business.requests.createRequests.CreateCorporateCustomerRequest;
@@ -42,7 +43,7 @@ public class CorporateCustomerManager implements CorporateCustomerService{
 				.map(corporateCustomer -> this.modelMapperService.forDto()
 						.map(corporateCustomer, CorporateCustomerListDto.class)).collect(Collectors.toList());
 		
-		return new SuccessDataResult<List<CorporateCustomerListDto>>(response,"Corporate Customers Listed");
+		return new SuccessDataResult<List<CorporateCustomerListDto>>(response,ResultMessages.LISTEDSUCCESSFUL);
 	}
 
 	@Override
@@ -51,7 +52,7 @@ public class CorporateCustomerManager implements CorporateCustomerService{
 		CorporateCustomer result = this.modelMapperService.forRequest().map(createCorporateCustomerRequest, CorporateCustomer.class);
 		this.corporateCustomerDao.save(result);
 		
-		return new SuccessResult("Corporate Customer saved");
+		return new SuccessResult(ResultMessages.ADDEDSUCCESSFUL);
 	}
 
 	@Override
@@ -62,7 +63,7 @@ public class CorporateCustomerManager implements CorporateCustomerService{
 		CorporateCustomer result = this.corporateCustomerDao.getById(id);
 		CorporateCustomerDto response = this.modelMapperService.forDto().map(result, CorporateCustomerDto.class);
 		
-		return new SuccessDataResult<CorporateCustomerDto>(response,"Corporate Customer listed");
+		return new SuccessDataResult<CorporateCustomerDto>(response,ResultMessages.LISTEDSUCCESSFUL);
 	}
 
 	@Override
@@ -73,7 +74,7 @@ public class CorporateCustomerManager implements CorporateCustomerService{
 		CorporateCustomer result = this.modelMapperService.forRequest().map(updateCorporateCustomerRequest, CorporateCustomer.class);
 		this.corporateCustomerDao.save(result);
 		
-		return new SuccessResult("Corporate Customer updated");
+		return new SuccessResult(ResultMessages.UPDATESUCCESSFUL);
 	}
 
 	@Override
@@ -83,7 +84,7 @@ public class CorporateCustomerManager implements CorporateCustomerService{
 		
 		this.corporateCustomerDao.deleteById(deleteCorporateCustomerRequest.getCustomerId());
 		
-		return new SuccessResult("Corporate Customer deleted.");
+		return new SuccessResult(ResultMessages.DELETESUCCESSFUL);
 	}
 	
 	private void checkIfCorporateCustomerDoesNotExistById(int id) throws BusinessException{

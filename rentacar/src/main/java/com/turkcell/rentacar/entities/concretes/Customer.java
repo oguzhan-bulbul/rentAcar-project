@@ -2,8 +2,6 @@ package com.turkcell.rentacar.entities.concretes;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;

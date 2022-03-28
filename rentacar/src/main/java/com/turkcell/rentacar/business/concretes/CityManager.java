@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.turkcell.rentacar.business.abstracts.CityService;
 import com.turkcell.rentacar.business.constants.messages.BusinessMessages;
+import com.turkcell.rentacar.business.constants.messages.ResultMessages;
 import com.turkcell.rentacar.business.dtos.CityDto;
 import com.turkcell.rentacar.business.dtos.CityListDto;
 import com.turkcell.rentacar.business.requests.createRequests.CreateCityRequest;
@@ -40,7 +41,7 @@ public class CityManager implements CityService{
 		List<CityListDto> response = result.stream().map(city -> this.modelMapperService.forDto().map(city, CityListDto.class))
 				.collect(Collectors.toList());
 		
-		return new SuccessDataResult<List<CityListDto>>(response,"Cities Listed");
+		return new SuccessDataResult<List<CityListDto>>(response,ResultMessages.LISTEDSUCCESSFUL);
 	}
 
 	@Override
@@ -52,7 +53,7 @@ public class CityManager implements CityService{
 		
 		this.cityDao.save(city);
 		
-		return new SuccessResult("City saved");
+		return new SuccessResult(ResultMessages.ADDEDSUCCESSFUL);
 	}
 
 	@Override
@@ -63,7 +64,7 @@ public class CityManager implements CityService{
 		City city = this.cityDao.getById(id);
 		CityDto map = this.modelMapperService.forDto().map(city, CityDto.class);
 		
-		return new SuccessDataResult<CityDto>(map,"City Listed");
+		return new SuccessDataResult<CityDto>(map,ResultMessages.LISTEDSUCCESSFUL);
 	}
 
 	@Override
@@ -74,7 +75,7 @@ public class CityManager implements CityService{
 		City city = this.modelMapperService.forRequest().map(updateCityRequest, City.class);
 		this.cityDao.save(city);
 		
-		return new SuccessResult("City updated");
+		return new SuccessResult(ResultMessages.UPDATESUCCESSFUL);
 	}
 
 	@Override
@@ -84,7 +85,7 @@ public class CityManager implements CityService{
 		
 		this.cityDao.deleteById(deleteCityRequest.getCityId());
 		
-		return new SuccessResult("City Deleted");
+		return new SuccessResult(ResultMessages.DELETESUCCESSFUL);
 	}
 	
 	private void checkIfCityDoesNotExistsById(int id) throws BusinessException {

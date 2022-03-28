@@ -3,7 +3,6 @@ package com.turkcell.rentacar.business.abstracts;
 import java.util.List;
 
 import com.turkcell.rentacar.api.models.CreateCardRequest;
-import com.turkcell.rentacar.business.dtos.ColorListDto;
 import com.turkcell.rentacar.business.dtos.CreditCardDto;
 import com.turkcell.rentacar.business.dtos.CreditCardListDto;
 import com.turkcell.rentacar.business.requests.deleteRequests.DeleteCreditCardRequest;

@@ -2,6 +2,7 @@ package com.turkcell.rentacar.business.requests.createRequests;
 
 import java.time.LocalDate;
 
+import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
@@ -21,6 +22,7 @@ public class CreateCarMaintenanceRequest {
 	@Size(min=2,max=200)
 	private String description;
 	
+	@FutureOrPresent
 	private LocalDate returnDate;
 	
 	@NotNull

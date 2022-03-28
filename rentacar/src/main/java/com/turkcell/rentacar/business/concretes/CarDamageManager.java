@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.turkcell.rentacar.business.abstracts.CarDamageService;
 import com.turkcell.rentacar.business.abstracts.CarService;
 import com.turkcell.rentacar.business.constants.messages.BusinessMessages;
+import com.turkcell.rentacar.business.constants.messages.ResultMessages;
 import com.turkcell.rentacar.business.dtos.CarDamageDto;
 import com.turkcell.rentacar.business.dtos.CarDamageListDto;
 import com.turkcell.rentacar.business.requests.createRequests.CreateCarDamageRequest;
@@ -46,7 +47,7 @@ public class CarDamageManager implements CarDamageService{
 		List<CarDamageListDto> response = result.stream().map(cardamage -> this.modelMapperService.forDto()
 				.map(cardamage, CarDamageListDto.class)).collect(Collectors.toList());
 		
-		return new SuccessDataResult<List<CarDamageListDto>>(response,"CarDamages Listed.");
+		return new SuccessDataResult<List<CarDamageListDto>>(response,ResultMessages.LISTEDSUCCESSFUL);
 		
 	}
 
@@ -59,7 +60,7 @@ public class CarDamageManager implements CarDamageService{
 		
 		this.carDamageDao.save(result);
 		
-		return new SuccessResult(" Car Damage saved.");
+		return new SuccessResult(ResultMessages.ADDEDSUCCESSFUL);
 	}
 
 	@Override
@@ -70,7 +71,7 @@ public class CarDamageManager implements CarDamageService{
 		CarDamage result = this.carDamageDao.getById(id);
 		CarDamageDto response = this.modelMapperService.forDto().map(result, CarDamageDto.class);
 		
-		return new SuccessDataResult<CarDamageDto>(response,"Car Damage Listed.");
+		return new SuccessDataResult<CarDamageDto>(response,ResultMessages.LISTEDSUCCESSFUL);
 	}
 
 	@Override
@@ -82,7 +83,7 @@ public class CarDamageManager implements CarDamageService{
 		
 		this.carDamageDao.save(result);
 		
-		return new SuccessResult(" Car Damage updated.");
+		return new SuccessResult(ResultMessages.UPDATESUCCESSFUL);
 	}
 
 	@Override
@@ -92,7 +93,7 @@ public class CarDamageManager implements CarDamageService{
 		
 		this.carDamageDao.deleteById(deleteCarDamageRequest.getCarDamageId());
 		
-		return new SuccessResult("Car Damage deleted.");
+		return new SuccessResult(ResultMessages.DELETESUCCESSFUL);
 	}
 	
 	private void checkIfCarDamageDoesNotExistById(int id) throws BusinessException{

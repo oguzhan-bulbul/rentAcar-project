@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 
 import com.turkcell.rentacar.api.models.CreateCardRequest;
 import com.turkcell.rentacar.business.abstracts.PosService;
-import com.turkcell.rentacar.business.outservices.IsbankPosService;
 import com.turkcell.rentacar.business.outservices.XBankPosService;
 import com.turkcell.rentacar.core.utilities.exceptions.BusinessException;
 import com.turkcell.rentacar.core.utilities.results.Result;
@@ -19,7 +18,7 @@ public class XBankPosAdapter implements PosService{
 		XBankPosService xBankPosService = new XBankPosService();
 		xBankPosService.isCardValid(createCardRequest);
 		
-		xBankPosService.isPaymentSucces(createCardRequest.getTotalBalance());
+		xBankPosService.isPaymentSucces();
 		return new SuccessResult("ISBANK ODEME TAMAMLANDI");
 	}
 
