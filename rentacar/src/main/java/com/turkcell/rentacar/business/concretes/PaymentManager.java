@@ -11,6 +11,7 @@ import com.turkcell.rentacar.api.models.CreateCardRequest;
 import com.turkcell.rentacar.api.models.IndividualPaymentModel;
 import com.turkcell.rentacar.api.models.SavedCreditCard;
 import com.turkcell.rentacar.business.abstracts.CreditCardService;
+import com.turkcell.rentacar.business.abstracts.CustomerService;
 import com.turkcell.rentacar.business.abstracts.InvoiceService;
 import com.turkcell.rentacar.business.abstracts.OrderedAdditionalServiceService;
 import com.turkcell.rentacar.business.abstracts.PaymentService;
@@ -41,12 +42,13 @@ public class PaymentManager implements PaymentService{
 	private final InvoiceService invoiceService;
 	private final PosService posService;
 	private final CreditCardService creditCardService;
+	private final CustomerService customerService;
 	
 	
 	public PaymentManager(PaymentDao paymentDao, ModelMapperService modelMapperService, 
 			InvoiceService invoiceService, 
 			RentService rentService, 
-			OrderedAdditionalServiceService orderedAdditionalServiceService, PosService posService, CreditCardService creditCardService) {
+			OrderedAdditionalServiceService orderedAdditionalServiceService, PosService posService, CreditCardService creditCardService, CustomerService customerService) {
 		
 		this.paymentDao = paymentDao;
 		this.modelMapperService = modelMapperService;
@@ -55,6 +57,7 @@ public class PaymentManager implements PaymentService{
 		this.invoiceService = invoiceService;
 		this.posService = posService;
 		this.creditCardService = creditCardService;
+		this.customerService = customerService;
 	}
 
 	@Override
@@ -76,6 +79,8 @@ public class PaymentManager implements PaymentService{
 	@Transactional(rollbackFor = BusinessException.class)
 	@Override
 	public Result makePaymentForIndividualCustomer(IndividualPaymentModel paymentModel, SavedCreditCard savedCreditCard) throws BusinessException {
+		
+		this.customerService.checkIfCustomerDoesNotExistsByIdIsSuccess(paymentModel.getCreateRentForIndividualRequest().getIndividualCustomerId());
 		
 		Rent rent = this.rentService.addForIndividualCustomer(paymentModel.getCreateRentForIndividualRequest()).getData();
     	
@@ -99,6 +104,9 @@ public class PaymentManager implements PaymentService{
 	@Override
 	public Result makeAdditionalPaymentForIndividualCustomer(int rentId,IndividualPaymentModel paymentModel,
 			SavedCreditCard savedCreditCard) throws BusinessException {
+		
+		this.customerService.checkIfCustomerDoesNotExistsByIdIsSuccess(paymentModel.getCreateRentForIndividualRequest().getIndividualCustomerId());
+		
 		Rent rent = this.rentService.addForIndividualCustomer(paymentModel.getCreateRentForIndividualRequest()).getData();
 		
     	Invoice invoice = this.invoiceService.addInvoice(rent.getRentId()).getData();
@@ -128,7 +136,10 @@ public class PaymentManager implements PaymentService{
 	
 	@Transactional(rollbackFor = BusinessException.class)
 	@Override
-	public Result makePaymentForCorporateCustomer(CorporatePaymentModel paymentModel, SavedCreditCard savedCreditCard) throws BusinessException {
+	public Result makePaymentForCorporateCustomer(CorporatePaymentModel paymentModel
+			, SavedCreditCard savedCreditCard) throws BusinessException {
+		
+		this.customerService.checkIfCustomerDoesNotExistsByIdIsSuccess(paymentModel.getCreateRentForCorporateRequest().getCorporateCustomerId());
 		
 		Rent rent = this.rentService.addForCorporateCustomer(paymentModel.getCreateRentForCorporateRequest()).getData();
     	
@@ -152,8 +163,10 @@ public class PaymentManager implements PaymentService{
 	
 	@Transactional(rollbackFor = BusinessException.class)
 	@Override
-	public Result makeAdditionalPaymentForCorporateCustomer(int rentId ,CorporatePaymentModel paymentModel, SavedCreditCard savedCreditCard) throws BusinessException {
+	public Result makeAdditionalPaymentForCorporateCustomer(int rentId ,CorporatePaymentModel paymentModel
+			, SavedCreditCard savedCreditCard) throws BusinessException {
 		
+		this.customerService.checkIfCustomerDoesNotExistsByIdIsSuccess(paymentModel.getCreateRentForCorporateRequest().getCorporateCustomerId());
 		Rent rent = this.rentService.addForCorporateCustomer(paymentModel.getCreateRentForCorporateRequest()).getData();
 		
 		Invoice invoice = this.invoiceService.addInvoice(rent.getRentId()).getData();

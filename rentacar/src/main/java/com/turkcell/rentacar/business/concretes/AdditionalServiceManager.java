@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.turkcell.rentacar.business.abstracts.AdditionalServiceService;
 import com.turkcell.rentacar.business.constants.messages.BusinessMessages;
+import com.turkcell.rentacar.business.constants.messages.ResultMessages;
 import com.turkcell.rentacar.business.dtos.AdditionalServiceDto;
 import com.turkcell.rentacar.business.dtos.AdditionalServiceListDto;
 import com.turkcell.rentacar.business.requests.createRequests.CreateAdditionalServiceRequest;
@@ -92,6 +93,16 @@ public class AdditionalServiceManager implements AdditionalServiceService{
 		this.additionalServiceDao.deleteById(deleteAdditionalServiceRequest.getAdditionalServiceId());
 		
 		return new SuccessResult("Service deleted.");
+	}
+	
+	public Result checkIfAdditionalServicesDoesNotExistsByIdIsSuccess(List<Integer> additionalServiceIds) throws BusinessException {
+		
+		for(int i=0; i<additionalServiceIds.size(); i++) {
+			
+			checkIfAdditionalServiceDoesNotExistsById(additionalServiceIds.get(i));
+		}
+		
+		return new SuccessResult(ResultMessages.AVAILABLE);
 	}
 	
 	private void checkIfAdditionalServiceDoesNotExistsById(int id) throws BusinessException {

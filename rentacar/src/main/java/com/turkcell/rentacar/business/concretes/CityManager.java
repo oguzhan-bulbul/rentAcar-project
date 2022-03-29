@@ -88,6 +88,13 @@ public class CityManager implements CityService{
 		return new SuccessResult(ResultMessages.DELETESUCCESSFUL);
 	}
 	
+	public Result checkIfCityDoesNotExistsByIdIsSuccess(int id) throws BusinessException {
+		
+		checkIfCityDoesNotExistsById(id);
+		
+		return new SuccessResult(ResultMessages.AVAILABLE);
+	}
+	
 	private void checkIfCityDoesNotExistsById(int id) throws BusinessException {
 		
 		if(!this.cityDao.existsById(id)) {

@@ -87,6 +87,14 @@ public class CorporateCustomerManager implements CorporateCustomerService{
 		return new SuccessResult(ResultMessages.DELETESUCCESSFUL);
 	}
 	
+	public Result checkIfCorporateCustomerDoesNotExistsByIdIsSucces(int id) throws BusinessException {
+		
+		checkIfCorporateCustomerDoesNotExistById(id);
+		
+		return new SuccessResult(ResultMessages.AVAILABLE);
+		
+	}
+	
 	private void checkIfCorporateCustomerDoesNotExistById(int id) throws BusinessException{
 		
 		if(!this.corporateCustomerDao.existsById(id)) {

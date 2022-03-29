@@ -25,5 +25,7 @@ public interface AdditionalServiceService {
 	
 	Result delete(DeleteAdditionalServiceRequest deleteAdditionalServiceRequest) throws BusinessException;
 	
+	Result checkIfAdditionalServicesDoesNotExistsByIdIsSuccess(List<Integer> additionalServiceIds) throws BusinessException;
+	
 
 }

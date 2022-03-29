@@ -20,7 +20,10 @@ import com.turkcell.rentacar.api.models.SavedCreditCard;
 import com.turkcell.rentacar.business.abstracts.AdditionalServiceService;
 import com.turkcell.rentacar.business.abstracts.CarMaintenanceService;
 import com.turkcell.rentacar.business.abstracts.CarService;
+import com.turkcell.rentacar.business.abstracts.CityService;
+import com.turkcell.rentacar.business.abstracts.CorporateCustomerService;
 import com.turkcell.rentacar.business.abstracts.CustomerService;
+import com.turkcell.rentacar.business.abstracts.IndividualCustomerService;
 import com.turkcell.rentacar.business.abstracts.InvoiceService;
 import com.turkcell.rentacar.business.abstracts.OrderedAdditionalServiceService;
 import com.turkcell.rentacar.business.abstracts.PaymentService;
@@ -56,6 +59,9 @@ public class RentManager implements RentService{
 	private final CarService carService;
 	private final PaymentService paymentService;
 	private final OrderedAdditionalServiceService orderedAdditionalServiceService;
+	private final IndividualCustomerService individualCustomerService;
+	private final CorporateCustomerService corporateCustomerService;
+	private final CityService cityService;
 
 
 		
@@ -67,7 +73,10 @@ public class RentManager implements RentService{
 			@Lazy CustomerService customerService, 
 			@Lazy CarService carService, 
 			@Lazy PaymentService paymentService, 
-			@Lazy OrderedAdditionalServiceService orderedAdditionalServiceService) {
+			@Lazy OrderedAdditionalServiceService orderedAdditionalServiceService,
+			@Lazy IndividualCustomerService individualCustomerService, 
+			@Lazy CorporateCustomerService corporateCustomerService, 
+			@Lazy CityService cityService) {
 		
 		this.rentDao = rentDao;
 		this.modelMapperService = modelMapperService;
@@ -77,6 +86,9 @@ public class RentManager implements RentService{
 		this.carService = carService;
 		this.paymentService = paymentService;
 		this.orderedAdditionalServiceService = orderedAdditionalServiceService;
+		this.individualCustomerService = individualCustomerService;
+		this.corporateCustomerService = corporateCustomerService;
+		this.cityService = cityService;
 
 	}
 	
@@ -104,10 +116,14 @@ public class RentManager implements RentService{
 	
 	
 	@Override
-	@Transactional
 	public DataResult<Rent> addForIndividualCustomer(CreateRentForIndividualRequest createRentRequest) throws BusinessException {
 		
-		this.carMaintenanceService.checkIfCarIsInMaintenanceForRentRequestIsSucces(createRentRequest.getCarId(),createRentRequest.getStartDate());
+		this.carService.checkIfCarDoesNotExists(createRentRequest.getCarId());
+		this.additionalServiceService.checkIfAdditionalServicesDoesNotExistsByIdIsSuccess(createRentRequest.getAdditionalServices());
+		this.cityService.checkIfCityDoesNotExistsByIdIsSuccess(createRentRequest.getRentedCityId());
+		this.cityService.checkIfCityDoesNotExistsByIdIsSuccess(createRentRequest.getDeliveredCityId());
+		this.individualCustomerService.checkIfIndividualCustomerDoesNotExistsByIdIsSucces(createRentRequest.getIndividualCustomerId());	
+		this.carMaintenanceService.checkIfCarIsInMaintenanceForRentRequestIsSucces(createRentRequest.getCarId(),createRentRequest.getStartDate());		
 		checkIfCarIsRented(createRentRequest.getCarId());
 		
 		Rent rent = this.modelMapperService.forDto().map(createRentRequest, Rent.class);
@@ -122,9 +138,13 @@ public class RentManager implements RentService{
 	}
 	
 	@Override
-	@Transactional
 	public DataResult<Rent> addForCorporateCustomer(CreateRentForCorporateRequest createRentRequest) throws BusinessException {
 		
+		this.carService.checkIfCarDoesNotExists(createRentRequest.getCarId());
+		this.additionalServiceService.checkIfAdditionalServicesDoesNotExistsByIdIsSuccess(createRentRequest.getAdditionalServices());
+		this.cityService.checkIfCityDoesNotExistsByIdIsSuccess(createRentRequest.getRentedCityId());
+		this.cityService.checkIfCityDoesNotExistsByIdIsSuccess(createRentRequest.getDeliveredCityId());	
+		this.corporateCustomerService.checkIfCorporateCustomerDoesNotExistsByIdIsSucces(createRentRequest.getCorporateCustomerId());		
 		this.carMaintenanceService.checkIfCarIsInMaintenanceForRentRequestIsSucces(createRentRequest.getCarId(),createRentRequest.getStartDate());
 		checkIfCarIsRented(createRentRequest.getCarId());
 		
@@ -143,8 +163,10 @@ public class RentManager implements RentService{
 	
 
 	@Override
-	@Transactional
 	public Result endRentForIndividual(IndividualEndRentModel individualEndRentModel) throws BusinessException {
+		
+		
+		checkIfRentDoesNotExistsById(individualEndRentModel.getEndRentRequest().getRentId());
 		
 		Rent rent = this.rentDao.getById(individualEndRentModel.getEndRentRequest().getRentId());
 		
@@ -158,8 +180,9 @@ public class RentManager implements RentService{
 	}
 	
 	@Override
-	@Transactional
 	public Result endRentForCorporate(CorporateEndRentModel corporateEndRentModel) throws BusinessException {
+		
+		checkIfRentDoesNotExistsById(corporateEndRentModel.getEndRentRequest().getRentId());
 		
 		Rent rent = this.rentDao.getById(corporateEndRentModel.getEndRentRequest().getRentId());
 		rent.setReturnKm(corporateEndRentModel.getEndRentRequest().getReturnedKm());
@@ -186,7 +209,15 @@ public class RentManager implements RentService{
 	@Override
 	public Result update(UpdateRentRequest updateRentRequest) throws BusinessException {
 		
+		
+		
 		checkIfRentDoesNotExistsById(updateRentRequest.getRentId());
+		this.carService.checkIfCarDoesNotExists(updateRentRequest.getCarId());
+		this.additionalServiceService.checkIfAdditionalServicesDoesNotExistsByIdIsSuccess(updateRentRequest.getAdditionalServices());
+		this.cityService.checkIfCityDoesNotExistsByIdIsSuccess(updateRentRequest.getRentedCityId());
+		this.cityService.checkIfCityDoesNotExistsByIdIsSuccess(updateRentRequest.getDeliveredCityId());	
+		this.customerService.checkIfCustomerDoesNotExistsByIdIsSuccess(updateRentRequest.getCustomerId());
+		this.carMaintenanceService.checkIfCarIsInMaintenanceForRentRequestIsSucces(updateRentRequest.getCarId(),updateRentRequest.getStartDate());
 		
 		Rent rent = this.modelMapperService.forRequest().map(updateRentRequest, Rent.class);
 	    this.rentDao.save(rent);
@@ -370,6 +401,7 @@ public class RentManager implements RentService{
 		return createRentForCorporateRequest;
 		
 	}
+	
 
 	
 

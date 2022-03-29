@@ -59,7 +59,7 @@ public class IndividualCustomerManager implements IndividualCustomerService{
 	@Override
 	public DataResult<IndividualCustomerDto> getById(int id) throws BusinessException {
 		
-		checkIfIndividualCustomerDoesNotExistById(id);
+		checkIfIndividualCustomerDoesNotExistsById(id);
 		
 		IndividualCustomer result = this.individualCustomerDao.getById(id);
 		IndividualCustomerDto response = this.modelMapperService.forDto().map(result, IndividualCustomerDto.class);
@@ -70,7 +70,7 @@ public class IndividualCustomerManager implements IndividualCustomerService{
 	@Override
 	public Result update(UpdateIndividualCustomerRequest updateIndividualCustomerRequest) throws BusinessException {
 		
-		checkIfIndividualCustomerDoesNotExistById(updateIndividualCustomerRequest.getCustomerId());
+		checkIfIndividualCustomerDoesNotExistsById(updateIndividualCustomerRequest.getCustomerId());
 		
 		IndividualCustomer result = this.modelMapperService.forRequest().map(updateIndividualCustomerRequest, IndividualCustomer.class);
 		this.individualCustomerDao.save(result);
@@ -80,7 +80,7 @@ public class IndividualCustomerManager implements IndividualCustomerService{
 	@Override
 	public Result delete(DeleteIndividualCustomerRequest deleteIndividualCustomerRequest) throws BusinessException {
 		
-		checkIfIndividualCustomerDoesNotExistById(deleteIndividualCustomerRequest.getCustomerId());
+		checkIfIndividualCustomerDoesNotExistsById(deleteIndividualCustomerRequest.getCustomerId());
 		
 		this.individualCustomerDao.deleteById(deleteIndividualCustomerRequest.getCustomerId());
 		
@@ -88,7 +88,15 @@ public class IndividualCustomerManager implements IndividualCustomerService{
 		
 	}
 	
-	private void checkIfIndividualCustomerDoesNotExistById(int id) throws BusinessException{
+	public Result checkIfIndividualCustomerDoesNotExistsByIdIsSucces(int id) throws BusinessException {
+		
+		checkIfIndividualCustomerDoesNotExistsById(id);
+		return new SuccessResult(ResultMessages.AVAILABLE);
+		
+		
+	}
+	
+	private void checkIfIndividualCustomerDoesNotExistsById(int id) throws BusinessException{
 		
 		if(!this.individualCustomerDao.existsById(id)) {
 			
