@@ -33,7 +33,7 @@ public class Invoice {
 	@JoinColumn(name = "customer_id")
 	private Customer customer;
 	
-	@OneToOne
+	@ManyToOne
 	@JoinColumn(name = "rent_id")
 	private Rent rent;
 	

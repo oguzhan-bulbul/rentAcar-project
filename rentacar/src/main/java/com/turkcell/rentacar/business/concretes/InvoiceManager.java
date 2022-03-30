@@ -129,12 +129,21 @@ public class InvoiceManager implements InvoiceService{
 		return new SuccessDataResult<List<InvoiceListDto>>(response,ResultMessages.LISTEDSUCCESSFUL);
 	}
 	
-	@Transactional
 	@Override
 	public DataResult<Invoice> addInvoice(int rentId) throws BusinessException {
 		
 		Invoice invoice = new Invoice();
 		setInvoiceFields(invoice, rentId);
+		this.invoiceDao.save(invoice);
+		
+		return new SuccessDataResult<Invoice>(invoice,ResultMessages.ADDEDSUCCESSFUL);
+	}
+	
+	@Override
+	public DataResult<Invoice> addInvoice(Rent rent) throws BusinessException {
+		
+		Invoice invoice = new Invoice();
+		setInvoiceFields(invoice, rent);
 		this.invoiceDao.save(invoice);
 		
 		return new SuccessDataResult<Invoice>(invoice,ResultMessages.ADDEDSUCCESSFUL);
@@ -156,6 +165,18 @@ public class InvoiceManager implements InvoiceService{
 	private void setInvoiceFields(Invoice invoice , int rentId) {
 		
 		Rent rent = this.rentService.getRentEntityById(rentId);
+		invoice.setRent(rent);
+		invoice.setTotalRentDay((int)ChronoUnit.DAYS.between(rent.getStartDate(), rent.getFinishDate()));
+        invoice.setCustomer(rent.getCustomer());
+        invoice.setTotalBill(rent.getBill());
+        invoice.setStartDate(rent.getStartDate());
+        invoice.setFinishDate(rent.getFinishDate());
+        invoice.setCreationDate(LocalDate.now());
+        invoice.setInvoiceNo(0);
+	}
+	
+	private void setInvoiceFields(Invoice invoice , Rent rent) {
+		
 		invoice.setRent(rent);
 		invoice.setTotalRentDay((int)ChronoUnit.DAYS.between(rent.getStartDate(), rent.getFinishDate()));
         invoice.setCustomer(rent.getCustomer());

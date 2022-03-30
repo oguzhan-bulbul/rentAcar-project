@@ -138,6 +138,27 @@ public class RentManager implements RentService{
 	}
 	
 	@Override
+	public DataResult<Rent> createRentForIndividualCustomer(CreateRentForIndividualRequest createRentRequest) throws BusinessException {
+		
+		this.carService.checkIfCarDoesNotExists(createRentRequest.getCarId());
+		this.additionalServiceService.checkIfAdditionalServicesDoesNotExistsByIdIsSuccess(createRentRequest.getAdditionalServices());
+		this.cityService.checkIfCityDoesNotExistsByIdIsSuccess(createRentRequest.getRentedCityId());
+		this.cityService.checkIfCityDoesNotExistsByIdIsSuccess(createRentRequest.getDeliveredCityId());
+		this.individualCustomerService.checkIfIndividualCustomerDoesNotExistsByIdIsSucces(createRentRequest.getIndividualCustomerId());	
+		this.carMaintenanceService.checkIfCarIsInMaintenanceForRentRequestIsSucces(createRentRequest.getCarId(),createRentRequest.getStartDate());		
+		checkIfCarIsRented(createRentRequest.getCarId());
+		
+		Rent rent = this.modelMapperService.forDto().map(createRentRequest, Rent.class);
+		rent.setRentId(0);
+		rent.setBill(calculatedCityBill(createRentRequest.getRentedCityId(),createRentRequest.getDeliveredCityId())
+				+calculatedServiceBill(createRentRequest.getAdditionalServices())
+				+calculatedCarBill(createRentRequest.getCarId(), createRentRequest.getStartDate(), createRentRequest.getFinishDate()));
+		rent.setCustomer(this.customerService.getById(createRentRequest.getIndividualCustomerId()));	
+					
+		return new SuccessDataResult<Rent>(rent,ResultMessages.ADDEDSUCCESSFUL);
+	}
+	
+	@Override
 	public DataResult<Rent> addForCorporateCustomer(CreateRentForCorporateRequest createRentRequest) throws BusinessException {
 		
 		this.carService.checkIfCarDoesNotExists(createRentRequest.getCarId());
@@ -324,7 +345,7 @@ public class RentManager implements RentService{
 		
 		for (Rent rent : rents) {
 			
-			if(rent.getFinishDate() == null || rent.getFinishDate().isAfter(LocalDate.now())) {
+			if(rent.getFinishDate() == null || rent.getFinishDate().isBefore(LocalDate.now())) {
 				
 				throw new BusinessException(BusinessMessages.CARINRENT);
 				
@@ -371,7 +392,7 @@ public class RentManager implements RentService{
 		
 		List<Integer> additionalServices = new ArrayList<Integer>();
 		
-		for(AdditionalService additionalService : this.orderedAdditionalServiceService.getByIdAsEntity(rent.getRentId()).getAdditionalServices()) {
+		for(AdditionalService additionalService : this.orderedAdditionalServiceService.getEntityByRentId(rent.getRentId()).getAdditionalServices()) {
 			additionalServices.add(additionalService.getAdditionalServiceId());	
 		}
 		

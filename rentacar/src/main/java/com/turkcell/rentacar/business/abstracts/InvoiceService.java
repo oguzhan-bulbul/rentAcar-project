@@ -13,6 +13,7 @@ import com.turkcell.rentacar.core.utilities.exceptions.BusinessException;
 import com.turkcell.rentacar.core.utilities.results.DataResult;
 import com.turkcell.rentacar.core.utilities.results.Result;
 import com.turkcell.rentacar.entities.concretes.Invoice;
+import com.turkcell.rentacar.entities.concretes.Rent;
 
 public interface InvoiceService {
 	
@@ -37,5 +38,7 @@ public interface InvoiceService {
 	Invoice getByIdEntity(int id);
 	
 	Result saveInvoiceEntity(Invoice invoice);
+	
+	DataResult<Invoice> addInvoice(Rent rent) throws BusinessException;
 
 }

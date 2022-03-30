@@ -84,7 +84,6 @@ public class OrderedAdditionalServiceManager implements OrderedAdditionalService
 		return new SuccessDataResult<OrderedAdditionalService>(orderedAdditionalService,ResultMessages.ADDEDSUCCESSFUL);
 	}
 	
-	@Transactional
 	@Override
 	public DataResult<OrderedAdditionalService> addWithFields(int rentId, List<Integer> additionalServices)
 			throws BusinessException {

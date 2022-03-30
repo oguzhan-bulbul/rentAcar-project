@@ -45,6 +45,9 @@ public interface RentService {
 	
 	Result saveRentEntity(Rent rent);
 
+	DataResult<Rent> createRentForIndividualCustomer(CreateRentForIndividualRequest createRentRequest)
+			throws BusinessException;
+
 	
 
 }
