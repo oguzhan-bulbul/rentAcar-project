@@ -182,6 +182,27 @@ public class RentManager implements RentService{
 		return new SuccessDataResult<Rent>(rent,ResultMessages.ADDEDSUCCESSFUL);
 	}
 	
+	@Override
+	public DataResult<Rent> createRentForCorporateCustomer(CreateRentForCorporateRequest createRentRequest) throws BusinessException {
+		
+		this.carService.checkIfCarDoesNotExists(createRentRequest.getCarId());
+		this.additionalServiceService.checkIfAdditionalServicesDoesNotExistsByIdIsSuccess(createRentRequest.getAdditionalServices());
+		this.cityService.checkIfCityDoesNotExistsByIdIsSuccess(createRentRequest.getRentedCityId());
+		this.cityService.checkIfCityDoesNotExistsByIdIsSuccess(createRentRequest.getDeliveredCityId());
+		this.corporateCustomerService.checkIfCorporateCustomerDoesNotExistsByIdIsSucces(createRentRequest.getCorporateCustomerId());	
+		this.carMaintenanceService.checkIfCarIsInMaintenanceForRentRequestIsSucces(createRentRequest.getCarId(),createRentRequest.getStartDate());		
+		checkIfCarIsRented(createRentRequest.getCarId());
+		
+		Rent rent = this.modelMapperService.forDto().map(createRentRequest, Rent.class);
+		rent.setRentId(0);
+		rent.setBill(calculatedCityBill(createRentRequest.getRentedCityId(),createRentRequest.getDeliveredCityId())
+				+calculatedServiceBill(createRentRequest.getAdditionalServices())
+				+calculatedCarBill(createRentRequest.getCarId(), createRentRequest.getStartDate(), createRentRequest.getFinishDate()));
+		rent.setCustomer(this.customerService.getById(createRentRequest.getCorporateCustomerId()));	
+					
+		return new SuccessDataResult<Rent>(rent,ResultMessages.ADDEDSUCCESSFUL);
+	}
+	
 
 	@Override
 	public Result endRentForIndividual(IndividualEndRentModel individualEndRentModel) throws BusinessException {

@@ -48,6 +48,9 @@ public interface RentService {
 	DataResult<Rent> createRentForIndividualCustomer(CreateRentForIndividualRequest createRentRequest)
 			throws BusinessException;
 
+	DataResult<Rent> createRentForCorporateCustomer(CreateRentForCorporateRequest createRentRequest)
+			throws BusinessException;
+
 	
 
 }
