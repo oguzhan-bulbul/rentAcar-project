@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import com.turkcell.rentacar.business.abstracts.CarMaintenanceService;
+import com.turkcell.rentacar.business.abstracts.CarService;
 import com.turkcell.rentacar.business.abstracts.RentService;
 import com.turkcell.rentacar.business.constants.messages.BusinessMessages;
 import com.turkcell.rentacar.business.constants.messages.ResultMessages;
@@ -34,13 +35,15 @@ public class CarMaintenanceManager implements CarMaintenanceService{
 	private final CarMaintenanceDao carMaintenanceDao;
 	private final ModelMapperService modelMapperService;
 	private final RentService rentService;
+	private final CarService carService;
 		
 	@Autowired
-	public CarMaintenanceManager(CarMaintenanceDao carMaintenanceDao, ModelMapperService modelMapperService,@Lazy RentService rentService) {
+	public CarMaintenanceManager(CarMaintenanceDao carMaintenanceDao, ModelMapperService modelMapperService,@Lazy RentService rentService, CarService carService) {
 
 		this.carMaintenanceDao = carMaintenanceDao;
 		this.modelMapperService = modelMapperService;
 		this.rentService=rentService;
+		this.carService = carService;
 		
 	}
 
@@ -59,7 +62,8 @@ public class CarMaintenanceManager implements CarMaintenanceService{
 
 	@Override
 	public Result add(CreateCarMaintenanceRequest createCarMaintenanceRequest) throws BusinessException {
-				
+		
+		this.carService.checkIfCarDoesNotExists(createCarMaintenanceRequest.getCarId());		
 		this.rentService.checkIfCarIsRentedIsSucces(createCarMaintenanceRequest.getCarId());
 		checkIfCarIsInMaintenance(createCarMaintenanceRequest);
 		
@@ -73,6 +77,7 @@ public class CarMaintenanceManager implements CarMaintenanceService{
 	@Override
 	public Result update(UpdateCarMaintenanceRequest updateCarMaintenanceRequest) throws BusinessException {
 		
+		this.carService.checkIfCarDoesNotExists(updateCarMaintenanceRequest.getCarId());		
 		checkIfCarMaintenanceDoesNotExistById(updateCarMaintenanceRequest.getMaintenanceId());
 		
 		CarMaintenance carMaintenance = this.modelMapperService.forRequest()
@@ -105,7 +110,9 @@ public class CarMaintenanceManager implements CarMaintenanceService{
 	}
 
 	@Override
-	public DataResult<List<CarMaintenanceListDto>> getByCarId(int id) {
+	public DataResult<List<CarMaintenanceListDto>> getByCarId(int id) throws BusinessException {
+		
+		this.carService.checkIfCarDoesNotExists(id);	
 		
 		List<CarMaintenance> result = this.carMaintenanceDao.getAllByCar_CarId(id);
 		List<CarMaintenanceListDto> response = result.stream()

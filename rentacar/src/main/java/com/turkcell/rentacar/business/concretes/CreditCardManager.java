@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.turkcell.rentacar.api.models.CreateCardRequest;
 import com.turkcell.rentacar.business.abstracts.CreditCardService;
 import com.turkcell.rentacar.business.abstracts.CustomerService;
+import com.turkcell.rentacar.business.constants.messages.BusinessMessages;
 import com.turkcell.rentacar.business.constants.messages.ResultMessages;
 import com.turkcell.rentacar.business.dtos.CreditCardDto;
 import com.turkcell.rentacar.business.dtos.CreditCardListDto;
@@ -50,6 +51,8 @@ public class CreditCardManager implements CreditCardService{
 	@Override
 	public Result add(CreateCardRequest createCardRequest, int customerId) throws BusinessException {
 		
+		this.customerService.checkIfCustomerDoesNotExistsByIdIsSuccess(customerId);
+				
 		CreditCard creditCard = this.modelMapperService.forDto().map(createCardRequest, CreditCard.class);
 		creditCard.setCustomer(this.customerService.getById(customerId));
 		this.creditCardDao.save(creditCard);
@@ -60,6 +63,8 @@ public class CreditCardManager implements CreditCardService{
 	@Override
 	public DataResult<CreditCardDto> getById(int id) throws BusinessException {
 		
+		checkIfCCreditCardDoesNotExistsById(id);
+		
 		CreditCard result = this.creditCardDao.getById(id);
 		
 		CreditCardDto response = this.modelMapperService.forDto().map(result, CreditCardDto.class);
@@ -69,6 +74,9 @@ public class CreditCardManager implements CreditCardService{
 
 	@Override
 	public DataResult<List<CreditCardListDto>> getByCustomerId(int id) throws BusinessException {
+		
+		this.customerService.checkIfCustomerDoesNotExistsByIdIsSuccess(id);
+		
 		List<CreditCard> result = this.creditCardDao.getAllByCustomer_CustomerId(id);
 		
 		List<CreditCardListDto> response = result.stream()
@@ -81,6 +89,8 @@ public class CreditCardManager implements CreditCardService{
 	@Override
 	public Result update(UpdateCreditCardRequest updateCreditCardRequest) throws BusinessException {
 		
+		checkIfCCreditCardDoesNotExistsById(updateCreditCardRequest.getCreditCardId());
+		
 		CreditCard creditCard = this.modelMapperService.forDto().map(updateCreditCardRequest, CreditCard.class);
 		this.creditCardDao.save(creditCard);
 		
@@ -92,6 +102,13 @@ public class CreditCardManager implements CreditCardService{
 		
 		this.creditCardDao.deleteById(deleteCreditCardRequest.getCreditCardId());
 		return new SuccessResult(ResultMessages.DELETESUCCESSFUL);
+	}
+
+	
+	private void checkIfCCreditCardDoesNotExistsById(int id) throws BusinessException {
+		if(!this.creditCardDao.existsById(id)) {
+			throw new BusinessException(BusinessMessages.CREDITCARDDOESNOTEXISTS);
+		}
 	}
 
 }

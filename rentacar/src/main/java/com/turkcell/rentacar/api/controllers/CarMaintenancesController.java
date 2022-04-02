@@ -70,7 +70,7 @@ public class CarMaintenancesController {
 	}
 	
 	@GetMapping("/getbycarid")
-	public DataResult<List<CarMaintenanceListDto>> getByCarId(@RequestParam int id){
+	public DataResult<List<CarMaintenanceListDto>> getByCarId(@RequestParam int id) throws BusinessException{
 		
 		return this.carMaintenanceService.getByCarId(id);
 		

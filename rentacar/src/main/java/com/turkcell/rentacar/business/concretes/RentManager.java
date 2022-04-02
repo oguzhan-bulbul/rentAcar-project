@@ -311,6 +311,12 @@ public class RentManager implements RentService{
 		return new SuccessResult(ResultMessages.DELETESUCCESSFUL);
 	}
 	
+	public Result checkIfRentDoesNotExistsByIdIsSuccess(int id) {
+		checkIfRentDoesNotExistsByIdIsSuccess(id);
+		
+		return new SuccessResult(ResultMessages.AVAILABLE);
+	}
+	
 
 	
 	private void checkIfRentDoesNotExistsById(int id) throws BusinessException{
@@ -320,6 +326,7 @@ public class RentManager implements RentService{
 			throw new BusinessException(BusinessMessages.RENTNOTFOUND);	
 		}		
 	}
+	
 	
 	private double calculatedCarBill(int carId , LocalDate startDate, LocalDate finishDate) {
 		

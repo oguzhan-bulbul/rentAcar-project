@@ -7,5 +7,7 @@ import com.turkcell.rentacar.entities.concretes.IndividualCustomer;
 
 @Repository
 public interface IndividualCustomerDao  extends JpaRepository<IndividualCustomer, Integer>{
+	
+	boolean existsByEmail(String email);
 
 }

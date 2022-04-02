@@ -24,6 +24,9 @@ public class BusinessMessages {
 	public static final String ORDEREDADDITIONALSERVICEEXISTS = "Ordered Additional Service exists.";
 	public static final String CARINRENT = "Car is in rent .";
 	public static final String BRANDALREADYEXISTS = " Brand is already exists.";
+	public static final String CREDITCARDEXISTS = " Credit Card is already exists.";
+	public static final String CREDITCARDDOESNOTEXISTS = " Credit Card DOES NOT exists.";
+	public static final String EMAILUSED = "Email already used.";
 	
 	
 	

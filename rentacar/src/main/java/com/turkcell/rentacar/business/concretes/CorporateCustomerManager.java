@@ -25,8 +25,7 @@ import com.turkcell.rentacar.entities.concretes.CorporateCustomer;
 @Service
 public class CorporateCustomerManager implements CorporateCustomerService{
 	
-	private CorporateCustomerDao corporateCustomerDao;
-	
+	private CorporateCustomerDao corporateCustomerDao;	
 	private ModelMapperService modelMapperService;
 
 	public CorporateCustomerManager(CorporateCustomerDao corporateCustomerDao, ModelMapperService modelMapperService) {
@@ -49,6 +48,8 @@ public class CorporateCustomerManager implements CorporateCustomerService{
 	@Override
 	public Result add(CreateCorporateCustomerRequest createCorporateCustomerRequest) throws BusinessException {
 		
+		checkIfCorporateCustomerEmailIsAvailable(createCorporateCustomerRequest.getEmail());
+		
 		CorporateCustomer result = this.modelMapperService.forRequest().map(createCorporateCustomerRequest, CorporateCustomer.class);
 		this.corporateCustomerDao.save(result);
 		
@@ -70,6 +71,7 @@ public class CorporateCustomerManager implements CorporateCustomerService{
 	public Result update(UpdateCorporateCustomerRequest updateCorporateCustomerRequest) throws BusinessException {
 		
 		checkIfCorporateCustomerDoesNotExistById(updateCorporateCustomerRequest.getCustomerId());
+		checkIfCorporateCustomerEmailIsAvailable(updateCorporateCustomerRequest.getEmail());
 		
 		CorporateCustomer result = this.modelMapperService.forRequest().map(updateCorporateCustomerRequest, CorporateCustomer.class);
 		this.corporateCustomerDao.save(result);
@@ -103,7 +105,14 @@ public class CorporateCustomerManager implements CorporateCustomerService{
 			
 		}				
 	}
-
+	
+	private void checkIfCorporateCustomerEmailIsAvailable(String email) throws BusinessException {
+		if(this.corporateCustomerDao.existsByEmail(email)) {
+			throw new BusinessException(BusinessMessages.EMAILUSED);
+		}
+	}
+	
+	
 	@Override
 	public CorporateCustomer getByIdCorporateCustomer(int id) {
 		

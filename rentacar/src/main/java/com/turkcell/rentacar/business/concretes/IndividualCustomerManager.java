@@ -50,6 +50,8 @@ public class IndividualCustomerManager implements IndividualCustomerService{
 	@Override
 	public Result add(CreateIndividualCustomerRequest createIndividualCustomerRequest) throws BusinessException {
 		
+		checkIfIndividualCustomerEmailIsAvailable(createIndividualCustomerRequest.getEmail());
+		
 		IndividualCustomer result = this.modelMapperService.forRequest().map(createIndividualCustomerRequest, IndividualCustomer.class);
 		this.individualCustomerDao.save(result);
 		
@@ -71,6 +73,7 @@ public class IndividualCustomerManager implements IndividualCustomerService{
 	public Result update(UpdateIndividualCustomerRequest updateIndividualCustomerRequest) throws BusinessException {
 		
 		checkIfIndividualCustomerDoesNotExistsById(updateIndividualCustomerRequest.getCustomerId());
+		checkIfIndividualCustomerEmailIsAvailable(updateIndividualCustomerRequest.getEmail());
 		
 		IndividualCustomer result = this.modelMapperService.forRequest().map(updateIndividualCustomerRequest, IndividualCustomer.class);
 		this.individualCustomerDao.save(result);
@@ -103,6 +106,11 @@ public class IndividualCustomerManager implements IndividualCustomerService{
 			throw new BusinessException(BusinessMessages.INDIVIDUALCUSTOMERNOTFOUND);
 			
 		}				
+	}
+	private void checkIfIndividualCustomerEmailIsAvailable(String email) throws BusinessException {
+		if(this.individualCustomerDao.existsByEmail(email)) {
+			throw new BusinessException(BusinessMessages.EMAILUSED);
+		}
 	}
 	
 	

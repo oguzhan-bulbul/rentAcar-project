@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.turkcell.rentacar.business.abstracts.CustomerService;
 import com.turkcell.rentacar.business.abstracts.InvoiceService;
 import com.turkcell.rentacar.business.abstracts.RentService;
 import com.turkcell.rentacar.business.constants.messages.BusinessMessages;
@@ -33,13 +34,15 @@ public class InvoiceManager implements InvoiceService{
 	private InvoiceDao invoiceDao;
 	private ModelMapperService modelMapperService;
 	private final RentService rentService;
+	private final CustomerService customerService;
 	
 	
-	public InvoiceManager(InvoiceDao invoiceDao, ModelMapperService modelMapperService, RentService rentService) {
+	public InvoiceManager(InvoiceDao invoiceDao, ModelMapperService modelMapperService, RentService rentService, CustomerService customerService) {
 
 		this.rentService = rentService;
 		this.invoiceDao = invoiceDao;
 		this.modelMapperService = modelMapperService;
+		this.customerService = customerService;
 		
 	}
 
@@ -60,6 +63,9 @@ public class InvoiceManager implements InvoiceService{
 
 	@Override
 	public Result add(CreateInvoiceRequest createInvoiceRequest) throws BusinessException {
+		
+		this.customerService.checkIfCustomerDoesNotExistsByIdIsSuccess(createInvoiceRequest.getCustomerId());
+		this.rentService.checkIfRentDoesNotExistsByIdIsSuccess(createInvoiceRequest.getRentId());
 		
 		Invoice result = this.modelMapperService.forRequest().map(createInvoiceRequest, Invoice.class);
 		this.invoiceDao.save(result);
@@ -82,6 +88,8 @@ public class InvoiceManager implements InvoiceService{
 	public Result update(UpdateInvoiceRequest updateInvoiceRequest) throws BusinessException {
 		
 		checkIfInvoiceDoesNotExistById(updateInvoiceRequest.getInvoiceNo());
+		this.customerService.checkIfCustomerDoesNotExistsByIdIsSuccess(updateInvoiceRequest.getCustomerId());
+		this.rentService.checkIfRentDoesNotExistsByIdIsSuccess(updateInvoiceRequest.getRentId());
 		
 		Invoice result = this.modelMapperService.forRequest().map(updateInvoiceRequest, Invoice.class);
 		this.invoiceDao.save(result);
@@ -100,7 +108,9 @@ public class InvoiceManager implements InvoiceService{
 	}
 	
 	@Override
-	public DataResult<List<InvoiceListDto>> getAllByCustomerId(int id) {
+	public DataResult<List<InvoiceListDto>> getAllByCustomerId(int id) throws BusinessException {
+		
+		this.customerService.checkIfCustomerDoesNotExistsByIdIsSuccess(id);
 		
 		List<Invoice> result = this.invoiceDao.getAllByCustomer_CustomerId(id);
 		List<InvoiceListDto> response =result.stream()
@@ -132,6 +142,8 @@ public class InvoiceManager implements InvoiceService{
 	@Override
 	public DataResult<Invoice> addInvoice(int rentId) throws BusinessException {
 		
+		this.rentService.checkIfRentDoesNotExistsByIdIsSuccess(rentId);
+		
 		Invoice invoice = new Invoice();
 		setInvoiceFields(invoice, rentId);
 		this.invoiceDao.save(invoice);
@@ -142,6 +154,8 @@ public class InvoiceManager implements InvoiceService{
 	@Override
 	public DataResult<Invoice> addInvoice(Rent rent) throws BusinessException {
 		
+		this.rentService.checkIfRentDoesNotExistsByIdIsSuccess(rent.getRentId());
+		
 		Invoice invoice = new Invoice();
 		setInvoiceFields(invoice, rent);
 		this.invoiceDao.save(invoice);
@@ -150,6 +164,9 @@ public class InvoiceManager implements InvoiceService{
 	}
 	
 	public Invoice getByRentId(int id) {
+		
+		this.rentService.checkIfRentDoesNotExistsByIdIsSuccess(id);
+		
 		return this.invoiceDao.getByRent_RentId(id);
 	}
 	

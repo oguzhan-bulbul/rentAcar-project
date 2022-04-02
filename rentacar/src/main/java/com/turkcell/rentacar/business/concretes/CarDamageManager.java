@@ -96,6 +96,18 @@ public class CarDamageManager implements CarDamageService{
 		return new SuccessResult(ResultMessages.DELETESUCCESSFUL);
 	}
 	
+	@Override
+	public DataResult<List<CarDamageDto>> getByCarId(int carId) {
+		
+		List<CarDamage> carDamages = this.carDamageDao.findAllByCar_CarId(carId);
+		
+		List<CarDamageDto> response = carDamages.stream()
+		.map(carDamage -> this.modelMapperService.forDto()
+				.map(carDamage, CarDamageDto.class)).collect(Collectors.toList());
+			
+		return new SuccessDataResult<List<CarDamageDto>>(response,ResultMessages.LISTEDSUCCESSFUL);
+	}
+	
 	private void checkIfCarDamageDoesNotExistById(int id) throws BusinessException{
 		
 		if(!this.carDamageDao.existsById(id)) {
@@ -104,5 +116,7 @@ public class CarDamageManager implements CarDamageService{
 			
 		}				
 	}
+
+
 
 }
