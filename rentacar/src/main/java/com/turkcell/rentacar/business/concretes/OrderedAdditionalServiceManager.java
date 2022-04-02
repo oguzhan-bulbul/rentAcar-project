@@ -88,6 +88,9 @@ public class OrderedAdditionalServiceManager implements OrderedAdditionalService
 	public DataResult<OrderedAdditionalService> addWithFields(int rentId, List<Integer> additionalServices)
 			throws BusinessException {
 		
+		this.rentService.checkIfRentDoesNotExistsByIdIsSuccess(rentId);
+		this.additionalServiceService.checkIfAdditionalServicesDoesNotExistsByIdIsSuccess(additionalServices);
+		
 		List<AdditionalService> services = new ArrayList<>();
 		for (Integer id : additionalServices) {
 			
@@ -126,7 +129,6 @@ public class OrderedAdditionalServiceManager implements OrderedAdditionalService
 				.map(updateOrderedAdditionalServiceRequest, OrderedAdditionalService.class);
 		
 		this.orderedAdditionalServiceDao.save(orderedAdditionalService);
-		//updateRent(orderedAdditionalService);
 		
 		return new SuccessResult(ResultMessages.UPDATESUCCESSFUL);
 	}
@@ -149,6 +151,13 @@ public class OrderedAdditionalServiceManager implements OrderedAdditionalService
 		
 		return this.orderedAdditionalServiceDao.getById(id);
 	}
+	
+	@Override
+	public OrderedAdditionalService getEntityByRentId(int rentId) {
+		
+		return this.orderedAdditionalServiceDao.getByRent_RentId(rentId);
+	}
+
 	
 	public Result checkIfOrderedAdditionalServiceExistsByIdisSuccess(int id) throws BusinessException {
 		
@@ -173,23 +182,7 @@ public class OrderedAdditionalServiceManager implements OrderedAdditionalService
 			throw new BusinessException(BusinessMessages.ORDEREDADDITIONALSERVICEEXISTS);
 		}
 	}
-	
-	
-	/*private void updateRent(OrderedAdditionalService orderedAdditionalService) throws BusinessException {
-		
-		Rent rent = this.rentService.getRentEntityById(orderedAdditionalService.getRent().getRentId());
-		
-		rent.setOrderedAdditionalServices(orderedAdditionalService);
-		
-		this.rentService.updateRent(rent);
-		
-	}*/
 
-	@Override
-	public OrderedAdditionalService getEntityByRentId(int rentId) {
-		
-		return this.orderedAdditionalServiceDao.getByRent_RentId(rentId);
-	}
 
 
 

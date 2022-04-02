@@ -51,11 +51,11 @@ public class OrderedAdditionalServicesController {
 	public DataResult<OrderedAdditionalServiceDto> getById(@RequestParam int id) throws BusinessException{
 		return this.orderedAdditionalServiceService.getById(id);
 	}
-	
+	/*
 	@PutMapping("/update")
 	public Result update(@RequestBody @Valid UpdateOrderedAdditionalServiceRequest updateOrderedAdditionalServiceRequest) throws BusinessException{
 		return this.orderedAdditionalServiceService.update(updateOrderedAdditionalServiceRequest);
-	}
+	}*/
 	
 	@DeleteMapping("/delete")
 	public Result delete(@RequestBody @Valid DeleteOrderedAdditionalServiceRequest deleteOrderedAdditionalServiceRequest) throws BusinessException{

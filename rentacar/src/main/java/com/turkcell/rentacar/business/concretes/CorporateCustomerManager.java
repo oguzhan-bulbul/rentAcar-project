@@ -97,6 +97,15 @@ public class CorporateCustomerManager implements CorporateCustomerService{
 		
 	}
 	
+	
+	@Override
+	public CorporateCustomer getByIdCorporateCustomer(int id) {
+		
+		return this.corporateCustomerDao.getById(id);
+	}
+	
+	
+	
 	private void checkIfCorporateCustomerDoesNotExistById(int id) throws BusinessException{
 		
 		if(!this.corporateCustomerDao.existsById(id)) {
@@ -107,19 +116,30 @@ public class CorporateCustomerManager implements CorporateCustomerService{
 	}
 	
 	private void checkIfCorporateCustomerEmailIsAvailable(String email) throws BusinessException {
+		
 		if(this.corporateCustomerDao.existsByEmail(email)) {
+			
 			throw new BusinessException(BusinessMessages.EMAILUSED);
 		}
 	}
 	
-	
-	@Override
-	public CorporateCustomer getByIdCorporateCustomer(int id) {
+	private void checkIfCorporateCustomerCompanyNameIsAvailable(String companyName) throws BusinessException {
 		
-		return this.corporateCustomerDao.getById(id);
+		if(this.corporateCustomerDao.existsByCompanyName(companyName)) {
+			
+			throw new BusinessException(BusinessMessages.EMAILUSED);
+		}
 	}
 	
+	private void checkIfCorporateCustomerTaxNumberIsAvailable(String taxNumber) throws BusinessException {
+		
+		if(this.corporateCustomerDao.existsByTaxNumber(taxNumber)) {
+			
+			throw new BusinessException(BusinessMessages.EMAILUSED);
+		}
+	}
 	
+
 	
 	
 
