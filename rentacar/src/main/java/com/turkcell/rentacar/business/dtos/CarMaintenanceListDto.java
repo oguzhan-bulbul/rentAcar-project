@@ -12,8 +12,11 @@ import lombok.NoArgsConstructor;
 public class CarMaintenanceListDto {
 	
 	private int maintenanceId;
+	
 	private String description;
+	
 	private LocalDate returnDate;
+	
 	private int carId;
 
 }

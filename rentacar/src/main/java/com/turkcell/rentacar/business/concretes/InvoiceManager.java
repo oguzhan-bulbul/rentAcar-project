@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.turkcell.rentacar.business.abstracts.CustomerService;
 import com.turkcell.rentacar.business.abstracts.InvoiceService;
 import com.turkcell.rentacar.business.abstracts.RentService;
@@ -163,7 +161,7 @@ public class InvoiceManager implements InvoiceService{
 		return new SuccessDataResult<Invoice>(invoice,ResultMessages.ADDEDSUCCESSFUL);
 	}
 	
-	public Invoice getByRentId(int id) {
+	public Invoice getByRentId(int id) throws BusinessException {
 		
 		this.rentService.checkIfRentDoesNotExistsByIdIsSuccess(id);
 		

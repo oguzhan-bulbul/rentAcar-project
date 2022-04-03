@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CreditCardListDto {
 	
+	private int creditCardId;
+	
 	private String cardHolder;
 	
 	private String cardNo;

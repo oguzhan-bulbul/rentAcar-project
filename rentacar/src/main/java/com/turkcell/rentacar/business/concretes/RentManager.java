@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.turkcell.rentacar.api.models.CorporateEndRentModel;
 import com.turkcell.rentacar.api.models.CorporatePaymentModel;
@@ -374,7 +373,7 @@ public class RentManager implements RentService{
 		
 		for (Rent rent : rents) {
 			
-			if(rent.getFinishDate() == null || rent.getFinishDate().isBefore(LocalDate.now())) {
+			if(rent.getFinishDate() == null || rent.getFinishDate().isAfter(LocalDate.now())) {
 				
 				throw new BusinessException(BusinessMessages.CARINRENT);
 				
