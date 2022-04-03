@@ -71,9 +71,9 @@ public class CorporateCustomerManager implements CorporateCustomerService{
 	public Result update(UpdateCorporateCustomerRequest updateCorporateCustomerRequest) throws BusinessException {
 		
 		checkIfCorporateCustomerDoesNotExistById(updateCorporateCustomerRequest.getCustomerId());
-		checkIfCorporateCustomerEmailIsAvailable(updateCorporateCustomerRequest.getEmail());
 		
 		CorporateCustomer result = this.modelMapperService.forRequest().map(updateCorporateCustomerRequest, CorporateCustomer.class);
+		result.setUserId(updateCorporateCustomerRequest.getCustomerId());
 		this.corporateCustomerDao.save(result);
 		
 		return new SuccessResult(ResultMessages.UPDATESUCCESSFUL);

@@ -10,8 +10,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CarDamageListDto {
 	
-	private int carDamageId;	
+	private int carDamageId;
+	
 	private int carId;	
+	
 	private String damageRecord;
 
 }

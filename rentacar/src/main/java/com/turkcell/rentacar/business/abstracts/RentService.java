@@ -51,7 +51,7 @@ public interface RentService {
 	DataResult<Rent> createRentForCorporateCustomer(CreateRentForCorporateRequest createRentRequest)
 			throws BusinessException;
 	
-	public Result checkIfRentDoesNotExistsByIdIsSuccess(int id);
+	public Result checkIfRentDoesNotExistsByIdIsSuccess(int id) throws BusinessException;
 
 	
 

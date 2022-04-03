@@ -13,6 +13,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateCarDamageRequest {
+	
+	
 	@NotNull
 	@Positive
 	private int carId;

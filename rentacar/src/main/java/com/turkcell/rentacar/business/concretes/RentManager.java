@@ -311,8 +311,9 @@ public class RentManager implements RentService{
 		return new SuccessResult(ResultMessages.DELETESUCCESSFUL);
 	}
 	
-	public Result checkIfRentDoesNotExistsByIdIsSuccess(int id) {
-		checkIfRentDoesNotExistsByIdIsSuccess(id);
+	public Result checkIfRentDoesNotExistsByIdIsSuccess(int id) throws BusinessException {
+		
+		checkIfRentDoesNotExistsById(id);
 		
 		return new SuccessResult(ResultMessages.AVAILABLE);
 	}

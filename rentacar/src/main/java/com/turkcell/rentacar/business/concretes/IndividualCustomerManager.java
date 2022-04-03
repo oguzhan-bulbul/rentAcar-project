@@ -73,10 +73,11 @@ public class IndividualCustomerManager implements IndividualCustomerService{
 	public Result update(UpdateIndividualCustomerRequest updateIndividualCustomerRequest) throws BusinessException {
 		
 		checkIfIndividualCustomerDoesNotExistsById(updateIndividualCustomerRequest.getCustomerId());
-		checkIfIndividualCustomerEmailIsAvailable(updateIndividualCustomerRequest.getEmail());
 		
 		IndividualCustomer result = this.modelMapperService.forRequest().map(updateIndividualCustomerRequest, IndividualCustomer.class);
+		result.setUserId(updateIndividualCustomerRequest.getCustomerId());
 		this.individualCustomerDao.save(result);
+		
 		return new SuccessResult(ResultMessages.UPDATESUCCESSFUL);
 	}
 

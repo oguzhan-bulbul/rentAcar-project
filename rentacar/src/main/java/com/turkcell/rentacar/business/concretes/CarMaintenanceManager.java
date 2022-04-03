@@ -68,7 +68,8 @@ public class CarMaintenanceManager implements CarMaintenanceService{
 		checkIfCarIsInMaintenance(createCarMaintenanceRequest);
 		
 		CarMaintenance carMaintenance = this.modelMapperService.forRequest()
-				.map(createCarMaintenanceRequest,CarMaintenance.class);
+				.map(createCarMaintenanceRequest,CarMaintenance.class);	
+		carMaintenance.setMaintenanceId(0);
 		this.carMaintenanceDao.save(carMaintenance);
 		
 		return new SuccessResult(ResultMessages.ADDEDSUCCESSFUL);
@@ -145,7 +146,7 @@ public class CarMaintenanceManager implements CarMaintenanceService{
 		List<CarMaintenance> response = this.carMaintenanceDao.getAllByCar_CarId(createCarMaintenanceRequest.getCarId());
         
         for (CarMaintenance carMaintenance : response) {
-			if(carMaintenance.getReturnDate() == null) {
+			if(carMaintenance.getReturnDate() == null || carMaintenance.getReturnDate().isAfter(createCarMaintenanceRequest.getReturnDate())) {
 				
 				throw new BusinessException(BusinessMessages.CARINMAINTENANCE);
 				

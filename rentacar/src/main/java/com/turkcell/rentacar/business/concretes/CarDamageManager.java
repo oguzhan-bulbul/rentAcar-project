@@ -47,6 +47,10 @@ public class CarDamageManager implements CarDamageService{
 		List<CarDamageListDto> response = result.stream().map(cardamage -> this.modelMapperService.forDto()
 				.map(cardamage, CarDamageListDto.class)).collect(Collectors.toList());
 		
+		for(int i=0 ; i<result.size();i++) {
+			response.get(i).setCarId(result.get(i).getCar().getCarId());
+		}
+		
 		return new SuccessDataResult<List<CarDamageListDto>>(response,ResultMessages.LISTEDSUCCESSFUL);
 		
 	}
@@ -57,6 +61,7 @@ public class CarDamageManager implements CarDamageService{
 		this.carService.checkIfCarDoesNotExists(createCarDamageRequest.getCarId());
 		
 		CarDamage result = this.modelMapperService.forRequest().map(createCarDamageRequest, CarDamage.class);
+		result.setCarDamageId(0);
 		
 		this.carDamageDao.save(result);
 		
@@ -70,6 +75,7 @@ public class CarDamageManager implements CarDamageService{
 		
 		CarDamage result = this.carDamageDao.getById(id);
 		CarDamageDto response = this.modelMapperService.forDto().map(result, CarDamageDto.class);
+		response.setCarId(result.getCar().getCarId());
 		
 		return new SuccessDataResult<CarDamageDto>(response,ResultMessages.LISTEDSUCCESSFUL);
 	}
@@ -77,7 +83,9 @@ public class CarDamageManager implements CarDamageService{
 	@Override
 	public Result update(UpdateCarDamageRequest updateCarDamageRequest) throws BusinessException {
 		
+		
 		checkIfCarDamageDoesNotExistById(updateCarDamageRequest.getCarDamageId());
+		this.carService.checkIfCarDoesNotExists(updateCarDamageRequest.getCarId());
 		
 		CarDamage result = this.modelMapperService.forRequest().map(updateCarDamageRequest, CarDamage.class);
 		
