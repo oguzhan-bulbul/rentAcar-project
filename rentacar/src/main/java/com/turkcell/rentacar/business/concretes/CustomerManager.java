@@ -21,19 +21,19 @@ public class CustomerManager implements CustomerService{
 	}
 
 	@Override
-	public Customer getById(int id) {
+	public Customer getById(String id) {
 		
 		return this.customerDao.getById(id);
 	}
 	
-	public Result checkIfCustomerDoesNotExistsByIdIsSuccess(int id) throws BusinessException {
+	public Result checkIfCustomerDoesNotExistsByIdIsSuccess(String id) throws BusinessException {
 		
 		checkIfCustomerDoesNotExistsById(id);
 		
 		return new SuccessResult(ResultMessages.AVAILABLE);
 	}
 	
-	private void checkIfCustomerDoesNotExistsById(int id) throws BusinessException {
+	private void checkIfCustomerDoesNotExistsById(String id) throws BusinessException {
 		
 		if(!this.customerDao.existsById(id)) {
 			throw new BusinessException(BusinessMessages.CUSTOMERNOTFOUND);

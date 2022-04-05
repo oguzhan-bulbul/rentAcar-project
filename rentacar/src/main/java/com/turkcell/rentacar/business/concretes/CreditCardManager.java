@@ -49,7 +49,7 @@ public class CreditCardManager implements CreditCardService{
 	}
 
 	@Override
-	public Result add(CreateCardRequest createCardRequest, int customerId) throws BusinessException {
+	public Result add(CreateCardRequest createCardRequest, String customerId) throws BusinessException {
 		
 		this.customerService.checkIfCustomerDoesNotExistsByIdIsSuccess(customerId);
 				
@@ -73,7 +73,7 @@ public class CreditCardManager implements CreditCardService{
 	}
 
 	@Override
-	public DataResult<List<CreditCardListDto>> getByCustomerId(int id) throws BusinessException {
+	public DataResult<List<CreditCardListDto>> getByCustomerId(String id) throws BusinessException {
 		
 		this.customerService.checkIfCustomerDoesNotExistsByIdIsSuccess(id);
 		

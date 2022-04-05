@@ -9,10 +9,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserListDto {
 	
-	private int userId;
+	private String userId;
 	
 	private String email;
 	
 	private String password;
+	
+	private String encryptedPassword;
 
 }

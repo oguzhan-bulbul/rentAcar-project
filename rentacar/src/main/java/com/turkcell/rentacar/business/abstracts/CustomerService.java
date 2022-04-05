@@ -6,8 +6,8 @@ import com.turkcell.rentacar.entities.concretes.Customer;
 
 public interface CustomerService {
 	
-	Customer getById(int id);
+	Customer getById(String id);
 	
-	Result checkIfCustomerDoesNotExistsByIdIsSuccess(int id) throws BusinessException;
+	Result checkIfCustomerDoesNotExistsByIdIsSuccess(String id) throws BusinessException;
 	
 }

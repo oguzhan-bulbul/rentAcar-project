@@ -28,7 +28,7 @@ import lombok.NoArgsConstructor;
 public class Customer extends User{
 	
 	@Column(name = "customer_id",insertable = false ,updatable = false)
-	private int customerId;
+	private String customerId;
 	
 	@Column(name = "date_registered")
 	private LocalDate dateRegistered;

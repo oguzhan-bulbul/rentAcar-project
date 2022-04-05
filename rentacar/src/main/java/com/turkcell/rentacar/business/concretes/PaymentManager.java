@@ -205,7 +205,7 @@ public class PaymentManager implements PaymentService{
         return new SuccessResult(ResultMessages.DELETESUCCESSFUL);
 	}
 	
-	private void saveCreditCard(CreateCardRequest createCardRequest , SavedCreditCard savedCreditCard, int customerId) throws BusinessException {
+	private void saveCreditCard(CreateCardRequest createCardRequest , SavedCreditCard savedCreditCard, String customerId) throws BusinessException {
 		
 		if(savedCreditCard == SavedCreditCard.YES) {
     		this.creditCardService.add(createCardRequest,customerId);

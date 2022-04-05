@@ -10,6 +10,6 @@ import com.turkcell.rentacar.entities.concretes.CreditCard;
 @Repository
 public interface CreditCardDao extends JpaRepository<CreditCard, Integer>{
 	
-	List<CreditCard> getAllByCustomer_CustomerId(int id);
+	List<CreditCard> getAllByCustomer_CustomerId(String id);
 
 }

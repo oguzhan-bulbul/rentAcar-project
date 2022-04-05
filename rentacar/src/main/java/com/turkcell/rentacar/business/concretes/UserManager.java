@@ -1,9 +1,13 @@
 package com.turkcell.rentacar.business.concretes;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
 
 import com.turkcell.rentacar.business.abstracts.UserService;
 import com.turkcell.rentacar.business.constants.messages.BusinessMessages;
@@ -22,6 +26,7 @@ import com.turkcell.rentacar.core.utilities.results.SuccessDataResult;
 import com.turkcell.rentacar.core.utilities.results.SuccessResult;
 import com.turkcell.rentacar.dataAccess.abstracts.UserDao;
 
+@Service
 public class UserManager implements UserService{
 	
 	private final UserDao userDao;
@@ -43,6 +48,18 @@ public class UserManager implements UserService{
 		
 		return new SuccessDataResult<List<UserListDto>>(response,ResultMessages.LISTEDSUCCESSFUL);
 	}
+	
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		User user = this.userDao.getByEmail(username);
+		
+		if(user == null) {
+			throw new UsernameNotFoundException(BusinessMessages.USERNOTFOUND);
+		}
+		
+		return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getEncryptedPassword(), true, true, true, true, new ArrayList<>());
+	}
+
 
 	@Override
 	public Result add(CreateUserRequest createUserRequest) throws BusinessException {
@@ -54,7 +71,7 @@ public class UserManager implements UserService{
 	}
 
 	@Override
-	public DataResult<UserDto> getById(int id) throws BusinessException {
+	public DataResult<UserDto> getById(String id) throws BusinessException {
 		
 		checkIfUserDoesNotExistsById(id);
 		
@@ -85,7 +102,7 @@ public class UserManager implements UserService{
 		return new SuccessResult(ResultMessages.DELETESUCCESSFUL);
 	}
 	
-	private void checkIfUserDoesNotExistsById(int id) throws BusinessException {
+	private void checkIfUserDoesNotExistsById(String id) throws BusinessException {
 		
 		if(!this.userDao.existsById(id)) {
 			
@@ -93,5 +110,23 @@ public class UserManager implements UserService{
 			
 		}
 	}
+	
+	private void checkIfUserDoesNotExistsByEmail(String email) throws BusinessException {
+		if(!this.userDao.existsByEmail(email)) {
+			throw new BusinessException(BusinessMessages.USERNOTFOUND);
+		}
+	}
+
+	@Override
+	public UserDto getUserByDetailsByEmail(String email) throws BusinessException {
+		
+		checkIfUserDoesNotExistsByEmail(email);
+		
+		User user = this.userDao.getByEmail(email);
+		
+		UserDto userDetails = this.modelMapperService.forDto().map(user, UserDto.class);
+		return userDetails;
+	}
+
 
 }

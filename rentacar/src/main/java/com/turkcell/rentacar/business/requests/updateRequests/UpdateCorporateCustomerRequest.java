@@ -18,7 +18,7 @@ public class UpdateCorporateCustomerRequest {
 	
 	@NotNull
 	@Positive
-	private int customerId;
+	private String customerId;
 	
 	@NotNull
 	@NotBlank

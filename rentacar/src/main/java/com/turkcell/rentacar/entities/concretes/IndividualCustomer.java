@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 public class IndividualCustomer extends Customer{
 	
 	@Column(name = "individual_customer_id",insertable = false ,updatable = false)
-	private int individualCustomerId;
+	private String individualCustomerId;
 		
 	@Column(name = "first_name")
 	private String firstName;

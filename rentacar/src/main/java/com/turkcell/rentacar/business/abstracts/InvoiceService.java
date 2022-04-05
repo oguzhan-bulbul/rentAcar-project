@@ -29,7 +29,7 @@ public interface InvoiceService {
 	
 	DataResult<Invoice> addInvoice(int rentId) throws BusinessException;
 	
-	DataResult<List<InvoiceListDto>> getAllByCustomerId(int id) throws BusinessException;
+	DataResult<List<InvoiceListDto>> getAllByCustomerId(String id) throws BusinessException;
 	
 	DataResult<List<InvoiceListDto>> getAllBetweenDates(LocalDate startDate, LocalDate finishDate);
 	

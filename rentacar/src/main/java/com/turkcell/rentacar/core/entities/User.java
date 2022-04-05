@@ -22,15 +22,14 @@ import lombok.NoArgsConstructor;
 public class User {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="user_id")
-	private int userId;
+	private String userId;
 	
 	@Column(name = "email")
 	private String email;
 	
 	@Column(name="password")
-	private String password;
+	private String encryptedPassword;
 		
 
 }

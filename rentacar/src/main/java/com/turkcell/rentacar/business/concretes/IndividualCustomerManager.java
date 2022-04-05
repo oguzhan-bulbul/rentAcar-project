@@ -1,8 +1,10 @@
 package com.turkcell.rentacar.business.concretes;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.turkcell.rentacar.business.abstracts.IndividualCustomerService;
@@ -28,10 +30,13 @@ public class IndividualCustomerManager implements IndividualCustomerService{
 	private IndividualCustomerDao individualCustomerDao;
 	
 	private ModelMapperService modelMapperService;
+	
+	private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
 	public IndividualCustomerManager(IndividualCustomerDao individualCustomerDao,
-			ModelMapperService modelMapperService) {
+			ModelMapperService modelMapperService, BCryptPasswordEncoder bCryptPasswordEncoder) {
 
+		this.bCryptPasswordEncoder = bCryptPasswordEncoder;
 		this.individualCustomerDao = individualCustomerDao;
 		this.modelMapperService = modelMapperService;
 	}
@@ -51,15 +56,16 @@ public class IndividualCustomerManager implements IndividualCustomerService{
 	public Result add(CreateIndividualCustomerRequest createIndividualCustomerRequest) throws BusinessException {
 		
 		checkIfIndividualCustomerEmailIsAvailable(createIndividualCustomerRequest.getEmail());
-		
 		IndividualCustomer result = this.modelMapperService.forRequest().map(createIndividualCustomerRequest, IndividualCustomer.class);
+		result.setUserId(UUID.randomUUID().toString());
+		result.setEncryptedPassword(this.bCryptPasswordEncoder.encode(createIndividualCustomerRequest.getPassword()));
 		this.individualCustomerDao.save(result);
 		
 		return new SuccessResult(ResultMessages.ADDEDSUCCESSFUL);
 	}
 
 	@Override
-	public DataResult<IndividualCustomerDto> getById(int id) throws BusinessException {
+	public DataResult<IndividualCustomerDto> getById(String id) throws BusinessException {
 		
 		checkIfIndividualCustomerDoesNotExistsById(id);
 		
@@ -92,7 +98,7 @@ public class IndividualCustomerManager implements IndividualCustomerService{
 		
 	}
 	
-	public Result checkIfIndividualCustomerDoesNotExistsByIdIsSucces(int id) throws BusinessException {
+	public Result checkIfIndividualCustomerDoesNotExistsByIdIsSucces(String id) throws BusinessException {
 		
 		checkIfIndividualCustomerDoesNotExistsById(id);
 		return new SuccessResult(ResultMessages.AVAILABLE);
@@ -100,7 +106,7 @@ public class IndividualCustomerManager implements IndividualCustomerService{
 		
 	}
 	
-	private void checkIfIndividualCustomerDoesNotExistsById(int id) throws BusinessException{
+	private void checkIfIndividualCustomerDoesNotExistsById(String id) throws BusinessException{
 		
 		if(!this.individualCustomerDao.existsById(id)) {
 			

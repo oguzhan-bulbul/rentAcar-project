@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
 public class CorporateCustomer extends Customer{
 	
 	@Column(name = "corporate_customer_id",insertable = false ,updatable = false)
-	private int corporateCustomerId;
+	private String corporateCustomerId;
 	
 	@Column(name = "company_name")
 	private String companyName;

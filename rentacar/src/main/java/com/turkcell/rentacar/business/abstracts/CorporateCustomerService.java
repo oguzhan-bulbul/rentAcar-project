@@ -19,14 +19,14 @@ public interface CorporateCustomerService {
 	
 	Result add(CreateCorporateCustomerRequest createCorporateCustomerRequest) throws BusinessException;
 	
-	DataResult<CorporateCustomerDto> getById(int id) throws BusinessException;
+	DataResult<CorporateCustomerDto> getById(String id) throws BusinessException;
 	
 	Result update(UpdateCorporateCustomerRequest updateCorporateCustomerRequest) throws BusinessException;
 	
 	Result delete(DeleteCorporateCustomerRequest deleteCorporateCustomerRequest) throws BusinessException;
 	
-	Result checkIfCorporateCustomerDoesNotExistsByIdIsSucces(int id) throws BusinessException;
+	Result checkIfCorporateCustomerDoesNotExistsByIdIsSucces(String id) throws BusinessException;
 	
-	CorporateCustomer getByIdCorporateCustomer(int id);
+	CorporateCustomer getByIdCorporateCustomer(String id);
 
 }

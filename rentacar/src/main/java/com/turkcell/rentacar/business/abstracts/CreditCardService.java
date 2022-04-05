@@ -15,11 +15,11 @@ public interface CreditCardService {
 	
     DataResult<List<CreditCardListDto>> getAll();
 	
-	Result add(CreateCardRequest createCardRequest, int customerId) throws BusinessException;
+	Result add(CreateCardRequest createCardRequest, String customerId) throws BusinessException;
 	
 	DataResult<CreditCardDto> getById(int id) throws BusinessException;
 	
-	DataResult<List<CreditCardListDto>> getByCustomerId(int id) throws BusinessException;
+	DataResult<List<CreditCardListDto>> getByCustomerId(String id) throws BusinessException;
 	
 	Result update(UpdateCreditCardRequest updateCreditCardRequest) throws BusinessException;
 	

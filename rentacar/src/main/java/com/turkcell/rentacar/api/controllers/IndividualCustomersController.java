@@ -45,7 +45,7 @@ public class IndividualCustomersController {
 	};
 	
 	@GetMapping("/getbyid")
-	public DataResult<IndividualCustomerDto> getById(@RequestParam int id) throws BusinessException {
+	public DataResult<IndividualCustomerDto> getById(@RequestParam String id) throws BusinessException {
 		return this.individualCustomerService.getById(id);		
 	};
 	

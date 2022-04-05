@@ -30,7 +30,7 @@ public class CreateRentForIndividualRequest {
 	
 	@NotNull
 	@Positive
-	private int individualCustomerId;
+	private String individualCustomerId;
 	
 	@NotNull
 	private LocalDate startDate;

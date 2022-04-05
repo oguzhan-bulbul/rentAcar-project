@@ -11,7 +11,7 @@ import com.turkcell.rentacar.entities.concretes.Invoice;
 @Repository
 public interface InvoiceDao extends JpaRepository<Invoice, Integer>{
 	
-	List<Invoice> getAllByCustomer_CustomerId(int customerId);
+	List<Invoice> getAllByCustomer_CustomerId(String customerId);
 	
 	List<Invoice> getAllByCreationDateBetween(LocalDate startDate , LocalDate finishDate);
 	
