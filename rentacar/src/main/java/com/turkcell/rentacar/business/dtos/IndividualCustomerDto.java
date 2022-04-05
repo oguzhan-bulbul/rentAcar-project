@@ -14,5 +14,7 @@ public class IndividualCustomerDto {
 	private String lastName;
 	
 	private String nationalIdentity;
+	
+	private String password;
 
 }

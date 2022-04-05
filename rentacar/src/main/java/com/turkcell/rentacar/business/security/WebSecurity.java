@@ -26,7 +26,8 @@ public class WebSecurity extends WebSecurityConfigurerAdapter{
 	protected void configure(HttpSecurity http) throws Exception {
 		
 		http.csrf().disable();
-		http.authorizeRequests().antMatchers("/login").hasIpAddress("http://localhost:8080").and().addFilter(getAuthenticationFilter());
+		http.authorizeRequests().antMatchers("/login").permitAll();
+		http.authorizeRequests().antMatchers("/**").authenticated();
 		http.addFilter(getAuthenticationFilter());
 		http.formLogin();
 		
