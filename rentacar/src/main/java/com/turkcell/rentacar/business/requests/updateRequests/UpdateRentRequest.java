@@ -36,7 +36,7 @@ public class UpdateRentRequest {
 	
 	@NotNull
 	@Positive
-	private String customerId;
+	private int customerId;
 		
 	@NotNull
 	private LocalDate startDate;

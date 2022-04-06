@@ -106,7 +106,7 @@ public class InvoiceManager implements InvoiceService{
 	}
 	
 	@Override
-	public DataResult<List<InvoiceListDto>> getAllByCustomerId(String id) throws BusinessException {
+	public DataResult<List<InvoiceListDto>> getAllByCustomerId(int id) throws BusinessException {
 		
 		this.customerService.checkIfCustomerDoesNotExistsByIdIsSuccess(id);
 		

@@ -20,7 +20,7 @@ public class UpdateInvoiceRequest {
 	
 	@NotNull
 	@Positive
-	private String customerId;
+	private int customerId;
 	
 	@NotNull
 	private LocalDate creationDate;

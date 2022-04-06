@@ -1,10 +1,8 @@
 package com.turkcell.rentacar.business.concretes;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.turkcell.rentacar.business.abstracts.CorporateCustomerService;
@@ -29,11 +27,9 @@ public class CorporateCustomerManager implements CorporateCustomerService{
 	
 	private CorporateCustomerDao corporateCustomerDao;	
 	private ModelMapperService modelMapperService;
-	private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-	public CorporateCustomerManager(CorporateCustomerDao corporateCustomerDao, ModelMapperService modelMapperService, BCryptPasswordEncoder bCryptPasswordEncoder) {
+	public CorporateCustomerManager(CorporateCustomerDao corporateCustomerDao, ModelMapperService modelMapperService) {
 
-		this.bCryptPasswordEncoder = bCryptPasswordEncoder;
 		this.corporateCustomerDao = corporateCustomerDao;
 		this.modelMapperService = modelMapperService;
 	}
@@ -55,16 +51,13 @@ public class CorporateCustomerManager implements CorporateCustomerService{
 		checkIfCorporateCustomerEmailIsAvailable(createCorporateCustomerRequest.getEmail());
 		
 		CorporateCustomer result = this.modelMapperService.forRequest().map(createCorporateCustomerRequest, CorporateCustomer.class);
-		
-		result.setUserId(UUID.randomUUID().toString());
-		result.setEncryptedPassword(this.bCryptPasswordEncoder.encode(createCorporateCustomerRequest.getPassword()));
 		this.corporateCustomerDao.save(result);
 		
 		return new SuccessResult(ResultMessages.ADDEDSUCCESSFUL);
 	}
 
 	@Override
-	public DataResult<CorporateCustomerDto> getById(String id) throws BusinessException {
+	public DataResult<CorporateCustomerDto> getById(int id) throws BusinessException {
 		
 		checkIfCorporateCustomerDoesNotExistById(id);
 		
@@ -96,7 +89,7 @@ public class CorporateCustomerManager implements CorporateCustomerService{
 		return new SuccessResult(ResultMessages.DELETESUCCESSFUL);
 	}
 	
-	public Result checkIfCorporateCustomerDoesNotExistsByIdIsSucces(String id) throws BusinessException {
+	public Result checkIfCorporateCustomerDoesNotExistsByIdIsSucces(int id) throws BusinessException {
 		
 		checkIfCorporateCustomerDoesNotExistById(id);
 		
@@ -106,14 +99,14 @@ public class CorporateCustomerManager implements CorporateCustomerService{
 	
 	
 	@Override
-	public CorporateCustomer getByIdCorporateCustomer(String id) {
+	public CorporateCustomer getByIdCorporateCustomer(int id) {
 		
 		return this.corporateCustomerDao.getById(id);
 	}
 	
 	
 	
-	private void checkIfCorporateCustomerDoesNotExistById(String id) throws BusinessException{
+	private void checkIfCorporateCustomerDoesNotExistById(int id) throws BusinessException{
 		
 		if(!this.corporateCustomerDao.existsById(id)) {
 			

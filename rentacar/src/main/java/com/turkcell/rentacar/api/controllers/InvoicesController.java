@@ -66,7 +66,7 @@ public class InvoicesController {
 	};
 	
 	@GetMapping("/getallbycustomerid")
-	public DataResult<List<InvoiceListDto>> getAllByCustomerId(@RequestParam String id) throws BusinessException{
+	public DataResult<List<InvoiceListDto>> getAllByCustomerId(@RequestParam int id) throws BusinessException{
 		return this.invoiceService.getAllByCustomerId(id);
 		
 	};

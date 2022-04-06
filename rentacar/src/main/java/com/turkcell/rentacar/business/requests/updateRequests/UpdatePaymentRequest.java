@@ -26,6 +26,6 @@ public class UpdatePaymentRequest {
 	private int orderedAdditionalServiceId;
 	
 	@Positive
-	private String customerId;
+	private int customerId;
 
 }

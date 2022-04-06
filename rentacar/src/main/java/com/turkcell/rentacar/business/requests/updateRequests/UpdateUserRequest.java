@@ -17,7 +17,7 @@ public class UpdateUserRequest {
 	
 	@NotNull
 	@Positive
-	private String userId;
+	private int userId;
 	
 	@NotNull
 	@NotBlank

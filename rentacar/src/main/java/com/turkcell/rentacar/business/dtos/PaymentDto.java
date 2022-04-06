@@ -17,6 +17,6 @@ public class PaymentDto {
 	
 	private int invoiceId;
 	
-	private String customerId;
+	private int customerId;
 
 }

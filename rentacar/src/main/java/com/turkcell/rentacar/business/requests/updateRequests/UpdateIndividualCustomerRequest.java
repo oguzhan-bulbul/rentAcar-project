@@ -19,7 +19,7 @@ public class UpdateIndividualCustomerRequest {
 	
 	@NotNull
 	@Positive
-	private String customerId;
+	private int customerId;
 	
 	@NotNull
 	@NotBlank

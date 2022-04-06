@@ -31,7 +31,7 @@ public class CreateRentForCorporateRequest {
 	
 	@NotNull
 	@Positive
-	private String corporateCustomerId;
+	private int corporateCustomerId;
 	
 	@NotNull
 	private LocalDate startDate;

@@ -14,6 +14,6 @@ public class DeleteUserRequest {
 	
 	@NotNull
 	@Positive
-	private String userId;
+	private int userId;
 
 }

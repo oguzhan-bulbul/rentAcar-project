@@ -15,6 +15,6 @@ public class DeleteIndividualCustomerRequest {
 	
 	@NotNull
 	@Positive
-	private String customerId;
+	private int customerId;
 
 }

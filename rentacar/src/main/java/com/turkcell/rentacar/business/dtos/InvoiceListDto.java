@@ -13,7 +13,7 @@ public class InvoiceListDto {
 	
 	private int invoiceNo;
 	
-	private String customerId;
+	private int customerId;
 	
 	private int rentId;
 	

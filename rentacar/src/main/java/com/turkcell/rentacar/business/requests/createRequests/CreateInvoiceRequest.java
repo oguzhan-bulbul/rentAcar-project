@@ -16,7 +16,7 @@ public class CreateInvoiceRequest {
 	
 	@NotNull
 	@Positive
-	private String customerId;
+	private int customerId;
 	
 	@NotNull
 	private LocalDate startDate;

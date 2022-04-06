@@ -20,12 +20,12 @@ public interface IndividualCustomerService {
 	
 	Result add(CreateIndividualCustomerRequest createIndividualCustomerRequest) throws BusinessException;
 	
-	DataResult<IndividualCustomerDto> getById(String id) throws BusinessException;
+	DataResult<IndividualCustomerDto> getById(int id) throws BusinessException;
 	
 	Result update(UpdateIndividualCustomerRequest updateIndividualCustomerRequest) throws BusinessException;
 	
 	Result delete(DeleteIndividualCustomerRequest deleteIndividualCustomerRequest) throws BusinessException;
 	
-	Result checkIfIndividualCustomerDoesNotExistsByIdIsSucces(String id) throws BusinessException;
+	Result checkIfIndividualCustomerDoesNotExistsByIdIsSucces(int id) throws BusinessException;
 
 }
