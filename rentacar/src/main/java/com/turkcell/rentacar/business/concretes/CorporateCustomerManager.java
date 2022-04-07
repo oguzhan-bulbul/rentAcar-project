@@ -48,6 +48,9 @@ public class CorporateCustomerManager implements CorporateCustomerService{
 	@Override
 	public Result add(CreateCorporateCustomerRequest createCorporateCustomerRequest) throws BusinessException {
 		
+		String upperCase = createCorporateCustomerRequest.getCompanyName().toUpperCase();
+		createCorporateCustomerRequest.setCompanyName(upperCase);
+			
 		checkIfCorporateCustomerEmailIsAvailable(createCorporateCustomerRequest.getEmail());
 		
 		CorporateCustomer result = this.modelMapperService.forRequest().map(createCorporateCustomerRequest, CorporateCustomer.class);
@@ -69,6 +72,9 @@ public class CorporateCustomerManager implements CorporateCustomerService{
 
 	@Override
 	public Result update(UpdateCorporateCustomerRequest updateCorporateCustomerRequest) throws BusinessException {
+		
+		String upperCase = updateCorporateCustomerRequest.getCompanyName().toUpperCase();
+		updateCorporateCustomerRequest.setCompanyName(upperCase);
 		
 		checkIfCorporateCustomerDoesNotExistById(updateCorporateCustomerRequest.getCustomerId());
 		

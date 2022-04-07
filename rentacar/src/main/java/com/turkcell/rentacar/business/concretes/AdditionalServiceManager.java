@@ -1,6 +1,7 @@
 package com.turkcell.rentacar.business.concretes;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,10 +51,14 @@ public class AdditionalServiceManager implements AdditionalServiceService{
 	@Override
 	public Result add(CreateAdditionalServiceRequest createAdditionalServiceRequest) throws BusinessException {
 		
+		String upperCase = createAdditionalServiceRequest.getAdditionalServiceName().toUpperCase();
+		createAdditionalServiceRequest.setAdditionalServiceName(upperCase);
+		
 		checkIfAdditionalServiceExistsByName(createAdditionalServiceRequest);
 		
 		AdditionalService additionalService = this.modelMapperService.forRequest()
 				.map(createAdditionalServiceRequest, AdditionalService.class);
+		
 		
 		this.additionalServiceDao.save(additionalService);
 		
@@ -74,6 +79,9 @@ public class AdditionalServiceManager implements AdditionalServiceService{
 
 	@Override
 	public Result update(UpdateAdditionalServiceRequest updateAdditionalServiceRequest) throws BusinessException {
+		
+		String upperCase = updateAdditionalServiceRequest.getAdditionalServiceName().toUpperCase();
+		updateAdditionalServiceRequest.setAdditionalServiceName(upperCase);
 		
 		checkIfAdditionalServiceDoesNotExistsById(updateAdditionalServiceRequest.getAdditionalServiceId());
 		

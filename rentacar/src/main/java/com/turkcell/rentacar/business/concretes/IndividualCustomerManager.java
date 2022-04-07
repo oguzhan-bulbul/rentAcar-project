@@ -50,6 +50,11 @@ public class IndividualCustomerManager implements IndividualCustomerService{
 	@Override
 	public Result add(CreateIndividualCustomerRequest createIndividualCustomerRequest) throws BusinessException {
 		
+		String upperCaseFirstName = createIndividualCustomerRequest.getFirstName().toUpperCase();
+		String upperCaseLastName = createIndividualCustomerRequest.getLastName().toUpperCase();
+		createIndividualCustomerRequest.setFirstName(upperCaseFirstName);
+		createIndividualCustomerRequest.setLastName(upperCaseLastName);
+		
 		checkIfIndividualCustomerEmailIsAvailable(createIndividualCustomerRequest.getEmail());
 		
 		IndividualCustomer result = this.modelMapperService.forRequest().map(createIndividualCustomerRequest, IndividualCustomer.class);
@@ -71,6 +76,11 @@ public class IndividualCustomerManager implements IndividualCustomerService{
 
 	@Override
 	public Result update(UpdateIndividualCustomerRequest updateIndividualCustomerRequest) throws BusinessException {
+		
+		String upperCaseFirstName = updateIndividualCustomerRequest.getFirstName().toUpperCase();
+		String upperCaseLastName = updateIndividualCustomerRequest.getLastName().toUpperCase();
+		updateIndividualCustomerRequest.setFirstName(upperCaseFirstName);
+		updateIndividualCustomerRequest.setLastName(upperCaseLastName);
 		
 		checkIfIndividualCustomerDoesNotExistsById(updateIndividualCustomerRequest.getCustomerId());
 		

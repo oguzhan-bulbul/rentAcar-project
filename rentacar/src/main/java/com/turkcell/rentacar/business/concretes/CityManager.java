@@ -1,6 +1,7 @@
 package com.turkcell.rentacar.business.concretes;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +48,9 @@ public class CityManager implements CityService{
 	@Override
 	public Result add(CreateCityRequest createCityRequest) throws BusinessException {
 		
+		String upperCase = createCityRequest.getCityName().toUpperCase();
+		createCityRequest.setCityName(upperCase);
+		
 		checkIfCityExistsByCityName(createCityRequest);
 		
 		City city = this.modelMapperService.forRequest().map(createCityRequest, City.class);
@@ -69,6 +73,9 @@ public class CityManager implements CityService{
 
 	@Override
 	public Result update(UpdateCityRequest updateCityRequest) throws BusinessException {
+		
+		String upperCase = updateCityRequest.getCityName().toUpperCase();
+		updateCityRequest.setCityName(upperCase);
 		
 		checkIfCityDoesNotExistsById(updateCityRequest.getCityId());
 		

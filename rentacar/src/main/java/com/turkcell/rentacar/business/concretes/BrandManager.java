@@ -1,6 +1,7 @@
 package com.turkcell.rentacar.business.concretes;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +50,8 @@ public class BrandManager implements BrandService{
 	@Override
 	public Result add(CreateBrandRequest createBrandRequest) throws BusinessException{
 		
+		String upperCase = createBrandRequest.getBrandName().toUpperCase();
+		createBrandRequest.setBrandName(upperCase);
 		checkIfBrandExistsByName(createBrandRequest.getBrandName());
 		
 		Brand brand = this.modelMapperService.forRequest().map(createBrandRequest, Brand.class);					
@@ -69,6 +72,9 @@ public class BrandManager implements BrandService{
 	
 	@Override
 	public Result update(UpdateBrandRequest updateBrandRequest) throws BusinessException{
+		
+		String upperCase = updateBrandRequest.getBrandName().toUpperCase();
+		updateBrandRequest.setBrandName(upperCase);
 		
 		checkIfBrandDoesNotExistsById(updateBrandRequest.getBrandId());
 		Brand brand = this.brandDao.getById(updateBrandRequest.getBrandId());

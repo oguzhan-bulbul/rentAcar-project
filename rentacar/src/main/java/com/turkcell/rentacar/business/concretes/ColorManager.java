@@ -50,6 +50,9 @@ public class ColorManager implements ColorService{
 	@Override
 	public Result add(CreateColorRequest createColorRequest) throws BusinessException{
 		
+		String upperCase = createColorRequest.getColorName().toUpperCase();
+		createColorRequest.setColorName(upperCase);
+		
 		checkIfColorExistsByName(createColorRequest.getColorName());
 		
 		Color color = modelMapperService.forRequest().map(createColorRequest, Color.class);	
@@ -75,6 +78,9 @@ public class ColorManager implements ColorService{
 	
 	@Override
 	public Result update(UpdateColorRequest updateColorRequest) throws BusinessException {
+		
+		String upperCase = updateColorRequest.getColorName().toUpperCase();
+		updateColorRequest.setColorName(upperCase);
 			
 		checkIfColorDoesNotExistsById(updateColorRequest.getColorId());
 		
