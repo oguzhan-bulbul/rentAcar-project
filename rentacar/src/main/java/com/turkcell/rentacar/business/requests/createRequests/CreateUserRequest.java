@@ -1,5 +1,6 @@
 package com.turkcell.rentacar.business.requests.createRequests;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
@@ -20,7 +21,7 @@ public class CreateUserRequest {
 	
 	@NotNull
 	@NotBlank
-	@Size(min = 3,max = 32)
+	@Email
 	private String email;
 	
 	@NotNull

@@ -51,6 +51,9 @@ public class CreditCardManager implements CreditCardService{
 	@Override
 	public Result add(CreateCardRequest createCardRequest, int customerId) throws BusinessException {
 		
+		String upperCase = createCardRequest.getCardHolder().toUpperCase();
+		createCardRequest.setCardHolder(upperCase);
+		
 		this.customerService.checkIfCustomerDoesNotExistsByIdIsSuccess(customerId);
 				
 		CreditCard creditCard = this.modelMapperService.forDto().map(createCardRequest, CreditCard.class);
@@ -88,6 +91,9 @@ public class CreditCardManager implements CreditCardService{
 
 	@Override
 	public Result update(UpdateCreditCardRequest updateCreditCardRequest) throws BusinessException {
+		
+		String upperCase = updateCreditCardRequest.getCardHolder().toUpperCase();
+		updateCreditCardRequest.setCardHolder(upperCase);
 		
 		checkIfCCreditCardDoesNotExistsById(updateCreditCardRequest.getCreditCardId());
 		

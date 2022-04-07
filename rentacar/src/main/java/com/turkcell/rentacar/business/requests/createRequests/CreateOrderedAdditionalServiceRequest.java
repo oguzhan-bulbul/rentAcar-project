@@ -16,7 +16,6 @@ public class CreateOrderedAdditionalServiceRequest {
 	@NotNull
 	private int rentId;
 	
-	
 	private List<Integer> additionalServices;
 	
 

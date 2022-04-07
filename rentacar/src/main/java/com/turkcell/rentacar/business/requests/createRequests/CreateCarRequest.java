@@ -37,7 +37,7 @@ public class CreateCarRequest {
 	private double carDailyPrice;
 	
 	@NotNull
-	@PositiveOrZero
+	@Positive
 	private int currentKm;
 	
 	@NotBlank
