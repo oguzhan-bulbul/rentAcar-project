@@ -1,16 +1,6 @@
 package com.turkcell.rentacar.business.concretes;
 
 
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.stereotype.Service;
-
 import com.turkcell.rentacar.api.models.CorporateEndRentModel;
 import com.turkcell.rentacar.api.models.CorporatePaymentModel;
 import com.turkcell.rentacar.api.models.IndividualEndRentModel;
@@ -46,6 +36,13 @@ import com.turkcell.rentacar.dataAccess.abstracts.RentDao;
 import com.turkcell.rentacar.entities.concretes.AdditionalService;
 import com.turkcell.rentacar.entities.concretes.Car;
 import com.turkcell.rentacar.entities.concretes.Rent;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Service;
 
 @Service
 public class RentManager implements RentService{
@@ -64,7 +61,7 @@ public class RentManager implements RentService{
 
 
 		
-	@Autowired
+	
 	public RentManager(RentDao rentDao, ModelMapperService modelMapperService,
 			@Lazy CarMaintenanceService carMaintenanceService,
 			@Lazy AdditionalServiceService additionalServiceService,

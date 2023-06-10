@@ -1,7 +1,5 @@
 package com.turkcell.rentacar.business.abstracts;
 
-import java.util.List;
-
 import com.turkcell.rentacar.api.models.CorporateEndRentModel;
 import com.turkcell.rentacar.api.models.IndividualEndRentModel;
 import com.turkcell.rentacar.business.dtos.RentDto;
@@ -14,6 +12,7 @@ import com.turkcell.rentacar.core.utilities.exceptions.BusinessException;
 import com.turkcell.rentacar.core.utilities.results.DataResult;
 import com.turkcell.rentacar.core.utilities.results.Result;
 import com.turkcell.rentacar.entities.concretes.Rent;
+import java.util.List;
 
 public interface RentService {
 	

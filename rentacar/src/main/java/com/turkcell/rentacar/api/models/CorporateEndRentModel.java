@@ -1,12 +1,9 @@
 package com.turkcell.rentacar.api.models;
 
 import com.turkcell.rentacar.business.requests.endRequest.EndRentRequest;
-
-import lombok.NoArgsConstructor;
-
 import lombok.AllArgsConstructor;
-
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
@@ -14,7 +11,5 @@ import lombok.Data;
 public class CorporateEndRentModel {
 	
 	private EndRentRequest endRentRequest;
-	
 	private CreateCardRequest createCardRequest;
-
 }

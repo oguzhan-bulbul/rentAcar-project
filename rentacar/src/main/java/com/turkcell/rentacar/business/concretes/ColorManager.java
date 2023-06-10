@@ -1,11 +1,5 @@
 package com.turkcell.rentacar.business.concretes;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.turkcell.rentacar.business.abstracts.ColorService;
 import com.turkcell.rentacar.business.constants.messages.BusinessMessages;
 import com.turkcell.rentacar.business.constants.messages.ResultMessages;
@@ -22,13 +16,17 @@ import com.turkcell.rentacar.core.utilities.results.SuccessDataResult;
 import com.turkcell.rentacar.core.utilities.results.SuccessResult;
 import com.turkcell.rentacar.dataAccess.abstracts.ColorDao;
 import com.turkcell.rentacar.entities.concretes.Color;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.springframework.stereotype.Service;
+
 @Service
 public class ColorManager implements ColorService{
 	
 	private final ColorDao colorDao;
 	private final ModelMapperService modelMapperService;
 			
-	@Autowired
+	
 	public ColorManager(ColorDao colorDao,ModelMapperService modelMapperService) {
 		
 		this.colorDao = colorDao;

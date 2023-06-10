@@ -1,12 +1,5 @@
 package com.turkcell.rentacar.business.concretes;
 
-import java.util.List;
-import java.util.Locale;
-import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.turkcell.rentacar.business.abstracts.BrandService;
 import com.turkcell.rentacar.business.constants.messages.BusinessMessages;
 import com.turkcell.rentacar.business.constants.messages.ResultMessages;
@@ -23,13 +16,17 @@ import com.turkcell.rentacar.core.utilities.results.SuccessDataResult;
 import com.turkcell.rentacar.core.utilities.results.SuccessResult;
 import com.turkcell.rentacar.dataAccess.abstracts.BrandDao;
 import com.turkcell.rentacar.entities.concretes.Brand;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.springframework.stereotype.Service;
+
 @Service
 public class BrandManager implements BrandService{
 	
 	private final BrandDao brandDao;
 	private final ModelMapperService modelMapperService;
 	
-	@Autowired
+	
 	public BrandManager(BrandDao brandDao,ModelMapperService modelMapperService) {
 		
 		this.brandDao = brandDao;

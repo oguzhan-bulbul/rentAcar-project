@@ -8,11 +8,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AdditionalServiceListDto {
-	
-	private int additionalServiceId;
-	
-	private String additionalServiceName;
-	
-	private double additionalServiceDailyPrice;
 
+  private int additionalServiceId;
+
+  private String additionalServiceName;
+
+  private double additionalServiceDailyPrice;
 }

@@ -1,11 +1,5 @@
 package com.turkcell.rentacar.business.concretes;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.turkcell.rentacar.api.models.CreateCardRequest;
 import com.turkcell.rentacar.business.abstracts.CreditCardService;
 import com.turkcell.rentacar.business.abstracts.CustomerService;
@@ -23,6 +17,9 @@ import com.turkcell.rentacar.core.utilities.results.SuccessDataResult;
 import com.turkcell.rentacar.core.utilities.results.SuccessResult;
 import com.turkcell.rentacar.dataAccess.abstracts.CreditCardDao;
 import com.turkcell.rentacar.entities.concretes.CreditCard;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.springframework.stereotype.Service;
 
 @Service
 public class CreditCardManager implements CreditCardService{
@@ -31,7 +28,7 @@ public class CreditCardManager implements CreditCardService{
 	private final ModelMapperService modelMapperService;
 	private final CustomerService customerService;
 	
-	@Autowired
+	
 	public CreditCardManager(CreditCardDao creditCardDao, ModelMapperService modelMapperService, CustomerService customerService) {
 		this.creditCardDao = creditCardDao;
 		this.modelMapperService = modelMapperService;
@@ -44,7 +41,7 @@ public class CreditCardManager implements CreditCardService{
 		List<CreditCard> result = this.creditCardDao.findAll();
 		List<CreditCardListDto> response = result.stream().map(creditCard -> this.modelMapperService.forDto().map(creditCard, CreditCardListDto.class))
 		.collect(Collectors.toList());
-		
+
 		return new SuccessDataResult<List<CreditCardListDto>>(response,ResultMessages.LISTEDSUCCESSFUL);
 	}
 

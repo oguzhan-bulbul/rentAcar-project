@@ -8,17 +8,16 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreditCardListDto {
-	
-	private int creditCardId;
-	
-	private String cardHolder;
-	
-	private String cardNo;
-	
-	private int expirationMonth;
-	
-	private int expirationYear;
-	
-	private int CVV;
 
+  private int creditCardId;
+
+  private String cardHolder;
+
+  private String cardNo;
+
+  private int expirationMonth;
+
+  private int expirationYear;
+
+  private int CVV;
 }

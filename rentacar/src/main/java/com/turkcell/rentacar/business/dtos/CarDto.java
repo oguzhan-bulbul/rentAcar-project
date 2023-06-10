@@ -8,14 +8,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CarDto {
-	
-	private String brandName;
-	private String colorName;
-	private int carModelYear;
-	private int currentKm;
-	private double carDailyPrice;
-	private String description;
-	
-	
 
+  private String brandName;
+  private String colorName;
+  private int carModelYear;
+  private int currentKm;
+  private double carDailyPrice;
+  private String description;
 }

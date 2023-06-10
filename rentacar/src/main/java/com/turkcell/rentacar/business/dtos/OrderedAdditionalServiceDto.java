@@ -1,6 +1,5 @@
 package com.turkcell.rentacar.business.dtos;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,10 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderedAdditionalServiceDto {
-	
-	private int orderedAdditionalServiceId;
-	
 
-	
-	
+  private int orderedAdditionalServiceId;
 }

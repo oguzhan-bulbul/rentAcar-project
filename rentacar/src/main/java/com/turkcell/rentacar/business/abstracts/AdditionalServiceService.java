@@ -1,7 +1,5 @@
 package com.turkcell.rentacar.business.abstracts;
 
-import java.util.List;
-
 import com.turkcell.rentacar.business.dtos.AdditionalServiceDto;
 import com.turkcell.rentacar.business.dtos.AdditionalServiceListDto;
 import com.turkcell.rentacar.business.requests.createRequests.CreateAdditionalServiceRequest;
@@ -10,8 +8,7 @@ import com.turkcell.rentacar.business.requests.updateRequests.UpdateAdditionalSe
 import com.turkcell.rentacar.core.utilities.exceptions.BusinessException;
 import com.turkcell.rentacar.core.utilities.results.DataResult;
 import com.turkcell.rentacar.core.utilities.results.Result;
-
-
+import java.util.List;
 
 public interface AdditionalServiceService {
 	

@@ -1,15 +1,5 @@
 package com.turkcell.rentacar.business.concretes;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
-import org.springframework.stereotype.Service;
-
 import com.turkcell.rentacar.business.abstracts.BrandService;
 import com.turkcell.rentacar.business.abstracts.CarService;
 import com.turkcell.rentacar.business.abstracts.ColorService;
@@ -28,6 +18,13 @@ import com.turkcell.rentacar.core.utilities.results.SuccessDataResult;
 import com.turkcell.rentacar.core.utilities.results.SuccessResult;
 import com.turkcell.rentacar.dataAccess.abstracts.CarDao;
 import com.turkcell.rentacar.entities.concretes.Car;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.stereotype.Service;
 
 @Service
 public class CarManager implements CarService{
@@ -38,7 +35,6 @@ public class CarManager implements CarService{
 	private final BrandService brandService;
 	
 	
-	@Autowired
 	public CarManager(CarDao carDao,
 			ModelMapperService modelMapperService, 
 			ColorService colorService, 

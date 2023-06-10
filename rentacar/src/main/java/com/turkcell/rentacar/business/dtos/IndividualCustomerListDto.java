@@ -8,14 +8,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class IndividualCustomerListDto {
-	
-	
-	private int individualCustomerId;
-	
-	private String firstName;
-	
-	private String lastName;
-	
-	private String nationalIdentity;
 
+  private int individualCustomerId;
+
+  private String firstName;
+
+  private String lastName;
+
+  private String nationalIdentity;
 }

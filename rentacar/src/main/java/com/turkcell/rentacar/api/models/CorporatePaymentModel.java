@@ -1,7 +1,6 @@
 package com.turkcell.rentacar.api.models;
 
 import com.turkcell.rentacar.business.requests.createRequests.CreateRentForCorporateRequest;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,9 +11,5 @@ import lombok.NoArgsConstructor;
 public class CorporatePaymentModel {
 	
 	private CreateRentForCorporateRequest createRentForCorporateRequest;
-	
 	private CreateCardRequest createCardRequest;
-	
-
-
 }

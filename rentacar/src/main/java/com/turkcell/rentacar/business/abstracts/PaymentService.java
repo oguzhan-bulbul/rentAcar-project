@@ -1,7 +1,5 @@
 package com.turkcell.rentacar.business.abstracts;
 
-import java.util.List;
-
 import com.turkcell.rentacar.api.models.CorporatePaymentModel;
 import com.turkcell.rentacar.api.models.IndividualPaymentModel;
 import com.turkcell.rentacar.api.models.SavedCreditCard;
@@ -11,6 +9,7 @@ import com.turkcell.rentacar.business.requests.deleteRequests.DeletePaymentReque
 import com.turkcell.rentacar.core.utilities.exceptions.BusinessException;
 import com.turkcell.rentacar.core.utilities.results.DataResult;
 import com.turkcell.rentacar.core.utilities.results.Result;
+import java.util.List;
 
 public interface PaymentService {
 	

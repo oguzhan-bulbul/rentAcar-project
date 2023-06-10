@@ -8,9 +8,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ColorListDto {
-	
-	private int colorId;
-	
-	private String colorName;
 
+  private int colorId;
+
+  private String colorName;
 }

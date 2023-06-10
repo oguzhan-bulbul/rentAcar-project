@@ -1,10 +1,5 @@
 package com.turkcell.rentacar.business.concretes;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.springframework.stereotype.Service;
-
 import com.turkcell.rentacar.business.abstracts.CorporateCustomerService;
 import com.turkcell.rentacar.business.constants.messages.BusinessMessages;
 import com.turkcell.rentacar.business.constants.messages.ResultMessages;
@@ -21,6 +16,9 @@ import com.turkcell.rentacar.core.utilities.results.SuccessDataResult;
 import com.turkcell.rentacar.core.utilities.results.SuccessResult;
 import com.turkcell.rentacar.dataAccess.abstracts.CorporateCustomerDao;
 import com.turkcell.rentacar.entities.concretes.CorporateCustomer;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.springframework.stereotype.Service;
 
 @Service
 public class CorporateCustomerManager implements CorporateCustomerService{

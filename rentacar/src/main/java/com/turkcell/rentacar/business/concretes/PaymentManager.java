@@ -1,11 +1,5 @@
 package com.turkcell.rentacar.business.concretes;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.turkcell.rentacar.api.models.CorporatePaymentModel;
 import com.turkcell.rentacar.api.models.CreateCardRequest;
 import com.turkcell.rentacar.api.models.IndividualPaymentModel;
@@ -31,6 +25,10 @@ import com.turkcell.rentacar.dataAccess.abstracts.PaymentDao;
 import com.turkcell.rentacar.entities.concretes.Invoice;
 import com.turkcell.rentacar.entities.concretes.Payment;
 import com.turkcell.rentacar.entities.concretes.Rent;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PaymentManager implements PaymentService{

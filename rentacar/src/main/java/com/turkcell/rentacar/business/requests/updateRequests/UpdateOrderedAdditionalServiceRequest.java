@@ -1,12 +1,9 @@
 package com.turkcell.rentacar.business.requests.updateRequests;
 
-import java.util.List;
-
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
-
 import com.turkcell.rentacar.entities.concretes.AdditionalService;
-
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

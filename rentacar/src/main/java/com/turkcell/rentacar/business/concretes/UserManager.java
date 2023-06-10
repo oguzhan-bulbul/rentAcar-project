@@ -1,10 +1,5 @@
 package com.turkcell.rentacar.business.concretes;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.turkcell.rentacar.business.abstracts.UserService;
 import com.turkcell.rentacar.business.constants.messages.BusinessMessages;
 import com.turkcell.rentacar.business.constants.messages.ResultMessages;
@@ -21,13 +16,15 @@ import com.turkcell.rentacar.core.utilities.results.Result;
 import com.turkcell.rentacar.core.utilities.results.SuccessDataResult;
 import com.turkcell.rentacar.core.utilities.results.SuccessResult;
 import com.turkcell.rentacar.dataAccess.abstracts.UserDao;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class UserManager implements UserService{
 	
 	private final UserDao userDao;
 	private final ModelMapperService modelMapperService;
 	
-	@Autowired
+	
 	public UserManager(UserDao userDao, ModelMapperService modelMapperService) {
 		this.userDao = userDao;
 		this.modelMapperService = modelMapperService;

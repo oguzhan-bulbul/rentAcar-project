@@ -1,7 +1,5 @@
 package com.turkcell.rentacar.business.abstracts;
 
-import java.util.List;
-
 import com.turkcell.rentacar.business.dtos.BrandDto;
 import com.turkcell.rentacar.business.dtos.BrandListDto;
 import com.turkcell.rentacar.business.requests.createRequests.CreateBrandRequest;
@@ -10,6 +8,7 @@ import com.turkcell.rentacar.business.requests.updateRequests.UpdateBrandRequest
 import com.turkcell.rentacar.core.utilities.exceptions.BusinessException;
 import com.turkcell.rentacar.core.utilities.results.DataResult;
 import com.turkcell.rentacar.core.utilities.results.Result;
+import java.util.List;
 
 public interface BrandService {
 	

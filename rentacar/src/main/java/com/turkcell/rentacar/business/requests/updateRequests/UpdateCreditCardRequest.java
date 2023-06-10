@@ -1,9 +1,7 @@
 package com.turkcell.rentacar.business.requests.updateRequests;
 
 import com.turkcell.rentacar.api.models.SavedCreditCard;
-
 import lombok.AllArgsConstructor;
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

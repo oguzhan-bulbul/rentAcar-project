@@ -1,11 +1,9 @@
 package com.turkcell.rentacar.dataAccess.abstracts;
 
+import com.turkcell.rentacar.core.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.turkcell.rentacar.core.entities.User;
+public interface UserDao extends JpaRepository<User, Integer> {
 
-public interface UserDao extends JpaRepository<User, Integer>{
-	
-	boolean existsByEmail(String email);
-
+  boolean existsByEmail(String email);
 }

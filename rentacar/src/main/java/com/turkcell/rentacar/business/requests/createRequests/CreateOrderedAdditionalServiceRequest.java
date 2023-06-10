@@ -1,9 +1,7 @@
 package com.turkcell.rentacar.business.requests.createRequests;
 
+import jakarta.validation.constraints.NotNull;
 import java.util.List;
-
-import javax.validation.constraints.NotNull;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

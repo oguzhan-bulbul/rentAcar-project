@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CityDto {
-	
-	private String cityName;
 
+  private String cityName;
 }

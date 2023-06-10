@@ -8,8 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CarDamageDto {
-	
-	private int carId;	
-	private String damageRecord;
 
+  private int carId;
+  private String damageRecord;
 }

@@ -1,11 +1,9 @@
 package com.turkcell.rentacar.dataAccess.abstracts;
 
+import com.turkcell.rentacar.entities.concretes.City;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.turkcell.rentacar.entities.concretes.City;
+public interface CityDao extends JpaRepository<City, Integer> {
 
-public interface CityDao extends JpaRepository<City, Integer>{
-	
-	boolean existsByCityName(String name);
-
+  boolean existsByCityName(String name);
 }
