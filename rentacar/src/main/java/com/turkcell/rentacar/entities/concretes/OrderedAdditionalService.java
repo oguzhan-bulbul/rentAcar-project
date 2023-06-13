@@ -1,6 +1,5 @@
 package com.turkcell.rentacar.entities.concretes;
 
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -23,33 +22,24 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "ordered_additional_services")
 public class OrderedAdditionalService {
-	
 
-	
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "ordered_additional_service_id")
-	private int orderedAdditionalServiceId;
-	
-	
-	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name = "ordered_additional_services_additional_services",
-    joinColumns = {
-            @JoinColumn(name = "ordered_additional_service_id"
-                    )},
-    inverseJoinColumns = {
-            @JoinColumn(name = "additional_service_id"
-                    )})
-	private List<AdditionalService> additionalServices;
-	
-	
-	@OneToOne
-	@JoinColumn(name = "rent_id")
-	private Rent rent;
-	
-	/*@OneToMany(mappedBy = "orderedAdditionalService")
-	private List<Payment> payment;*/
-	
-	
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "ordered_additional_service_id")
+  private int orderedAdditionalServiceId;
+
+  @ManyToMany(fetch = FetchType.LAZY)
+  @JoinTable(
+      name = "ordered_additional_services_additional_services",
+      joinColumns = {@JoinColumn(name = "ordered_additional_service_id")},
+      inverseJoinColumns = {@JoinColumn(name = "additional_service_id")})
+  private List<AdditionalService> additionalServices;
+
+  @OneToOne
+  @JoinColumn(name = "rent_id")
+  private Rent rent;
+
+  /*@OneToMany(mappedBy = "orderedAdditionalService")
+  private List<Payment> payment;*/
 
 }

@@ -6,42 +6,13 @@ import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.List;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class UpdateRentRequest {
-	
-	
-	@NotNull
-	@Positive
-	private int rentId;
-	
-	@NotNull
-	@NotBlank
-	@Size(min=2,max = 25)
-	private int rentedCityId;
-	
-	@NotNull
-	@NotBlank
-	@Size(min=2,max = 25)
-	private int deliveredCityId;
-	
-	private List<Integer> additionalServices;
-	
-	@NotNull
-	@Positive
-	private int customerId;
-		
-	@NotNull
-	private LocalDate startDate;
-	
-	private LocalDate finishDate;
-	
-	@NotNull
-	@Positive
-	private int carId;
-}
+public record UpdateRentRequest(
+    @NotNull @Positive int rentId,
+    @NotNull @NotBlank @Size(min = 2, max = 25) int rentedCityId,
+    @NotNull @NotBlank @Size(min = 2, max = 25) int deliveredCityId,
+    List<Integer> additionalServices,
+    @NotNull @Positive int customerId,
+    @NotNull LocalDate startDate,
+    LocalDate finishDate,
+    @NotNull @Positive int carId) {}

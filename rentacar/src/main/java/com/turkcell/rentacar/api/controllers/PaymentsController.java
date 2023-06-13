@@ -9,7 +9,6 @@ import com.turkcell.rentacar.business.abstracts.PaymentService;
 import com.turkcell.rentacar.business.abstracts.PosService;
 import com.turkcell.rentacar.business.abstracts.RentService;
 import com.turkcell.rentacar.business.dtos.PaymentDto;
-import com.turkcell.rentacar.business.dtos.PaymentListDto;
 import com.turkcell.rentacar.business.requests.deleteRequests.DeletePaymentRequest;
 import com.turkcell.rentacar.core.utilities.exceptions.BusinessException;
 import com.turkcell.rentacar.core.utilities.results.DataResult;

@@ -4,7 +4,6 @@ import com.turkcell.rentacar.api.models.CorporatePaymentModel;
 import com.turkcell.rentacar.api.models.IndividualPaymentModel;
 import com.turkcell.rentacar.api.models.SavedCreditCard;
 import com.turkcell.rentacar.business.dtos.PaymentDto;
-import com.turkcell.rentacar.business.dtos.PaymentListDto;
 import com.turkcell.rentacar.business.requests.deleteRequests.DeletePaymentRequest;
 import com.turkcell.rentacar.core.utilities.exceptions.BusinessException;
 import com.turkcell.rentacar.core.utilities.results.DataResult;

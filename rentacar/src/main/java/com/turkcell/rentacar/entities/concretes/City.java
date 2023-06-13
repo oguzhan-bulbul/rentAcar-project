@@ -28,8 +28,8 @@ public class City {
   private String cityName;
 
   @OneToMany(mappedBy = "rentedCity")
-  private List<Rent> rent;
+  private List<Rent> rentedCity;
 
   @OneToMany(mappedBy = "deliveredCity")
-  private List<Rent> rent1;
+  private List<Rent> deliveredCity;
 }

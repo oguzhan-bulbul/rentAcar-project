@@ -25,24 +25,23 @@ import lombok.NoArgsConstructor;
 @Table(name = "customers")
 @AllArgsConstructor
 @NoArgsConstructor
-public class Customer extends User{
-	
-	@Column(name = "customer_id",insertable = false ,updatable = false)
-	private int customerId;
-	
-	@Column(name = "date_registered")
-	private LocalDate dateRegistered;
-	
-	@OneToMany(mappedBy = "customer" , cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-	private List<Rent> rent;
-	
-	@OneToMany(mappedBy = "customer" , cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	private List<Invoice> invoices;
-	
-	@OneToMany(mappedBy = "customer" , cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	private List<Payment> payments;
-	
-	@OneToMany(mappedBy = "customer")
-	private List<CreditCard> creditCards;
-	
+public class Customer extends User {
+
+  @Column(name = "customer_id", insertable = false, updatable = false)
+  private int customerId;
+
+  @Column(name = "date_registered")
+  private LocalDate dateRegistered;
+
+  @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  private List<Rent> rent;
+
+  @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  private List<Invoice> invoices;
+
+  @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  private List<Payment> payments;
+
+  @OneToMany(mappedBy = "customer")
+  private List<CreditCard> creditCards;
 }

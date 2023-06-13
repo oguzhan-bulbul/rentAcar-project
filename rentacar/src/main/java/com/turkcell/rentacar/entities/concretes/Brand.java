@@ -21,10 +21,12 @@ public class Brand {
 
   @OneToMany(mappedBy = "brand")
   List<Car> cars;
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "brand_id")
   private int brandId;
+
   @Column(name = "brand_name")
   private String brandName;
 }

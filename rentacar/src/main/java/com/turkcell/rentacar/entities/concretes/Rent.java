@@ -24,59 +24,49 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Table(name = "rents")
 public class Rent {
-	
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "rent_id")
-	private int rentId;
-	
-	@OneToOne
-	@JoinColumn(name = "rented_city")
-	private City rentedCity;
-	
-	@Column(name = "started_Km")
-	private int startedKm;
-	
-	@Column(name = "return_km")
-	private int returnKm;
-	
-	@OneToOne
-	@JoinColumn(name = "delivered_city")
-	private City deliveredCity;
-	
-	@Column(name = "start_date")
-	private LocalDate startDate;
-	
-	@Column(name = "finish_date")
-	private LocalDate finishDate;
-	
-	@Column(name = "bill")
-	private double bill;
-	
-	@ManyToOne
-	@JoinColumn(name = "car_id")
-	private Car car;
-	
-	@OneToOne(mappedBy = "rent")
-	private OrderedAdditionalService orderedAdditionalServices;
-	
-	@OneToMany(mappedBy = "rent" ,cascade = CascadeType.ALL , fetch = FetchType.LAZY)
-	private List<Invoice> invoice;
-	
-	@ManyToOne
-	@JoinColumn(name = "customer_id")
-	private Customer customer;
-	
-	@OneToMany(mappedBy = "rent")
-	private List<Payment> payment;
-	
+
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "rent_id")
+  private int rentId;
+
+  @ManyToOne
+  @JoinColumn(name = "rented_city")
+  private City rentedCity;
+
+  @Column(name = "started_Km")
+  private int startedKm;
+
+  @Column(name = "return_km")
+  private int returnKm;
+
+  @ManyToOne
+  @JoinColumn(name = "delivered_city")
+  private City deliveredCity;
+
+  @Column(name = "start_date")
+  private LocalDate startDate;
+
+  @Column(name = "finish_date")
+  private LocalDate finishDate;
+
+  @Column(name = "bill")
+  private double bill;
+
+  @ManyToOne
+  @JoinColumn(name = "car_id")
+  private Car car;
+
+  @OneToOne(mappedBy = "rent")
+  private OrderedAdditionalService orderedAdditionalServices;
+
+  @OneToMany(mappedBy = "rent", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  private List<Invoice> invoice;
+
+  @ManyToOne
+  @JoinColumn(name = "customer_id")
+  private Customer customer;
+
+  @OneToMany(mappedBy = "rent")
+  private List<Payment> payment;
 }
-
-
-
-
-
-
-
-
-

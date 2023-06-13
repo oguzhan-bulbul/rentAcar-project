@@ -2,7 +2,6 @@ package com.turkcell.rentacar.api.controllers;
 
 import com.turkcell.rentacar.business.abstracts.IndividualCustomerService;
 import com.turkcell.rentacar.business.dtos.IndividualCustomerDto;
-import com.turkcell.rentacar.business.dtos.IndividualCustomerListDto;
 import com.turkcell.rentacar.business.requests.createRequests.CreateIndividualCustomerRequest;
 import com.turkcell.rentacar.business.requests.deleteRequests.DeleteIndividualCustomerRequest;
 import com.turkcell.rentacar.business.requests.updateRequests.UpdateIndividualCustomerRequest;

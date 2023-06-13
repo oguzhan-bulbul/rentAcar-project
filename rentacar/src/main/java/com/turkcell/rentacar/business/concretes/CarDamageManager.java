@@ -5,7 +5,6 @@ import com.turkcell.rentacar.business.abstracts.CarService;
 import com.turkcell.rentacar.business.constants.messages.BusinessMessages;
 import com.turkcell.rentacar.business.constants.messages.ResultMessages;
 import com.turkcell.rentacar.business.dtos.CarDamageDto;
-import com.turkcell.rentacar.business.dtos.CarDamageListDto;
 import com.turkcell.rentacar.business.requests.createRequests.CreateCarDamageRequest;
 import com.turkcell.rentacar.business.requests.deleteRequests.DeleteCarDamageRequest;
 import com.turkcell.rentacar.business.requests.updateRequests.UpdateCarDamageRequest;

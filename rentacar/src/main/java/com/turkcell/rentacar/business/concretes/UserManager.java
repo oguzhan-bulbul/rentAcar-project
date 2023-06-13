@@ -4,7 +4,6 @@ import com.turkcell.rentacar.business.abstracts.UserService;
 import com.turkcell.rentacar.business.constants.messages.BusinessMessages;
 import com.turkcell.rentacar.business.constants.messages.ResultMessages;
 import com.turkcell.rentacar.business.dtos.UserDto;
-import com.turkcell.rentacar.business.dtos.UserListDto;
 import com.turkcell.rentacar.business.requests.createRequests.CreateUserRequest;
 import com.turkcell.rentacar.business.requests.deleteRequests.DeleteUserRequest;
 import com.turkcell.rentacar.business.requests.updateRequests.UpdateUserRequest;

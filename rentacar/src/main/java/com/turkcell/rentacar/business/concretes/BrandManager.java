@@ -4,7 +4,6 @@ import com.turkcell.rentacar.business.abstracts.BrandService;
 import com.turkcell.rentacar.business.constants.messages.BusinessMessages;
 import com.turkcell.rentacar.business.constants.messages.ResultMessages;
 import com.turkcell.rentacar.business.dtos.BrandDto;
-import com.turkcell.rentacar.business.dtos.BrandListDto;
 import com.turkcell.rentacar.business.requests.createRequests.CreateBrandRequest;
 import com.turkcell.rentacar.business.requests.deleteRequests.DeleteBrandRequest;
 import com.turkcell.rentacar.business.requests.updateRequests.UpdateBrandRequest;

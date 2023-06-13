@@ -6,7 +6,6 @@ import com.turkcell.rentacar.business.abstracts.CustomerService;
 import com.turkcell.rentacar.business.constants.messages.BusinessMessages;
 import com.turkcell.rentacar.business.constants.messages.ResultMessages;
 import com.turkcell.rentacar.business.dtos.CreditCardDto;
-import com.turkcell.rentacar.business.dtos.CreditCardListDto;
 import com.turkcell.rentacar.business.requests.deleteRequests.DeleteCreditCardRequest;
 import com.turkcell.rentacar.business.requests.updateRequests.UpdateCreditCardRequest;
 import com.turkcell.rentacar.core.utilities.exceptions.BusinessException;

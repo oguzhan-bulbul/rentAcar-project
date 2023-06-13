@@ -2,7 +2,6 @@ package com.turkcell.rentacar.business.abstracts;
 
 import com.turkcell.rentacar.api.models.CreateCardRequest;
 import com.turkcell.rentacar.business.dtos.CreditCardDto;
-import com.turkcell.rentacar.business.dtos.CreditCardListDto;
 import com.turkcell.rentacar.business.requests.deleteRequests.DeleteCreditCardRequest;
 import com.turkcell.rentacar.business.requests.updateRequests.UpdateCreditCardRequest;
 import com.turkcell.rentacar.core.utilities.exceptions.BusinessException;

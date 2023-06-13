@@ -1,14 +1,3 @@
 package com.turkcell.rentacar.business.dtos;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class CarDamageDto {
-
-  private int carId;
-  private String damageRecord;
-}
+public record CarDamageDto(int carId, String damageRecord) {}

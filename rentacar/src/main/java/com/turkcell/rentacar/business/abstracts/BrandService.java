@@ -1,7 +1,6 @@
 package com.turkcell.rentacar.business.abstracts;
 
 import com.turkcell.rentacar.business.dtos.BrandDto;
-import com.turkcell.rentacar.business.dtos.BrandListDto;
 import com.turkcell.rentacar.business.requests.createRequests.CreateBrandRequest;
 import com.turkcell.rentacar.business.requests.deleteRequests.DeleteBrandRequest;
 import com.turkcell.rentacar.business.requests.updateRequests.UpdateBrandRequest;

@@ -16,22 +16,19 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "additional_services")
 public class AdditionalService {
-	
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "additional_service_id")
-	private int additionalServiceId;
-	
-	@Column(name = "additional_service_name")
-	private String additionalServiceName;
-	
-	@Column(name = "additional_service_dailyPrice")
-	private double additionalServiceDailyPrice;
-		
-	/*@ManyToMany(mappedBy = "additionalServices", fetch = FetchType.LAZY)
-	private Set<OrderedAdditionalService> orderedAdditionalServices;*/
-	
 
-	
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "additional_service_id")
+  private int additionalServiceId;
+
+  @Column(name = "additional_service_name")
+  private String additionalServiceName;
+
+  @Column(name = "additional_service_dailyPrice")
+  private double additionalServiceDailyPrice;
+
+  /*@ManyToMany(mappedBy = "additionalServices", fetch = FetchType.LAZY)
+  private Set<OrderedAdditionalService> orderedAdditionalServices;*/
 
 }

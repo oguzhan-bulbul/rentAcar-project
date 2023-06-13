@@ -7,7 +7,6 @@ import com.turkcell.rentacar.business.abstracts.RentService;
 import com.turkcell.rentacar.business.constants.messages.BusinessMessages;
 import com.turkcell.rentacar.business.constants.messages.ResultMessages;
 import com.turkcell.rentacar.business.dtos.CarMaintenanceDto;
-import com.turkcell.rentacar.business.dtos.CarMaintenanceListDto;
 import com.turkcell.rentacar.business.requests.createRequests.CreateCarMaintenanceRequest;
 import com.turkcell.rentacar.business.requests.deleteRequests.DeleteCarMaintenanceRequest;
 import com.turkcell.rentacar.business.requests.updateRequests.UpdateCarMaintenanceRequest;
