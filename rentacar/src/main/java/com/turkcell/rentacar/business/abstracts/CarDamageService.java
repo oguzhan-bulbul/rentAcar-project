@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface CarDamageService {
 	
-	DataResult<List<CarDamageListDto>> getAll();
+	DataResult<List<CarDamageDto>> getAll();
 	
 	Result add(CreateCarDamageRequest createCarDamageRequest) throws BusinessException;
 	

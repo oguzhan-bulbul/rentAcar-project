@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface CarMaintenanceService {
 	
-	DataResult<List<CarMaintenanceListDto>> getAll();
+	DataResult<List<CarMaintenanceDto>> getAll();
 	
 	Result add(CreateCarMaintenanceRequest createCarMaintenanceRequest) throws BusinessException;
 	
@@ -22,7 +22,7 @@ public interface CarMaintenanceService {
 	
 	DataResult<CarMaintenanceDto> getById(int id) throws BusinessException;
 	
-	DataResult<List<CarMaintenanceListDto>> getByCarId(int id) throws BusinessException;
+	DataResult<List<CarMaintenanceDto>> getByCarId(int id) throws BusinessException;
 	
 	Result checkIfCarIsInMaintenanceForRentRequestIsSucces( int carId , LocalDate startDate) throws BusinessException;
 

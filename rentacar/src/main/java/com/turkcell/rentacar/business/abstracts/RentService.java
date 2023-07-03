@@ -3,7 +3,6 @@ package com.turkcell.rentacar.business.abstracts;
 import com.turkcell.rentacar.api.models.CorporateEndRentModel;
 import com.turkcell.rentacar.api.models.IndividualEndRentModel;
 import com.turkcell.rentacar.business.dtos.RentDto;
-import com.turkcell.rentacar.business.dtos.RentListDto;
 import com.turkcell.rentacar.business.requests.createRequests.CreateRentForCorporateRequest;
 import com.turkcell.rentacar.business.requests.createRequests.CreateRentForIndividualRequest;
 import com.turkcell.rentacar.business.requests.deleteRequests.DeleteRentRequest;
@@ -16,9 +15,9 @@ import java.util.List;
 
 public interface RentService {
 	
-	DataResult<List<RentListDto>> getAll();
+	DataResult<List<RentDto>> getAll();
 	
-	DataResult<List<RentListDto>> getAllByCarId(int id);
+	DataResult<List<RentDto>> getAllByCarId(int id);
 	
 	DataResult<Rent> addForIndividualCustomer(CreateRentForIndividualRequest createRentRequest) throws BusinessException;
 	

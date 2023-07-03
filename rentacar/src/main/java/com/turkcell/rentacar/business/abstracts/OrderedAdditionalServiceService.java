@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface OrderedAdditionalServiceService {
 	
-	DataResult<List<OrderedAdditionalServiceListDto>> getAll();
+	DataResult<List<OrderedAdditionalServiceDto>> getAll();
 		
 	DataResult<OrderedAdditionalService> add(CreateOrderedAdditionalServiceRequest createOrderedAdditionalServiceRequest)
 			throws BusinessException;

@@ -3,11 +3,7 @@ package com.turkcell.rentacar.api.controllers;
 import com.turkcell.rentacar.api.models.CorporatePaymentModel;
 import com.turkcell.rentacar.api.models.IndividualPaymentModel;
 import com.turkcell.rentacar.api.models.SavedCreditCard;
-import com.turkcell.rentacar.business.abstracts.InvoiceService;
-import com.turkcell.rentacar.business.abstracts.OrderedAdditionalServiceService;
 import com.turkcell.rentacar.business.abstracts.PaymentService;
-import com.turkcell.rentacar.business.abstracts.PosService;
-import com.turkcell.rentacar.business.abstracts.RentService;
 import com.turkcell.rentacar.business.dtos.PaymentDto;
 import com.turkcell.rentacar.business.requests.deleteRequests.DeletePaymentRequest;
 import com.turkcell.rentacar.core.utilities.exceptions.BusinessException;
@@ -30,18 +26,13 @@ public class PaymentsController {
 
   private final PaymentService paymentService;
 
-  public PaymentsController(
-      PaymentService paymentService,
-      PosService posService,
-      RentService rentService,
-      InvoiceService invoiceService,
-      OrderedAdditionalServiceService orderedAdditionalServiceService) {
+  public PaymentsController(PaymentService paymentService) {
 
     this.paymentService = paymentService;
   }
 
   @GetMapping("/getAll")
-  DataResult<List<PaymentListDto>> getAll() {
+  DataResult<List<PaymentDto>> getAll() {
     return this.paymentService.getAll();
   }
 

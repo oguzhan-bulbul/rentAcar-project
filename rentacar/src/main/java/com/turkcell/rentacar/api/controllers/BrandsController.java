@@ -31,7 +31,7 @@ public class BrandsController {
   }
 
   @GetMapping("/getall")
-  public DataResult<List<BrandListDto>> getAll() {
+  public DataResult<List<BrandDto>> getAll() {
 
     return this.brandService.getAll();
   }

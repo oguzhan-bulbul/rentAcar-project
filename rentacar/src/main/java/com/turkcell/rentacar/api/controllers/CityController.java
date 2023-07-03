@@ -23,14 +23,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/cities")
 public class CityController {
 
-  private CityService cityService;
+  private final CityService cityService;
 
   public CityController(CityService cityService) {
     this.cityService = cityService;
   }
 
   @GetMapping("/getall")
-  DataResult<List<CityListDto>> getAll() {
+  DataResult<List<CityDto>> getAll() {
     return this.cityService.getAll();
   }
 

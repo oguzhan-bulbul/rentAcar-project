@@ -4,7 +4,6 @@ import com.turkcell.rentacar.api.models.CorporateEndRentModel;
 import com.turkcell.rentacar.api.models.IndividualEndRentModel;
 import com.turkcell.rentacar.business.abstracts.RentService;
 import com.turkcell.rentacar.business.dtos.RentDto;
-import com.turkcell.rentacar.business.dtos.RentListDto;
 import com.turkcell.rentacar.business.requests.createRequests.CreateRentForCorporateRequest;
 import com.turkcell.rentacar.business.requests.createRequests.CreateRentForIndividualRequest;
 import com.turkcell.rentacar.business.requests.deleteRequests.DeleteRentRequest;
@@ -26,14 +25,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/rents")
 public class RentsController {
-  private RentService rentService;
+  private final RentService rentService;
 
   public RentsController(RentService rentService) {
     this.rentService = rentService;
   }
 
   @GetMapping("/getall")
-  public DataResult<List<RentListDto>> getAll() {
+  public DataResult<List<RentDto>> getAll() {
 
     return this.rentService.getAll();
   }

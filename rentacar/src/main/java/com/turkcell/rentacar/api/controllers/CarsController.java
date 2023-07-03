@@ -10,7 +10,7 @@ import com.turkcell.rentacar.core.utilities.results.DataResult;
 import com.turkcell.rentacar.core.utilities.results.Result;
 import jakarta.validation.Valid;
 import java.util.List;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,7 +32,7 @@ public class CarsController {
   }
 
   @GetMapping("/getall")
-  public DataResult<List<CarListDto>> getAll() {
+  public DataResult<List<CarDto>> getAll() {
 
     return this.carService.getAll();
   }
@@ -65,21 +65,20 @@ public class CarsController {
   }
 
   @GetMapping("/getallpaged")
-  public DataResult<List<CarListDto>> getAllPaged(
+  public DataResult<List<CarDto>> getAllPaged(
       @RequestParam int pageNo, @RequestParam int pageSize) {
 
     return this.carService.getAllPaged(pageNo, pageSize);
   }
 
   @GetMapping("/getallsorted")
-  public DataResult<List<CarListDto>> getAllSorted(@RequestParam Sort.Direction direction) {
+  public DataResult<List<CarDto>> getAllSorted(@RequestParam Direction direction) {
 
     return this.carService.getAllSorted(direction);
   }
 
   @GetMapping("/getAllByLowerThanDailyPrice")
-  public DataResult<List<CarListDto>> getAllByLowerThanDailyPrice(
-      @RequestParam double carDailyPrice) {
+  public DataResult<List<CarDto>> getAllByLowerThanDailyPrice(@RequestParam double carDailyPrice) {
 
     return this.carService.getAllByLowerThanDailyPrice(carDailyPrice);
   }

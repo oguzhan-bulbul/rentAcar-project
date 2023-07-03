@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface CityService {
 	
-	DataResult<List<CityListDto>> getAll();
+	DataResult<List<CityDto>> getAll();
 	
 	Result add(CreateCityRequest createCityRequest) throws BusinessException;
 	

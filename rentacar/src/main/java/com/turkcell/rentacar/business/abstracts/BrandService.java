@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface BrandService {
 	
-	DataResult<List<BrandListDto>> getAll();
+	DataResult<List<BrandDto>> getAll();
 	
 	Result add(CreateBrandRequest createBrandRequest) throws BusinessException;
 	

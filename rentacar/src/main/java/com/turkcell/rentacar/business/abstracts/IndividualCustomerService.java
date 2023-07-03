@@ -7,11 +7,12 @@ import com.turkcell.rentacar.business.requests.updateRequests.UpdateIndividualCu
 import com.turkcell.rentacar.core.utilities.exceptions.BusinessException;
 import com.turkcell.rentacar.core.utilities.results.DataResult;
 import com.turkcell.rentacar.core.utilities.results.Result;
+import com.turkcell.rentacar.core.utilities.results.SuccessDataResult;
 import java.util.List;
 
 public interface IndividualCustomerService {
 	
-	DataResult<List<IndividualCustomerListDto>> getAll();
+	SuccessDataResult<List<IndividualCustomerDto>> getAll();
 	
 	Result add(CreateIndividualCustomerRequest createIndividualCustomerRequest) throws BusinessException;
 	

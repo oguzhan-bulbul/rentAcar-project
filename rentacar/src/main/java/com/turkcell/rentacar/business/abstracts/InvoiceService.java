@@ -14,7 +14,7 @@ import java.util.List;
 
 public interface InvoiceService {
 	
-	DataResult<List<InvoiceListDto>> getAll();
+	DataResult<List<InvoiceDto>> getAll();
 	
 	Result add(CreateInvoiceRequest createInvoiceRequest) throws BusinessException;
 	
@@ -26,9 +26,9 @@ public interface InvoiceService {
 	
 	DataResult<Invoice> addInvoice(int rentId) throws BusinessException;
 	
-	DataResult<List<InvoiceListDto>> getAllByCustomerId(int id) throws BusinessException;
+	DataResult<List<InvoiceDto>> getAllByCustomerId(int id) throws BusinessException;
 	
-	DataResult<List<InvoiceListDto>> getAllBetweenDates(LocalDate startDate, LocalDate finishDate);
+	DataResult<List<InvoiceDto>> getAllBetweenDates(LocalDate startDate, LocalDate finishDate);
 	
 	Invoice getByRentId(int id) throws BusinessException;
 	

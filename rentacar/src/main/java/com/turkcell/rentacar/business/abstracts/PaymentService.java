@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface PaymentService {
 	
-	DataResult<List<PaymentListDto>> getAll();
+	DataResult<List<PaymentDto>> getAll();
 	
 	Result makePaymentForIndividualCustomer(IndividualPaymentModel paymentModel,SavedCreditCard savedCreditCard) throws BusinessException;
 	

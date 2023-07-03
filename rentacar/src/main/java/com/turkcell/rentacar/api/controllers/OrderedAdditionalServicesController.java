@@ -32,7 +32,7 @@ public class OrderedAdditionalServicesController {
   }
 
   @GetMapping("/getall")
-  public DataResult<List<OrderedAdditionalServiceListDto>> getAll() {
+  public DataResult<List<OrderedAdditionalServiceDto>> getAll() {
     return this.orderedAdditionalServiceService.getAll();
   }
 

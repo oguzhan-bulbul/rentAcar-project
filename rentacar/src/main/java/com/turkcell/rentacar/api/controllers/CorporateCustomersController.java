@@ -30,7 +30,7 @@ public class CorporateCustomersController {
   }
 
   @GetMapping("/getall")
-  public DataResult<List<CorporateCustomerListDto>> getAll() {
+  public DataResult<List<CorporateCustomerDto>> getAll() {
 
     return this.corporateCustomerService.getAll();
   }

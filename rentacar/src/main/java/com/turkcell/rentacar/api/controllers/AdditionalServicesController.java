@@ -30,7 +30,7 @@ public class AdditionalServicesController {
   }
 
   @GetMapping("/getall")
-  public DataResult<List<AdditionalServiceListDto>> getAll() {
+  public DataResult<List<AdditionalServiceDto>> getAll() {
     return this.additionalServiceService.getAll();
   }
 

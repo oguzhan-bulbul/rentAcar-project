@@ -20,109 +20,113 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 @Service
-public class IndividualCustomerManager implements IndividualCustomerService{
-	
-	private IndividualCustomerDao individualCustomerDao;
-	
-	private ModelMapperService modelMapperService;
+public class IndividualCustomerManager implements IndividualCustomerService {
 
-	public IndividualCustomerManager(IndividualCustomerDao individualCustomerDao,
-			ModelMapperService modelMapperService) {
+  private final IndividualCustomerDao individualCustomerDao;
 
-		this.individualCustomerDao = individualCustomerDao;
-		this.modelMapperService = modelMapperService;
-	}
+  private final ModelMapperService modelMapperService;
 
-	@Override
-	public DataResult<List<IndividualCustomerListDto>> getAll() {
-		
-		List<IndividualCustomer> result = this.individualCustomerDao.findAll();
-		List<IndividualCustomerListDto> response = result.stream()
-				.map(individualCustomer -> this.modelMapperService.forDto()
-						.map(individualCustomer, IndividualCustomerListDto.class)).collect(Collectors.toList());
-		
-		return new SuccessDataResult<List<IndividualCustomerListDto>>(response,ResultMessages.LISTEDSUCCESSFUL);
-	}
+  public IndividualCustomerManager(
+      IndividualCustomerDao individualCustomerDao, ModelMapperService modelMapperService) {
 
-	@Override
-	public Result add(CreateIndividualCustomerRequest createIndividualCustomerRequest) throws BusinessException {
-		
-		String upperCaseFirstName = createIndividualCustomerRequest.getFirstName().toUpperCase();
-		String upperCaseLastName = createIndividualCustomerRequest.getLastName().toUpperCase();
-		createIndividualCustomerRequest.setFirstName(upperCaseFirstName);
-		createIndividualCustomerRequest.setLastName(upperCaseLastName);
-		
-		checkIfIndividualCustomerEmailIsAvailable(createIndividualCustomerRequest.getEmail());
-		
-		IndividualCustomer result = this.modelMapperService.forRequest().map(createIndividualCustomerRequest, IndividualCustomer.class);
-		this.individualCustomerDao.save(result);
-		
-		return new SuccessResult(ResultMessages.ADDEDSUCCESSFUL);
-	}
+    this.individualCustomerDao = individualCustomerDao;
+    this.modelMapperService = modelMapperService;
+  }
 
-	@Override
-	public DataResult<IndividualCustomerDto> getById(int id) throws BusinessException {
-		
-		checkIfIndividualCustomerDoesNotExistsById(id);
-		
-		IndividualCustomer result = this.individualCustomerDao.getById(id);
-		IndividualCustomerDto response = this.modelMapperService.forDto().map(result, IndividualCustomerDto.class);
-		
-		return new SuccessDataResult<IndividualCustomerDto>(response,ResultMessages.LISTEDSUCCESSFUL);
-	}
+  @Override
+  public SuccessDataResult<List<IndividualCustomerDto>> getAll() {
 
-	@Override
-	public Result update(UpdateIndividualCustomerRequest updateIndividualCustomerRequest) throws BusinessException {
-		
-		String upperCaseFirstName = updateIndividualCustomerRequest.getFirstName().toUpperCase();
-		String upperCaseLastName = updateIndividualCustomerRequest.getLastName().toUpperCase();
-		updateIndividualCustomerRequest.setFirstName(upperCaseFirstName);
-		updateIndividualCustomerRequest.setLastName(upperCaseLastName);
-		
-		checkIfIndividualCustomerDoesNotExistsById(updateIndividualCustomerRequest.getCustomerId());
-		
-		IndividualCustomer result = this.modelMapperService.forRequest().map(updateIndividualCustomerRequest, IndividualCustomer.class);
-		result.setUserId(updateIndividualCustomerRequest.getCustomerId());
-		this.individualCustomerDao.save(result);
-		
-		return new SuccessResult(ResultMessages.UPDATESUCCESSFUL);
-	}
+    List<IndividualCustomer> result = this.individualCustomerDao.findAll();
+    List<IndividualCustomerDto> response =
+        result.stream()
+            .map(
+                individualCustomer ->
+                    this.modelMapperService
+                        .forDto()
+                        .map(individualCustomer, IndividualCustomerDto.class))
+            .collect(Collectors.toList());
 
-	@Override
-	public Result delete(DeleteIndividualCustomerRequest deleteIndividualCustomerRequest) throws BusinessException {
-		
-		checkIfIndividualCustomerDoesNotExistsById(deleteIndividualCustomerRequest.getCustomerId());
-		
-		this.individualCustomerDao.deleteById(deleteIndividualCustomerRequest.getCustomerId());
-		
-		return new SuccessResult(ResultMessages.DELETESUCCESSFUL);
-		
-	}
-	
-	public Result checkIfIndividualCustomerDoesNotExistsByIdIsSucces(int id) throws BusinessException {
-		
-		checkIfIndividualCustomerDoesNotExistsById(id);
-		return new SuccessResult(ResultMessages.AVAILABLE);
-		
-		
-	}
-	
-	private void checkIfIndividualCustomerDoesNotExistsById(int id) throws BusinessException{
-		
-		if(!this.individualCustomerDao.existsById(id)) {
-			
-			throw new BusinessException(BusinessMessages.INDIVIDUALCUSTOMERNOTFOUND);
-			
-		}				
-	}
-	private void checkIfIndividualCustomerEmailIsAvailable(String email) throws BusinessException {
-		if(this.individualCustomerDao.existsByEmail(email)) {
-			throw new BusinessException(BusinessMessages.EMAILUSED);
-		}
-	}
-	
-	
-	
-	
+    return new SuccessDataResult<>(response, ResultMessages.LISTEDSUCCESSFUL);
+  }
 
+  @Override
+  public Result add(CreateIndividualCustomerRequest createIndividualCustomerRequest)
+      throws BusinessException {
+
+    checkIfIndividualCustomerEmailIsAvailable(createIndividualCustomerRequest.email());
+
+    IndividualCustomer result =
+        this.modelMapperService
+            .forRequest()
+            .map(createIndividualCustomerRequest, IndividualCustomer.class);
+    result.setFirstName(result.getFirstName().toUpperCase());
+    result.setLastName(result.getLastName().toUpperCase());
+    this.individualCustomerDao.save(result);
+
+    return new SuccessResult(ResultMessages.ADDEDSUCCESSFUL);
+  }
+
+  @Override
+  public DataResult<IndividualCustomerDto> getById(int id) throws BusinessException {
+
+    checkIfIndividualCustomerDoesNotExistsById(id);
+    // TODO : replace getById
+    IndividualCustomer result = this.individualCustomerDao.getById(id);
+    IndividualCustomerDto response =
+        this.modelMapperService.forDto().map(result, IndividualCustomerDto.class);
+
+    return new SuccessDataResult<>(response, ResultMessages.LISTEDSUCCESSFUL);
+  }
+
+  @Override
+  public Result update(UpdateIndividualCustomerRequest updateIndividualCustomerRequest)
+      throws BusinessException {
+
+    checkIfIndividualCustomerDoesNotExistsById(updateIndividualCustomerRequest.customerId());
+
+    IndividualCustomer result =
+        this.modelMapperService
+            .forRequest()
+            .map(updateIndividualCustomerRequest, IndividualCustomer.class);
+    result.setUserId(updateIndividualCustomerRequest.customerId());
+
+    result.setFirstName(result.getFirstName().toUpperCase());
+    result.setLastName(result.getLastName().toUpperCase());
+
+    this.individualCustomerDao.save(result);
+
+    return new SuccessResult(ResultMessages.UPDATESUCCESSFUL);
+  }
+
+  @Override
+  public Result delete(DeleteIndividualCustomerRequest deleteIndividualCustomerRequest)
+      throws BusinessException {
+
+    checkIfIndividualCustomerDoesNotExistsById(deleteIndividualCustomerRequest.customerId());
+
+    this.individualCustomerDao.deleteById(deleteIndividualCustomerRequest.customerId());
+
+    return new SuccessResult(ResultMessages.DELETESUCCESSFUL);
+  }
+
+  public Result checkIfIndividualCustomerDoesNotExistsByIdIsSucces(int id)
+      throws BusinessException {
+
+    checkIfIndividualCustomerDoesNotExistsById(id);
+    return new SuccessResult(ResultMessages.AVAILABLE);
+  }
+
+  private void checkIfIndividualCustomerDoesNotExistsById(int id) throws BusinessException {
+
+    if (!this.individualCustomerDao.existsById(id)) {
+
+      throw new BusinessException(BusinessMessages.INDIVIDUALCUSTOMERNOTFOUND);
+    }
+  }
+
+  private void checkIfIndividualCustomerEmailIsAvailable(String email) throws BusinessException {
+    if (this.individualCustomerDao.existsByEmail(email)) {
+      throw new BusinessException(BusinessMessages.EMAILUSED);
+    }
+  }
 }

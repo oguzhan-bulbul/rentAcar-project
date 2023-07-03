@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface AdditionalServiceService {
 	
-	DataResult<List<AdditionalServiceListDto>> getAll();
+	DataResult<List<AdditionalServiceDto>> getAll();
 	
 	Result add(CreateAdditionalServiceRequest createAdditionalServiceRequest) throws BusinessException;
 	

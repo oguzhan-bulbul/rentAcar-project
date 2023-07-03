@@ -30,7 +30,7 @@ public class CarDamagesController {
   }
 
   @GetMapping("/getall")
-  public DataResult<List<CarDamageListDto>> getAll() {
+  public DataResult<List<CarDamageDto>> getAll() {
 
     return this.carDamageService.getAll();
   }

@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface ColorService {
 	
-	DataResult<List<ColorListDto>> getAll();
+	DataResult<List<ColorDto>> getAll();
 	
 	Result add(CreateColorRequest createColorRequest) throws BusinessException;
 	

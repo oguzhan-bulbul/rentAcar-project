@@ -31,22 +31,20 @@ public class CityManager implements CityService {
   }
 
   @Override
-  public DataResult<List<CityListDto>> getAll() {
+  public DataResult<List<CityDto>> getAll() {
 
     List<City> result = this.cityDao.findAll();
-    List<CityListDto> response =
+    List<CityDto> response =
         result.stream()
-            .map(city -> this.modelMapperService.forDto().map(city, CityListDto.class))
+            .map(city -> this.modelMapperService.forDto().map(city, CityDto.class))
             .collect(Collectors.toList());
 
-    return new SuccessDataResult<List<CityListDto>>(response, ResultMessages.LISTEDSUCCESSFUL);
+    return new SuccessDataResult<>(response, ResultMessages.LISTEDSUCCESSFUL);
   }
 
   @Override
   public Result add(CreateCityRequest createCityRequest) throws BusinessException {
 
-    String upperCase = createCityRequest.getCityName().toUpperCase();
-    createCityRequest.setCityName(upperCase);
 
     checkIfCityExistsByCityName(createCityRequest);
 
@@ -61,22 +59,21 @@ public class CityManager implements CityService {
   public DataResult<CityDto> getById(int id) throws BusinessException {
 
     checkIfCityDoesNotExistsById(id);
-
+    //TODO : replace getByID
     City city = this.cityDao.getById(id);
     CityDto map = this.modelMapperService.forDto().map(city, CityDto.class);
 
-    return new SuccessDataResult<CityDto>(map, ResultMessages.LISTEDSUCCESSFUL);
+    return new SuccessDataResult<>(map, ResultMessages.LISTEDSUCCESSFUL);
   }
 
   @Override
   public Result update(UpdateCityRequest updateCityRequest) throws BusinessException {
 
-    String upperCase = updateCityRequest.getCityName().toUpperCase();
-    updateCityRequest.setCityName(upperCase);
 
-    checkIfCityDoesNotExistsById(updateCityRequest.getCityId());
+    checkIfCityDoesNotExistsById(updateCityRequest.cityId());
 
     City city = this.modelMapperService.forRequest().map(updateCityRequest, City.class);
+    city.setCityName(city.getCityName().toUpperCase());
     this.cityDao.save(city);
 
     return new SuccessResult(ResultMessages.UPDATESUCCESSFUL);
@@ -85,9 +82,9 @@ public class CityManager implements CityService {
   @Override
   public Result delete(DeleteCityRequest deleteCityRequest) throws BusinessException {
 
-    checkIfCityDoesNotExistsById(deleteCityRequest.getCityId());
+    checkIfCityDoesNotExistsById(deleteCityRequest.cityId());
 
-    this.cityDao.deleteById(deleteCityRequest.getCityId());
+    this.cityDao.deleteById(deleteCityRequest.cityId());
 
     return new SuccessResult(ResultMessages.DELETESUCCESSFUL);
   }
@@ -109,7 +106,7 @@ public class CityManager implements CityService {
 
   private void checkIfCityExistsByCityName(CreateCityRequest createCityRequest)
       throws BusinessException {
-    if (this.cityDao.existsByCityName(createCityRequest.getCityName())) {
+    if (this.cityDao.existsByCityNameIgnoreCase(createCityRequest.cityName())) {
 
       throw new BusinessException(BusinessMessages.CITYEXISTS);
     }

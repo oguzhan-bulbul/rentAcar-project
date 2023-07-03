@@ -33,7 +33,7 @@ public class InvoicesController {
   }
 
   @GetMapping("/getall")
-  public DataResult<List<InvoiceListDto>> getAll() {
+  public DataResult<List<InvoiceDto>> getAll() {
     return this.invoiceService.getAll();
   }
 
@@ -61,13 +61,13 @@ public class InvoicesController {
   }
 
   @GetMapping("/getallbycustomerid")
-  public DataResult<List<InvoiceListDto>> getAllByCustomerId(@RequestParam int id)
+  public DataResult<List<InvoiceDto>> getAllByCustomerId(@RequestParam int id)
       throws BusinessException {
     return this.invoiceService.getAllByCustomerId(id);
   }
 
   @GetMapping("/getAllBetweenDates/{first_date}/{second_date}")
-  public DataResult<List<InvoiceListDto>> getAllInvoicesBetweenDates(
+  public DataResult<List<InvoiceDto>> getAllInvoicesBetweenDates(
       @PathVariable(value = "first_date") @DateTimeFormat(pattern = "yyyy-MM-dd")
           LocalDate startDate,
       @PathVariable(value = "second_date") @DateTimeFormat(pattern = "yyyy-MM-dd")

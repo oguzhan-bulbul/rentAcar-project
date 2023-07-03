@@ -20,130 +20,136 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CorporateCustomerManager implements CorporateCustomerService{
-	
-	private CorporateCustomerDao corporateCustomerDao;	
-	private ModelMapperService modelMapperService;
+public class CorporateCustomerManager implements CorporateCustomerService {
 
-	public CorporateCustomerManager(CorporateCustomerDao corporateCustomerDao, ModelMapperService modelMapperService) {
+  private final CorporateCustomerDao corporateCustomerDao;
+  private final ModelMapperService modelMapperService;
 
-		this.corporateCustomerDao = corporateCustomerDao;
-		this.modelMapperService = modelMapperService;
-	}
+  public CorporateCustomerManager(
+      CorporateCustomerDao corporateCustomerDao, ModelMapperService modelMapperService) {
 
-	@Override
-	public DataResult<List<CorporateCustomerListDto>> getAll() {
-		
-		List<CorporateCustomer> result = this.corporateCustomerDao.findAll();
-		List<CorporateCustomerListDto> response = result.stream()
-				.map(corporateCustomer -> this.modelMapperService.forDto()
-						.map(corporateCustomer, CorporateCustomerListDto.class)).collect(Collectors.toList());
-		
-		return new SuccessDataResult<List<CorporateCustomerListDto>>(response,ResultMessages.LISTEDSUCCESSFUL);
-	}
+    this.corporateCustomerDao = corporateCustomerDao;
+    this.modelMapperService = modelMapperService;
+  }
 
-	@Override
-	public Result add(CreateCorporateCustomerRequest createCorporateCustomerRequest) throws BusinessException {
-		
-		String upperCase = createCorporateCustomerRequest.getCompanyName().toUpperCase();
-		createCorporateCustomerRequest.setCompanyName(upperCase);
-			
-		checkIfCorporateCustomerEmailIsAvailable(createCorporateCustomerRequest.getEmail());
-		
-		CorporateCustomer result = this.modelMapperService.forRequest().map(createCorporateCustomerRequest, CorporateCustomer.class);
-		this.corporateCustomerDao.save(result);
-		
-		return new SuccessResult(ResultMessages.ADDEDSUCCESSFUL);
-	}
+  @Override
+  public DataResult<List<CorporateCustomerDto>> getAll() {
 
-	@Override
-	public DataResult<CorporateCustomerDto> getById(int id) throws BusinessException {
-		
-		checkIfCorporateCustomerDoesNotExistById(id);
-		
-		CorporateCustomer result = this.corporateCustomerDao.getById(id);
-		CorporateCustomerDto response = this.modelMapperService.forDto().map(result, CorporateCustomerDto.class);
-		
-		return new SuccessDataResult<CorporateCustomerDto>(response,ResultMessages.LISTEDSUCCESSFUL);
-	}
+    List<CorporateCustomer> result = this.corporateCustomerDao.findAll();
+    List<CorporateCustomerDto> response =
+        result.stream()
+            .map(
+                corporateCustomer ->
+                    this.modelMapperService
+                        .forDto()
+                        .map(corporateCustomer, CorporateCustomerDto.class))
+            .collect(Collectors.toList());
 
-	@Override
-	public Result update(UpdateCorporateCustomerRequest updateCorporateCustomerRequest) throws BusinessException {
-		
-		String upperCase = updateCorporateCustomerRequest.getCompanyName().toUpperCase();
-		updateCorporateCustomerRequest.setCompanyName(upperCase);
-		
-		checkIfCorporateCustomerDoesNotExistById(updateCorporateCustomerRequest.getCustomerId());
-		
-		CorporateCustomer result = this.modelMapperService.forRequest().map(updateCorporateCustomerRequest, CorporateCustomer.class);
-		result.setUserId(updateCorporateCustomerRequest.getCustomerId());
-		this.corporateCustomerDao.save(result);
-		
-		return new SuccessResult(ResultMessages.UPDATESUCCESSFUL);
-	}
+    return new SuccessDataResult<>(response, ResultMessages.LISTEDSUCCESSFUL);
+  }
 
-	@Override
-	public Result delete(DeleteCorporateCustomerRequest deleteCorporateCustomerRequest) throws BusinessException {
-		
-		checkIfCorporateCustomerDoesNotExistById(deleteCorporateCustomerRequest.getCustomerId());
-		
-		this.corporateCustomerDao.deleteById(deleteCorporateCustomerRequest.getCustomerId());
-		
-		return new SuccessResult(ResultMessages.DELETESUCCESSFUL);
-	}
-	
-	public Result checkIfCorporateCustomerDoesNotExistsByIdIsSucces(int id) throws BusinessException {
-		
-		checkIfCorporateCustomerDoesNotExistById(id);
-		
-		return new SuccessResult(ResultMessages.AVAILABLE);
-		
-	}
-	
-	
-	@Override
-	public CorporateCustomer getByIdCorporateCustomer(int id) {
-		
-		return this.corporateCustomerDao.getById(id);
-	}
-	
-	
-	
-	private void checkIfCorporateCustomerDoesNotExistById(int id) throws BusinessException{
-		
-		if(!this.corporateCustomerDao.existsById(id)) {
-			
-			throw new BusinessException(BusinessMessages.CORPORATECUSTOMERNOTFOUND);
-			
-		}				
-	}
-	
-	private void checkIfCorporateCustomerEmailIsAvailable(String email) throws BusinessException {
-		
-		if(this.corporateCustomerDao.existsByEmail(email)) {
-			
-			throw new BusinessException(BusinessMessages.EMAILUSED);
-		}
-	}
-	
-	private void checkIfCorporateCustomerCompanyNameIsAvailable(String companyName) throws BusinessException {
-		
-		if(this.corporateCustomerDao.existsByCompanyName(companyName)) {
-			
-			throw new BusinessException(BusinessMessages.EMAILUSED);
-		}
-	}
-	
-	private void checkIfCorporateCustomerTaxNumberIsAvailable(String taxNumber) throws BusinessException {
-		
-		if(this.corporateCustomerDao.existsByTaxNumber(taxNumber)) {
-			
-			throw new BusinessException(BusinessMessages.EMAILUSED);
-		}
-	}
-	
+  @Override
+  public Result add(CreateCorporateCustomerRequest createCorporateCustomerRequest)
+      throws BusinessException {
 
-	
-	
 
+    checkIfCorporateCustomerEmailIsAvailable(createCorporateCustomerRequest.email());
+
+    CorporateCustomer result =
+        this.modelMapperService
+            .forRequest()
+            .map(createCorporateCustomerRequest, CorporateCustomer.class);
+    result.setCompanyName(result.getCompanyName().toUpperCase());
+    this.corporateCustomerDao.save(result);
+
+    return new SuccessResult(ResultMessages.ADDEDSUCCESSFUL);
+  }
+
+  @Override
+  public DataResult<CorporateCustomerDto> getById(int id) throws BusinessException {
+
+    checkIfCorporateCustomerDoesNotExistById(id);
+		//TODO : replace getById
+    CorporateCustomer result = this.corporateCustomerDao.getById(id);
+    CorporateCustomerDto response =
+        this.modelMapperService.forDto().map(result, CorporateCustomerDto.class);
+
+    return new SuccessDataResult<>(response, ResultMessages.LISTEDSUCCESSFUL);
+  }
+
+  @Override
+  public Result update(UpdateCorporateCustomerRequest updateCorporateCustomerRequest)
+      throws BusinessException {
+
+
+    checkIfCorporateCustomerDoesNotExistById(updateCorporateCustomerRequest.customerId());
+
+    CorporateCustomer result =
+        this.modelMapperService
+            .forRequest()
+            .map(updateCorporateCustomerRequest, CorporateCustomer.class);
+    result.setUserId(updateCorporateCustomerRequest.customerId());
+		result.setCompanyName(result.getCompanyName().toUpperCase());
+    this.corporateCustomerDao.save(result);
+
+    return new SuccessResult(ResultMessages.UPDATESUCCESSFUL);
+  }
+
+  @Override
+  public Result delete(DeleteCorporateCustomerRequest deleteCorporateCustomerRequest)
+      throws BusinessException {
+
+    checkIfCorporateCustomerDoesNotExistById(deleteCorporateCustomerRequest.customerId());
+
+    this.corporateCustomerDao.deleteById(deleteCorporateCustomerRequest.customerId());
+
+    return new SuccessResult(ResultMessages.DELETESUCCESSFUL);
+  }
+
+  public Result checkIfCorporateCustomerDoesNotExistsByIdIsSucces(int id) throws BusinessException {
+
+    checkIfCorporateCustomerDoesNotExistById(id);
+
+    return new SuccessResult(ResultMessages.AVAILABLE);
+  }
+
+  @Override
+  public CorporateCustomer getByIdCorporateCustomer(int id) {
+
+    return this.corporateCustomerDao.getById(id);
+  }
+
+  private void checkIfCorporateCustomerDoesNotExistById(int id) throws BusinessException {
+
+    if (!this.corporateCustomerDao.existsById(id)) {
+
+      throw new BusinessException(BusinessMessages.CORPORATECUSTOMERNOTFOUND);
+    }
+  }
+
+  private void checkIfCorporateCustomerEmailIsAvailable(String email) throws BusinessException {
+
+    if (this.corporateCustomerDao.existsByEmail(email)) {
+
+      throw new BusinessException(BusinessMessages.EMAILUSED);
+    }
+  }
+
+  private void checkIfCorporateCustomerCompanyNameIsAvailable(String companyName)
+      throws BusinessException {
+
+    if (this.corporateCustomerDao.existsByCompanyName(companyName)) {
+
+      throw new BusinessException(BusinessMessages.EMAILUSED);
+    }
+  }
+
+  private void checkIfCorporateCustomerTaxNumberIsAvailable(String taxNumber)
+      throws BusinessException {
+
+    if (this.corporateCustomerDao.existsByTaxNumber(taxNumber)) {
+
+      throw new BusinessException(BusinessMessages.EMAILUSED);
+    }
+  }
 }

@@ -10,9 +10,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement(proxyTargetClass = true)
 @EntityScan("com.turkcell.rentacar.entities")
 @EnableAspectJAutoProxy(proxyTargetClass = true)
-public class RentacarApplication {
+public class Application {
 
-  public static void main(String[] args) {
-    SpringApplication.run(RentacarApplication.class, args);
+  public static void main(String[] args) {SpringApplication.run(Application.class, args);
   }
 }

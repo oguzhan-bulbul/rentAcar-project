@@ -9,11 +9,11 @@ import com.turkcell.rentacar.core.utilities.results.DataResult;
 import com.turkcell.rentacar.core.utilities.results.Result;
 import com.turkcell.rentacar.entities.concretes.Car;
 import java.util.List;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 
 public interface CarService {
 
-  DataResult<List<CarListDto>> getAll();
+  DataResult<List<CarDto>> getAll();
 
   Result add(CreateCarRequest createCarRequest) throws BusinessException;
 
@@ -23,11 +23,11 @@ public interface CarService {
 
   Result delete(DeleteCarRequest deleteCarRequest) throws BusinessException;
 
-  DataResult<List<CarListDto>> getAllPaged(int pageNo, int pageSize);
+  DataResult<List<CarDto>> getAllPaged(int pageNo, int pageSize);
 
-  DataResult<List<CarListDto>> getAllSorted(Sort.Direction direction);
+  DataResult<List<CarDto>> getAllSorted(Direction direction);
 
-  DataResult<List<CarListDto>> getAllByLowerThanDailyPrice(double carDailyPrice);
+  DataResult<List<CarDto>> getAllByLowerThanDailyPrice(double carDailyPrice);
 
   Car getCar(int id);
 
