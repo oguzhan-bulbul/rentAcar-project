@@ -36,7 +36,6 @@ import com.turkcell.rentacar.entities.concretes.Car;
 import com.turkcell.rentacar.entities.concretes.Rent;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.context.annotation.Lazy;
@@ -126,8 +125,7 @@ public class RentManager implements RentService {
     Rent rent = this.modelMapperService.forDto().map(createRentRequest, Rent.class);
     rent.setRentId(0);
     rent.setBill(
-        calculatedCityBill(
-                createRentRequest.rentedCityId(), createRentRequest.deliveredCityId())
+        calculatedCityBill(createRentRequest.rentedCityId(), createRentRequest.deliveredCityId())
             + calculatedServiceBill(createRentRequest.additionalServices())
             + calculatedCarBill(
                 createRentRequest.carId(),
@@ -157,8 +155,7 @@ public class RentManager implements RentService {
     Rent rent = this.modelMapperService.forDto().map(createRentRequest, Rent.class);
     rent.setRentId(0);
     rent.setBill(
-        calculatedCityBill(
-                createRentRequest.rentedCityId(), createRentRequest.deliveredCityId())
+        calculatedCityBill(createRentRequest.rentedCityId(), createRentRequest.deliveredCityId())
             + calculatedServiceBill(createRentRequest.additionalServices())
             + calculatedCarBill(
                 createRentRequest.carId(),
@@ -187,8 +184,7 @@ public class RentManager implements RentService {
     Rent rent = this.modelMapperService.forDto().map(createRentRequest, Rent.class);
     rent.setRentId(0);
     rent.setBill(
-        calculatedCityBill(
-                createRentRequest.rentedCityId(), createRentRequest.deliveredCityId())
+        calculatedCityBill(createRentRequest.rentedCityId(), createRentRequest.deliveredCityId())
             + calculatedServiceBill(createRentRequest.additionalServices())
             + calculatedCarBill(
                 createRentRequest.carId(),
@@ -220,8 +216,7 @@ public class RentManager implements RentService {
     Rent rent = this.modelMapperService.forDto().map(createRentRequest, Rent.class);
     rent.setRentId(0);
     rent.setBill(
-        calculatedCityBill(
-                createRentRequest.rentedCityId(), createRentRequest.deliveredCityId())
+        calculatedCityBill(createRentRequest.rentedCityId(), createRentRequest.deliveredCityId())
             + calculatedServiceBill(createRentRequest.additionalServices())
             + calculatedCarBill(
                 createRentRequest.carId(),
@@ -245,7 +240,7 @@ public class RentManager implements RentService {
         rent.getCar().getCarId(), individualEndRentModel.endRentRequest().returnedKm());
     this.rentDao.save(rent);
 
-//    checkIfReturnedDayIsOutOfDateForIndividual(individualEndRentModel, rent);
+    checkIfReturnedDayIsOutOfDateForIndividual(individualEndRentModel, rent);
 
     return new SuccessResult(ResultMessages.ADDEDSUCCESSFUL);
   }
@@ -262,7 +257,7 @@ public class RentManager implements RentService {
     this.carService.updateCarKm(
         rent.getCar().getCarId(), corporateEndRentModel.endRentRequest().returnedKm());
 
-//    checkIfReturnedDayIsOutOfDateForCorporate(corporateEndRentModel, rent);
+    checkIfReturnedDayIsOutOfDateForCorporate(corporateEndRentModel, rent);
 
     return new SuccessResult(ResultMessages.ADDEDSUCCESSFUL);
   }
@@ -287,8 +282,7 @@ public class RentManager implements RentService {
         updateRentRequest.additionalServices());
     this.cityService.checkIfCityDoesNotExistsByIdIsSuccess(updateRentRequest.rentedCityId());
     this.cityService.checkIfCityDoesNotExistsByIdIsSuccess(updateRentRequest.deliveredCityId());
-    this.customerService.checkIfCustomerDoesNotExistsByIdIsSuccess(
-        updateRentRequest.customerId());
+    this.customerService.checkIfCustomerDoesNotExistsByIdIsSuccess(updateRentRequest.customerId());
     this.carMaintenanceService.checkIfCarIsInMaintenanceForRentRequestIsSucces(
         updateRentRequest.carId(), updateRentRequest.startDate());
 
@@ -360,9 +354,7 @@ public class RentManager implements RentService {
     if (finishDate != null) {
       Car car = this.carService.getCar(carId);
       double rentalDay = (double) ChronoUnit.DAYS.between(startDate, finishDate);
-      double bill = car.getCarDailyPrice() * rentalDay;
-
-      return bill;
+      return car.getCarDailyPrice() * rentalDay;
     }
 
     return 0;
@@ -405,92 +397,78 @@ public class RentManager implements RentService {
     }
   }
 
-//  private void checkIfReturnedDayIsOutOfDateForIndividual(
-//      //TODO : bu methodlar duzenlenecek tamami degismesi gerekir
-//      IndividualEndRentModel individualEndRentModel, Rent rent) throws BusinessException {
-//
-//    if (individualEndRentModel.endRentRequest().returnDate() != rent.getFinishDate()) {
-//
-//
-//
-//      CreateRentForIndividualRequest createRentForIndividualRequest =
-//          manuelMappingForCreateRentForIndividual(rent);
-//      createRentForIndividualRequest.setStartDate(rent.getFinishDate());
-//      createRentForIndividualRequest.setFinishDate(
-//          individualEndRentModel.endRentRequest().returnDate());
-//      createRentForIndividualRequest.setIndividualCustomerId(rent.getCustomer().getCustomerId());
-//
-//      IndividualPaymentModel individualPaymentModel = new IndividualPaymentModel();
-//      individualPaymentModel.setCreateRentForIndividualRequest(createRentForIndividualRequest);
-//      individualPaymentModel.setCreateCardRequest(individualEndRentModel.getCreateCardRequest());
-//
-//      this.paymentService.makeAdditionalPaymentForIndividualCustomer(
-//          rent.getRentId(), individualPaymentModel, SavedCreditCard.NO);
-//    }
-//  }
-//
-//  private void checkIfReturnedDayIsOutOfDateForCorporate(
-//      CorporateEndRentModel corporateEndRentModel, Rent rent) throws BusinessException {
-//
-//    if (corporateEndRentModel.endRentRequest().returnDate() != rent.getFinishDate()) {
-//
-//      CreateRentForCorporateRequest createRentForCorporateRequest =
-//          manuelMappingForCreateRentForCorporate(rent);
-//      createRentForCorporateRequest.setStartDate(rent.getFinishDate());
-//      createRentForCorporateRequest.setFinishDate(
-//          corporateEndRentModel.endRentRequest().returnDate());
-//
-//      CorporatePaymentModel corporatePaymentModel = new CorporatePaymentModel();
-//      corporatePaymentModel.setCreateRentForCorporateRequest(createRentForCorporateRequest);
-//      corporatePaymentModel.setCreateCardRequest(corporateEndRentModel.createCardRequest());
-//      this.paymentService.makeAdditionalPaymentForCorporateCustomer(
-//          rent.getRentId(), corporatePaymentModel, SavedCreditCard.NO);
-//    }
-//  }
-//
-//  private CreateRentForIndividualRequest manuelMappingForCreateRentForIndividual(Rent rent)
-//      throws BusinessException {
-//
-//    CreateRentForIndividualRequest createRentForIndividualRequest =
-//        new CreateRentForIndividualRequest();
-//    createRentForIndividualRequest.setCarId(rent.getCar().getCarId());
-//
-//    List<Integer> additionalServices = new ArrayList<Integer>();
-//
-//    for (AdditionalService additionalService :
-//        this.orderedAdditionalServiceService
-//            .getEntityByRentId(rent.getRentId())
-//            .getAdditionalServices()) {
-//      additionalServices.add(additionalService.getAdditionalServiceId());
-//    }
-//
-//    createRentForIndividualRequest.setAdditionalServices(additionalServices);
-//    createRentForIndividualRequest.setDeliveredCityId(rent.getDeliveredCity().getCityId());
-//    createRentForIndividualRequest.setRentedCityId(rent.getDeliveredCity().getCityId());
-//    createRentForIndividualRequest.setIndividualCustomerId(rent.getCustomer().getCustomerId());
-//
-//    return createRentForIndividualRequest;
-//  }
-//
-//  private CreateRentForCorporateRequest manuelMappingForCreateRentForCorporate(Rent rent)
-//      throws BusinessException {
-//
-//    CreateRentForCorporateRequest createRentForCorporateRequest =
-//        new CreateRentForCorporateRequest();
-//    createRentForCorporateRequest.setCarId(rent.getCar().getCarId());
-//
-//    List<Integer> additionalServices = new ArrayList<Integer>();
-//    for (AdditionalService additionalService :
-//        this.orderedAdditionalServiceService
-//            .getByIdAsEntity(rent.getRentId())
-//            .getAdditionalServices()) {
-//      additionalServices.add(additionalService.getAdditionalServiceId());
-//    }
-//    createRentForCorporateRequest.setAdditionalServices(additionalServices);
-//    createRentForCorporateRequest.setDeliveredCityId(rent.getDeliveredCity().getCityId());
-//    createRentForCorporateRequest.setRentedCityId(rent.getDeliveredCity().getCityId());
-//    createRentForCorporateRequest.setCorporateCustomerId(rent.getCustomer().getCustomerId());
-//
-//    return createRentForCorporateRequest;
-//  }
+  private void checkIfReturnedDayIsOutOfDateForIndividual(
+      IndividualEndRentModel individualEndRentModel, Rent rent) throws BusinessException {
+
+    if (individualEndRentModel.endRentRequest().returnDate() != rent.getFinishDate()) {
+
+      CreateRentForIndividualRequest createRentForIndividualRequest =
+          manuelMappingForCreateRentForIndividual(rent, individualEndRentModel);
+
+      IndividualPaymentModel individualPaymentModel =
+          new IndividualPaymentModel(
+              createRentForIndividualRequest, individualEndRentModel.createCardRequest());
+
+      this.paymentService.makeAdditionalPaymentForIndividualCustomer(
+          rent.getRentId(), individualPaymentModel, SavedCreditCard.NO);
+    }
+  }
+
+  private void checkIfReturnedDayIsOutOfDateForCorporate(
+      CorporateEndRentModel corporateEndRentModel, Rent rent) throws BusinessException {
+
+    if (corporateEndRentModel.endRentRequest().returnDate() != rent.getFinishDate()) {
+
+      CreateRentForCorporateRequest createRentForCorporateRequest =
+          manuelMappingForCreateRentForCorporate(rent, corporateEndRentModel);
+
+      CorporatePaymentModel corporatePaymentModel =
+          new CorporatePaymentModel(
+              createRentForCorporateRequest, corporateEndRentModel.createCardRequest());
+      this.paymentService.makeAdditionalPaymentForCorporateCustomer(
+          rent.getRentId(), corporatePaymentModel, SavedCreditCard.NO);
+    }
+  }
+
+  private CreateRentForIndividualRequest manuelMappingForCreateRentForIndividual(
+      Rent rent, IndividualEndRentModel individualEndRentModel) {
+
+    List<Integer> additionalServices =
+        this.orderedAdditionalServiceService
+            .getEntityByRentId(rent.getRentId())
+            .getAdditionalServices()
+            .stream()
+            .map(AdditionalService::getAdditionalServiceId)
+            .toList();
+
+    return new CreateRentForIndividualRequest(
+        rent.getDeliveredCity().getCityId(),
+        rent.getDeliveredCity().getCityId(),
+        rent.getCustomer().getCustomerId(),
+        rent.getFinishDate(),
+        individualEndRentModel.endRentRequest().returnDate(),
+        additionalServices,
+        rent.getCar().getCarId());
+  }
+
+  private CreateRentForCorporateRequest manuelMappingForCreateRentForCorporate(
+      Rent rent, CorporateEndRentModel corporateEndRentModel) {
+
+    List<Integer> additionalServices =
+        this.orderedAdditionalServiceService
+            .getEntityByRentId(rent.getRentId())
+            .getAdditionalServices()
+            .stream()
+            .map(AdditionalService::getAdditionalServiceId)
+            .toList();
+
+    return new CreateRentForCorporateRequest(
+        rent.getDeliveredCity().getCityId(),
+        rent.getDeliveredCity().getCityId(),
+        rent.getCustomer().getCustomerId(),
+        rent.getFinishDate(),
+        corporateEndRentModel.endRentRequest().returnDate(),
+        additionalServices,
+        rent.getCar().getCarId());
+  }
 }

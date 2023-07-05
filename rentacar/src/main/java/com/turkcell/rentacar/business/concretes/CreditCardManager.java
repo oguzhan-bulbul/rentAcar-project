@@ -21,96 +21,98 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CreditCardManager implements CreditCardService{
-	
-	private final CreditCardDao creditCardDao;
-	private final ModelMapperService modelMapperService;
-	private final CustomerService customerService;
-	
-	
-	public CreditCardManager(CreditCardDao creditCardDao, ModelMapperService modelMapperService, CustomerService customerService) {
-		this.creditCardDao = creditCardDao;
-		this.modelMapperService = modelMapperService;
-		this.customerService = customerService;
-	}
+public class CreditCardManager implements CreditCardService {
 
-	@Override
-	public DataResult<List<CreditCardListDto>> getAll() {
-		
-		List<CreditCard> result = this.creditCardDao.findAll();
-		List<CreditCardListDto> response = result.stream().map(creditCard -> this.modelMapperService.forDto().map(creditCard, CreditCardListDto.class))
-		.collect(Collectors.toList());
+  private final CreditCardDao creditCardDao;
+  private final ModelMapperService modelMapperService;
+  private final CustomerService customerService;
 
-		return new SuccessDataResult<List<CreditCardListDto>>(response,ResultMessages.LISTEDSUCCESSFUL);
-	}
+  public CreditCardManager(
+      CreditCardDao creditCardDao,
+      ModelMapperService modelMapperService,
+      CustomerService customerService) {
+    this.creditCardDao = creditCardDao;
+    this.modelMapperService = modelMapperService;
+    this.customerService = customerService;
+  }
 
-	@Override
-	public Result add(CreateCardRequest createCardRequest, int customerId) throws BusinessException {
-		
-		String upperCase = createCardRequest.getCardHolder().toUpperCase();
-		createCardRequest.setCardHolder(upperCase);
-		
-		this.customerService.checkIfCustomerDoesNotExistsByIdIsSuccess(customerId);
-				
-		CreditCard creditCard = this.modelMapperService.forDto().map(createCardRequest, CreditCard.class);
-		creditCard.setCustomer(this.customerService.getById(customerId));
-		this.creditCardDao.save(creditCard);
-		
-		return new SuccessResult(ResultMessages.ADDEDSUCCESSFUL);
-	}
+  @Override
+  public DataResult<List<CreditCardDto>> getAll() {
 
-	@Override
-	public DataResult<CreditCardDto> getById(int id) throws BusinessException {
-		
-		checkIfCCreditCardDoesNotExistsById(id);
-		
-		CreditCard result = this.creditCardDao.getById(id);
-		
-		CreditCardDto response = this.modelMapperService.forDto().map(result, CreditCardDto.class);
-		
-		return new SuccessDataResult<CreditCardDto>(response,ResultMessages.LISTEDSUCCESSFUL);
-	}
+    List<CreditCard> result = this.creditCardDao.findAll();
+    List<CreditCardDto> response =
+        result.stream()
+            .map(
+                creditCard -> this.modelMapperService.forDto().map(creditCard, CreditCardDto.class))
+            .collect(Collectors.toList());
 
-	@Override
-	public DataResult<List<CreditCardListDto>> getByCustomerId(int id) throws BusinessException {
-		
-		this.customerService.checkIfCustomerDoesNotExistsByIdIsSuccess(id);
-		
-		List<CreditCard> result = this.creditCardDao.getAllByCustomer_CustomerId(id);
-		
-		List<CreditCardListDto> response = result.stream()
-				.map(creditCard -> this.modelMapperService.forDto().map(creditCard, CreditCardListDto.class))
-				.collect(Collectors.toList());
-		
-		return new SuccessDataResult<List<CreditCardListDto>>(response,ResultMessages.LISTEDSUCCESSFUL);
-	}
+    return new SuccessDataResult<>(response, ResultMessages.LISTEDSUCCESSFUL);
+  }
 
-	@Override
-	public Result update(UpdateCreditCardRequest updateCreditCardRequest) throws BusinessException {
-		
-		String upperCase = updateCreditCardRequest.getCardHolder().toUpperCase();
-		updateCreditCardRequest.setCardHolder(upperCase);
-		
-		checkIfCCreditCardDoesNotExistsById(updateCreditCardRequest.getCreditCardId());
-		
-		CreditCard creditCard = this.modelMapperService.forDto().map(updateCreditCardRequest, CreditCard.class);
-		this.creditCardDao.save(creditCard);
-		
-		return new SuccessResult(ResultMessages.UPDATESUCCESSFUL);
-	}
+  @Override
+  public Result add(CreateCardRequest createCardRequest, int customerId) throws BusinessException {
 
-	@Override
-	public Result delete(DeleteCreditCardRequest deleteCreditCardRequest) throws BusinessException {
-		
-		this.creditCardDao.deleteById(deleteCreditCardRequest.getCreditCardId());
-		return new SuccessResult(ResultMessages.DELETESUCCESSFUL);
-	}
+    this.customerService.checkIfCustomerDoesNotExistsByIdIsSuccess(customerId);
 
-	
-	private void checkIfCCreditCardDoesNotExistsById(int id) throws BusinessException {
-		if(!this.creditCardDao.existsById(id)) {
-			throw new BusinessException(BusinessMessages.CREDITCARDDOESNOTEXISTS);
-		}
-	}
+    CreditCard creditCard =
+        this.modelMapperService.forDto().map(createCardRequest, CreditCard.class);
+    creditCard.setCustomer(this.customerService.getById(customerId));
+    this.creditCardDao.save(creditCard);
 
+    return new SuccessResult(ResultMessages.ADDEDSUCCESSFUL);
+  }
+
+  @Override
+  public DataResult<CreditCardDto> getById(int id) throws BusinessException {
+
+    checkIfCCreditCardDoesNotExistsById(id);
+
+    CreditCard result = this.creditCardDao.getById(id);
+
+    CreditCardDto response = this.modelMapperService.forDto().map(result, CreditCardDto.class);
+
+    return new SuccessDataResult<>(response, ResultMessages.LISTEDSUCCESSFUL);
+  }
+
+  @Override
+  public DataResult<List<CreditCardDto>> getByCustomerId(int id) throws BusinessException {
+
+    this.customerService.checkIfCustomerDoesNotExistsByIdIsSuccess(id);
+
+    List<CreditCard> result = this.creditCardDao.getAllByCustomer_CustomerId(id);
+
+    List<CreditCardDto> response =
+        result.stream()
+            .map(
+                creditCard -> this.modelMapperService.forDto().map(creditCard, CreditCardDto.class))
+            .collect(Collectors.toList());
+
+    return new SuccessDataResult<>(response, ResultMessages.LISTEDSUCCESSFUL);
+  }
+
+  @Override
+  public Result update(UpdateCreditCardRequest updateCreditCardRequest) throws BusinessException {
+
+    checkIfCCreditCardDoesNotExistsById(updateCreditCardRequest.creditCardId());
+
+    CreditCard creditCard =
+        this.modelMapperService.forDto().map(updateCreditCardRequest, CreditCard.class);
+    creditCard.setCardHolder(creditCard.getCardHolder().toUpperCase());
+    this.creditCardDao.save(creditCard);
+
+    return new SuccessResult(ResultMessages.UPDATESUCCESSFUL);
+  }
+
+  @Override
+  public Result delete(DeleteCreditCardRequest deleteCreditCardRequest) throws BusinessException {
+
+    this.creditCardDao.deleteById(deleteCreditCardRequest.creditCardId());
+    return new SuccessResult(ResultMessages.DELETESUCCESSFUL);
+  }
+
+  private void checkIfCCreditCardDoesNotExistsById(int id) throws BusinessException {
+    if (!this.creditCardDao.existsById(id)) {
+      throw new BusinessException(BusinessMessages.CREDITCARDDOESNOTEXISTS);
+    }
+  }
 }

@@ -11,13 +11,13 @@ import java.util.List;
 
 public interface CreditCardService {
 	
-    DataResult<List<CreditCardListDto>> getAll();
+    DataResult<List<CreditCardDto>> getAll();
 	
 	Result add(CreateCardRequest createCardRequest, int customerId) throws BusinessException;
 	
 	DataResult<CreditCardDto> getById(int id) throws BusinessException;
 	
-	DataResult<List<CreditCardListDto>> getByCustomerId(int id) throws BusinessException;
+	DataResult<List<CreditCardDto>> getByCustomerId(int id) throws BusinessException;
 	
 	Result update(UpdateCreditCardRequest updateCreditCardRequest) throws BusinessException;
 	
